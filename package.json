@@ -1,0 +1,23 @@
+{
+  "name": "itmo-opd-lr1",
+  "version": "1.0.0",
+  "description": "Лаба по ОПД ИТМО ПИиКТ 1 курс \"Без ChatGPT\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OverFitted/ITMO-opd-lr1.git"
+  },
+  "keywords": [
+    "ITMO",
+    "LR"
+  ],
+  "author": "OverFitter, aleksandr3120, quadrazhopter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OverFitted/ITMO-opd-lr1/issues"
+  },
+  "homepage": "https://github.com/OverFitted/ITMO-opd-lr1#readme"
+}
