@@ -8,4 +8,11 @@ router.get('/lab1', (req, res, next) => {
     })
 })
 
+router.get('/lab2', (req, res, next) => {
+    res.status(200)
+    res.render('lab2', {
+        title: "Пока что плейсхолдер | без CHATGPT",
+    })
+})
+
 module.exports = router
