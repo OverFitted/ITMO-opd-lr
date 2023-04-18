@@ -1,3 +1,18 @@
+<button
+  aria-label="Scroll to top button"
+  class="bloc-button btn btn-d scrollToTop"
+  onclick="scrollToTarget('1',this)"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 32 32"
+  >
+    <path class="scroll-to-top-btn-icon" d="M30,22.656l-14-13-14,13"></path>
+  </svg>
+</button>
+
 <div class="bloc l-bloc" id="bloc-1">
   <div class="container bloc-no-padding">
     <div class="row">
@@ -67,54 +82,4 @@
   </div>
 </div>
 
-<script src="/models/content.js"></script>
-
-<script>
-  $(document).ready(function () {
-        $('.collapsible').collapsible();
-    });
-
-    $(document).ready(function () {
-        $('.fixed-action-btn').floatingActionButton({
-            direction: 'right',
-            hoverEnabled: false
-        });
-    });
-
-    $(document).ready(function () {
-        $('select').not('.disabled').formSelect();
-    });
-</script>
-<style>
-  .adder {
-        padding: 7px 10px 1px 10px;
-        border-radius: 7px;
-        background-color: #303030;
-        margin-top: 1%;
-        box-shadow: 6px 6px #101010;
-    }
-
-    .close {
-        font-size: medium;
-        color: teal;
-        position: relative;
-        z-index: 100;
-        cursor: pointer;
-    }
-
-    .element {
-        width: fit-content !important;
-        padding: 0 30px 0 30px;
-        border-radius: 2px;
-        box-shadow: 4px 4px #101010;
-    }
-
-    .ach-card {
-        width: 100%;
-        padding: 1px 15px 1px 15px !important;
-        background-color: #303030 !important;
-        border-radius: 5px;
-        box-shadow: 6px 6px #101010;
-        border: 0 !important;
-    }
-</style>
+{{!-- <script src="/models/content.js"></script> --}}
