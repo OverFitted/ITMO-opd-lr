@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars');
 const homeRoutes = require('./routes/home');
 const addRoutes = require('./routes/add');
 const adminRoutes = require('./routes/admin');
+const labRoutes = require('./routes/lab');
 const app = express();
 
 const hbs = exphbs.create({
@@ -30,6 +31,7 @@ app.use(morgan('dev'))
 app.use('/', homeRoutes);
 app.use('/add', addRoutes);
 app.use('/admin', adminRoutes);
+app.use('/labs', labRoutes);
 
 const PORT = process.env.PORT || 3001;
 
