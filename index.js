@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const exphbs = require('express-handlebars');
+const aboutRoutes = require('./routes/about');
 const homeRoutes = require('./routes/home');
 const contactRoutes = require('./routes/contact');
 const adminRoutes = require('./routes/admin');
@@ -29,6 +30,7 @@ app.use(express.urlencoded({
 app.use(express.static('public'));
 app.use(morgan('dev'))
 app.use('/', homeRoutes);
+app.use('/about', aboutRoutes);
 app.use('/contact', contactRoutes);
 app.use('/admin', adminRoutes);
 app.use('/labs', labRoutes);

@@ -3,8 +3,8 @@ const router = Router()
 
 router.get('', (req, res, next) => {
     res.status(200)
-    res.render('test', {
-        title: "Test page",
+    res.render('about', {
+        title: "О нас | без CHATGPT",
         isHome: true
     })
 })
