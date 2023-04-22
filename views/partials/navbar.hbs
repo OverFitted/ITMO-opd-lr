@@ -28,9 +28,15 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/contact/" class="nav-link">
-              Зачёт
-            </a>
+            {{#if loggedIn}}
+              <a href="/contact/" class="nav-link">
+                Настройки
+              </a>
+            {{else}}
+              <a href="/contact/" class="nav-link">
+                Войти
+              </a>
+            {{/if}}
           </li>
         </ul>
       </div>

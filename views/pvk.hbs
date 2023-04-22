@@ -1,0 +1,36 @@
+<div class="bloc l-bloc" id="bloc-8">
+  <div class="container bloc-lg">
+    <div class="row">
+      <div class="col-sm-8 text-start">
+        <h3 class="mb-4 section-heading primary-text">
+          Профессионально важные качества
+          <br />
+        </h3>
+        <div>
+          <form action="/pvk2">
+            <div id="pvks" class="blocs-grid-container grid-style justify-content-center align-items-center">
+                {{#each pvks}}
+                    <div id="popover-{{@index}}" class="text-lg-center" data-toggle="popover", data-content="{{this.description}}">
+                        <p id="hoverable-{{@index}}" class="token-link">
+                            {{this.name}}
+                            <input type="checkbox">
+                        </p>
+                    </div>
+                {{/each}}
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-sm-4 text-start">
+        <p class="token-link active-token mb-lg-5 mt-lg-5">
+          Осталось выбрать: <span id="chooser">10</span>
+        </p>
+        <div>
+          <a href="/labs/pvk2/" class="a-btn token-link mt-lg-5">
+            Продолжить
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
