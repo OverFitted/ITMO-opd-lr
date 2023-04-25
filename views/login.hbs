@@ -1,0 +1,140 @@
+<div class="bloc l-bloc" id="bloc-7">
+  <div class="container bloc-lg">
+    <div class="row">
+      <div class="col-sm-4 col text-start">
+        <h3 class="mb-4 section-heading primary-text">
+          Вход
+        </h3>
+        <div>
+          <form
+            data-clean-url-used="true"
+            id="form_3"
+            data-form-type="blocs-form"
+            novalidate=""
+            data-success-msg="Your message has been sent."
+            data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!"
+          >
+            <div class="form-group mb-3">
+              <label class="form-label">
+                Почта
+                <br />
+              </label>
+              <input
+                id="email"
+                name="email"
+                class="form-control"
+                required=""
+                type="email"
+                data-error-validation-msg="Неправильный адрес почты"
+                data-validation-required-message="Введите почту"
+              />
+            </div>
+            <div class="form-group mb-3 mb-lg-3">
+              <label class="form-label">
+                Пароль
+              </label>
+              <input
+                id="password"
+                name="password"
+                class="form-control"
+                type="password"
+                required=""
+                data-validation-required-message="Введите пароль"
+              />
+            </div>
+            <button
+              class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn mb-4"
+              type="submit"
+            >
+              Войти
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="col-sm-8 col text-start">
+        <h3 class="mb-4 section-heading primary-text">
+          Регистрация
+        </h3>
+        <div>
+          <form
+            data-clean-url-used="true"
+            action="/login/"
+            method="post"
+            data-form-type="blocs-form"
+            novalidate=""
+          >
+            <div class="form-group mb-3">
+              <label class="form-label">
+                Имя
+              </label>
+              <input
+                id="name"
+                name="name"
+                class="form-control"
+                required=""
+                data-validation-required-message="Введите имя"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">
+                Почта
+              </label>
+              <input
+                id="email"
+                name="email"
+                class="form-control"
+                type="email"
+                data-error-validation-msg="Неправильный адрес почты"
+                required=""
+                data-validation-required-message="Введите почту"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">
+                Пароль
+              </label>
+              <input
+                id="password"
+                name="password"
+                class="form-control"
+                type="password"
+                required=""
+                data-validation-required-message="Введите пароль"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">
+                Повторите пароль
+              </label>
+              <input
+                id="password-verif"
+                name="password-verif"
+                class="form-control"
+                type="password"
+                required=""
+                data-validation-required-message="Повторите пароль"
+              />
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input mb-lg-3"
+                type="checkbox"
+                id="optin4"
+                name="spammer"
+              />
+              <label class="form-check-label">
+                Соглашаюсь получать спам-рассылку не чаще, чем 42 раза в минуту
+              </label>
+            </div>
+            <button
+              class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn mt-2"
+              type="submit"
+            >
+              Зарегистрироваться
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

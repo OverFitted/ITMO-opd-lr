@@ -17,4 +17,15 @@ router.get('/login', (req, res, next) => {
     })
 })
 
+router.post('/login', (req, res, next) => {
+    res.status(200)
+
+    console.log(req.body);
+
+    res.render('login', {
+        title: "Вход | Без CHATGPT",
+        isHome: true
+    })
+})
+
 module.exports = router
