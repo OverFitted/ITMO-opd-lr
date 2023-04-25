@@ -3,12 +3,10 @@ const { Router } = require('express')
 const router = Router()
 
 router.get('', (req, res, next) => {
-    console.log(req.cookies);
-    
     res.status(200)
     res.render('index', {
         title: "Без CHATGPT",
-        isLoggedIn: req.cookies.token
+        isLoggedIn: req.cookies.usr_id
     })
 })
 
@@ -16,7 +14,7 @@ router.get('/login', (req, res, next) => {
     res.status(200)
     res.render('login', {
         title: "Вход | Без CHATGPT",
-        isLoggedIn: req.cookies.token
+        isLoggedIn: req.cookies.usr_id
     })
 })
 
@@ -37,7 +35,7 @@ router.post('/login/login', (req, res, next) => {
 
     User.userByLogin(req.body.login, req.body.password).then((user) => {
         expDate = new Date('December 1, 2030 00:00:00');
-        res.cookie('usr_id', usr_id, {
+        res.cookie('usr_id', user.usr_id, {
             expires: expDate,
             httpOnly: false,
             secure: true,
