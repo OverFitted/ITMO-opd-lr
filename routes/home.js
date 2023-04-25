@@ -9,4 +9,12 @@ router.get('', (req, res, next) => {
     })
 })
 
+router.get('/login', (req, res, next) => {
+    res.status(200)
+    res.render('login', {
+        title: "Вход | Без CHATGPT",
+        isHome: true
+    })
+})
+
 module.exports = router

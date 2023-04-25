@@ -1,61 +1,74 @@
 <div class="bloc l-bloc" id="bloc-8">
   <div class="container bloc-lg">
-    <div class="row">
-      <div class="col-sm-8 text-start">
-        <h3 class="mb-4 section-heading primary-text">
-          Профессионально важные качества
-          <br />
-        </h3>
-        <div>
-          <div class="blocs-grid-container grid-bloc-8-style">
-            <div class="text-lg-end">
-              <p class="text-lg-end token-link">
-                Внимательность
-              </p>
-            </div>
-            <div>
-              <p class="token-link">
-                Выбор
-              </p>
-            </div>
-            <div class="text-lg-end">
-              <p class="token-link text-lg-start">
-                Внимательность
-              </p>
-            </div>
-            <div>
-              <p class="token-link">
-                Выбор
-              </p>
-            </div>
-            <div class="text-lg-end">
-              <p class="token-link text-lg-start">
-                Внимательность
-              </p>
-            </div>
-            <div>
-              <p class="token-link">
-                Выбор
-              </p>
+    <form action="/labs/lab1/res?pvks={{chosenPvks}}" method="post">
+      <div class="row">
+        <div class="col-sm-8 text-center">
+          <h3 class="mb-4 section-heading primary-text">
+            Профессионально важные качества
+            <br />
+          </h3>
+          <div>
+            <div
+              class="blocs-grid-container grid-bloc-8-style justify-content-center align-items-center"
+            >
+              {{#each pvks}}
+                <div id="overlay-{{this.id}}" class="overlay">
+                  <div class="slider-card">
+                      <h3 class="text-center">{{this.name}}</h3>
+
+                      <input name="{{this.id}}" type="range" id="slider" name="slider" min="0" max="5" step="1" list="slider-helpers">
+                      <datalist id="slider-helpers">
+                        <option value="0" label="Not rated"></option>
+                        <option value="1" label="Poor"></option>
+                        <option value="2" label="Fair"></option>
+                        <option value="3" label="Average"></option>
+                        <option value="4" label="Good"></option>
+                        <option value="5" label="Excellent"></option>
+                      </datalist>
+
+                      <div class="col-md-12 text-center">
+                        <button data="{{this.id}}" type="button" class="btn btn-primary">ОК</button>
+                      </div>
+                  </div>
+                </div>
+
+                <div class="text-lg-center">
+                  <p class="text-lg-center token-link">
+                    {{this.name}}
+                  </p>
+                </div>
+                <div>
+                  <p class="token-link" data="{{this.id}}">
+                    Выбор
+                  </p>
+                </div>
+              {{/each}}
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-sm-4 text-start">
-        <div class="mt-lg-5">
-          <p class="token-link active-token mb-lg-5">
-            Осталось выбрать: n
-          </p>
-        </div>
-        <div>
-          <a href="/labs/pvk/" class="a-btn token-link mt-lg-5">
-            Назад
-          </a>
-          <a href="/labs/lab1/" class="a-btn token-link mt-lg-5">
-            Завершить
-          </a>
+        <div class="col-sm-4 text-start">
+          <div>
+            <a href="/labs/pvk/" class="a-btn token-link mt-lg-5">
+              Назад
+            </a>
+            <button type="submit" class="a-btn token-link mt-lg-5">
+              Завершить
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>
+
+<script>
+  $(".token-link").click((e) => {
+    var id = $(event.target)[0].attributes["data"].value;
+    $('#overlay-' + id).show()
+  });
+
+  $(".btn-primary").click((e) => {
+    var id = $(event.target)[0].attributes["data"].value;
+    $('#overlay-' + id).hide()
+  });
+</script>

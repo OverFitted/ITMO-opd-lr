@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/OverFitted/ITMO-opd-lr1#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
     "express": "^4.17.3",
     "express-handlebars": "^5.3.1",
     "iconv": "^3.0.0",
@@ -30,7 +32,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.4-lts.1",
     "pg": "^8.10.0",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.8",

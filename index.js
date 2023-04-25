@@ -1,3 +1,4 @@
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const morgan = require('morgan');
 const exphbs = require('express-handlebars');
@@ -19,16 +20,12 @@ app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.set('views', 'views');
 
-app.use(express.json({
-    extended: false
-}));
-
-app.use(express.urlencoded({
-    extended: true
-}));
-
+app.use(express.json({extended: false}));
+app.use(express.urlencoded({extended: true}));
+app.use(cookieParser())
 app.use(express.static('public'));
 app.use(morgan('dev'))
+
 app.use('/', homeRoutes);
 app.use('/about', aboutRoutes);
 app.use('/contact', contactRoutes);

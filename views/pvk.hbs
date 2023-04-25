@@ -1,36 +1,62 @@
 <div class="bloc l-bloc" id="bloc-8">
   <div class="container bloc-lg">
-    <div class="row">
-      <div class="col-sm-8 text-start">
-        <h3 class="mb-4 section-heading primary-text">
-          Профессионально важные качества
-          <br />
-        </h3>
-        <div>
-          <form action="/pvk2">
-            <div id="pvks" class="blocs-grid-container grid-style justify-content-center align-items-center">
-                {{#each pvks}}
-                    <div id="popover-{{@index}}" class="text-lg-center" data-toggle="popover", data-content="{{this.description}}">
-                        <p id="hoverable-{{@index}}" class="token-link">
-                            {{this.name}}
-                            <input type="checkbox">
-                        </p>
+    <form action="/labs/pvk/" method="post">
+      <div class="row">
+        <div class="col-sm-8 text-center">
+          <h3 class="mb-4 section-heading primary-text">
+            Профессионально важные качества
+            <br />
+          </h3>
+          <div>
+              <div id="pvks" class="blocs-grid-container grid-style justify-content-center align-items-center">
+                  {{#each pvks}}
+                    <div id="popover-{{this.id}}" class="text-lg-center" data-toggle="popover" data-content="{{this.description}}">
+                      <p id="hoverable-{{this.id}}" class="token-link" style="position: relative;">
+                        {{this.name}}
+                        <input name="{{this.id}}" id="{{this.id}}" type="checkbox" class="invisible-checkbox">
+                      </p>
                     </div>
-                {{/each}}
-            </div>
-          </form>
+                  {{/each}}
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-sm-4 text-start">
+          <p class="token-link active-token mb-lg-5 mt-lg-5">
+            Осталось выбрать: <span id="chooser">10</span>
+          </p>
+          <div>
+            <button class="a-btn token-link mt-lg-5" id="submitter" type="submit" disabled>
+              Продолжить
+            </button>
+          </div>
         </div>
       </div>
-      <div class="col-sm-4 text-start">
-        <p class="token-link active-token mb-lg-5 mt-lg-5">
-          Осталось выбрать: <span id="chooser">10</span>
-        </p>
-        <div>
-          <a href="/labs/pvk2/" class="a-btn token-link mt-lg-5">
-            Продолжить
-          </a>
-        </div>
-      </div>
-    </div>
+    </form>
   </div>
 </div>
+
+
+<script>
+  $(document).ready(function() {
+    $('#pvks input[type="checkbox"]').change(function() {
+      var count = $('#pvks input[type="checkbox"]:checked').length;
+      jQuery("#chooser").text(10 - count);
+      if (count >= 10) {
+        $('#pvks input[type="checkbox"]:not(:checked)').attr('disabled', true);
+        $('#submitter').attr('disabled', false);
+      } else {
+        $('#pvks input[type="checkbox"]:not(:checked)').removeAttr('disabled');
+        $('#submitter').attr('disabled', true);
+      }
+    });
+
+      $("p.token-link").click(function() {
+        var checkbox = $(this).find("input.invisible-checkbox");
+        if (!checkbox.hasClass("programmatic-click")) {
+          checkbox.addClass("programmatic-click").click();
+        }
+        checkbox.removeClass("programmatic-click");
+      });
+  });
+</script>

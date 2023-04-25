@@ -158,13 +158,10 @@
             Список ПВК
           </h3>
           <p class="token-link">
-            Внимательность
+            Адекватная самооценка
           </p>
           <p class="token-link">
-            Память
-          </p>
-          <p class="token-link">
-            Усидчивость
+            Дисциплинированность
           </p>
           <p class="token-link">
             Реакция
@@ -173,19 +170,16 @@
             Креативность
           </p>
           <p class="token-link">
-            Аппетит
-          </p>
-          <p class="token-link">
-            Сонливость
+            Пунктуальность
           </p>
           <p class="token-link">
             Лидерство
           </p>
           <p class="token-link">
-            Апатия
+            Целеустремленность
           </p>
           <p class="token-link">
-            Целеустремленность
+            ...
           </p>
         </div>
         <div>
@@ -193,22 +187,12 @@
             <h3 class="mb-4 primary-text box-heading">
               Список экспертов
             </h3>
-            <p class="token-link mb-lg-3">
-              Иванов
-            </p>
-            <p class="token-link mb-lg-3">
-              Петров
-            </p>
-            <p class="token-link mb-lg-3">
-              Сидоров
-            </p>
+            {{#each experts}}
+              <p class="token-link mb-lg-3">
+                {{this.name}}
+              </p>
+            {{/each}}
           </div>
-          <a
-            href="#"
-            class="btn btn-d btn-rd box-btn fill-mob-btn primary-btn mb-lg-3 float-lg-none"
-          >
-            Управление списком
-          </a>
         </div>
       </div>
     </div>

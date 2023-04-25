@@ -45,17 +45,3 @@
     })
   })
 </script>
-
-<script>
-  $(document).ready(function() {
-    $('#pvks input[type="checkbox"]').change(function() {
-      var count = $('#pvks input[type="checkbox"]:checked').length;
-      jQuery("#chooser").text(10 - count);
-      if (count >= 10) {
-        $('#pvks input[type="checkbox"]:not(:checked)').attr('disabled', true);
-      } else {
-        $('#pvks input[type="checkbox"]:not(:checked)').removeAttr('disabled');
-      }
-    });
-  });
-</script>
