@@ -4,7 +4,15 @@ const router = Router()
 router.get('', (req, res, next) => {
     res.status(200)
     res.render('index', {
-        title: "Main page",
+        title: "Без CHATGPT",
+        isHome: true
+    })
+})
+
+router.get('/login', (req, res, next) => {
+    res.status(200)
+    res.render('login', {
+        title: "Вход | Без CHATGPT",
         isHome: true
     })
 })

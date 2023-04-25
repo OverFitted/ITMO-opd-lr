@@ -1,25 +1,36 @@
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const morgan = require('morgan');
+const exphbs = require('express-handlebars');
+const aboutRoutes = require('./routes/about');
 const homeRoutes = require('./routes/home');
-const testRoutes = require('./routes/test');
-const addTestRoutes = require('./routes/add');
+const contactRoutes = require('./routes/contact');
 const adminRoutes = require('./routes/admin');
+const labRoutes = require('./routes/lab');
 const app = express();
 
-app.use(express.json({
-    extended: false
-}));
+const hbs = exphbs.create({
+    defaultLayout: 'main',
+    extname: 'hbs',
+    helpers: require('./config/handlebars-helpers')
+});
 
-app.use(express.urlencoded({
-    extended: true
-}));
+app.engine('hbs', hbs.engine);
 
+app.set('view engine', 'hbs');
+app.set('views', 'views');
+
+app.use(express.json({extended: false}));
+app.use(express.urlencoded({extended: true}));
+app.use(cookieParser())
 app.use(express.static('public'));
 app.use(morgan('dev'))
+
 app.use('/', homeRoutes);
-app.use('/add-test', addTestRoutes);
-app.use('/test', testRoutes);
+app.use('/about', aboutRoutes);
+app.use('/contact', contactRoutes);
 app.use('/admin', adminRoutes);
+app.use('/labs', labRoutes);
 
 const PORT = process.env.PORT || 3001;
 
