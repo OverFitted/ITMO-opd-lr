@@ -1,11 +1,14 @@
+const User = require('../models/user');
 const { Router } = require('express')
 const router = Router()
 
 router.get('', (req, res, next) => {
+    console.log(req.cookies);
+    
     res.status(200)
     res.render('index', {
         title: "Без CHATGPT",
-        isHome: true
+        isLoggedIn: req.cookies.token
     })
 })
 
@@ -13,19 +16,40 @@ router.get('/login', (req, res, next) => {
     res.status(200)
     res.render('login', {
         title: "Вход | Без CHATGPT",
-        isHome: true
+        isLoggedIn: req.cookies.token
     })
 })
 
-router.post('/login', (req, res, next) => {
+router.post('/login/reg', (req, res, next) => {
     res.status(200)
 
-    console.log(req.body);
+    var user = new User(req.body);
+    user.saveToSQL().then(() => {
+        res.redirect('/', 200, {
+            title: "Без CHATGPT",
+            isLoggedIn: true
+        })
+    });
+})
 
-    res.render('login', {
-        title: "Вход | Без CHATGPT",
-        isHome: true
-    })
+router.post('/login/login', (req, res, next) => {
+    res.status(200)
+
+    User.userByLogin(req.body.login, req.body.password).then((user) => {
+        expDate = new Date('December 1, 2030 00:00:00');
+        res.cookie('usr_id', usr_id, {
+            expires: expDate,
+            httpOnly: false,
+            secure: true,
+            overwrite: true
+        });
+
+        res.redirect('/', 200, {
+            title: "Без CHATGPT",
+            isLoggedIn: true
+        })
+    });
+
 })
 
 module.exports = router

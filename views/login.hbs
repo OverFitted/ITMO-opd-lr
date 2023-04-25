@@ -8,25 +8,22 @@
         <div>
           <form
             data-clean-url-used="true"
-            id="form_3"
+            action="/login/login"
+            method="post"
             data-form-type="blocs-form"
             novalidate=""
-            data-success-msg="Your message has been sent."
-            data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!"
           >
             <div class="form-group mb-3">
               <label class="form-label">
-                Почта
+                Логин
                 <br />
               </label>
               <input
-                id="email"
-                name="email"
+                id="login"
+                name="login"
                 class="form-control"
                 required=""
-                type="email"
-                data-error-validation-msg="Неправильный адрес почты"
-                data-validation-required-message="Введите почту"
+                data-validation-required-message="Введите логин"
               />
             </div>
             <div class="form-group mb-3 mb-lg-3">
@@ -58,11 +55,23 @@
         <div>
           <form
             data-clean-url-used="true"
-            action="/login/"
+            action="/login/reg"
             method="post"
             data-form-type="blocs-form"
             novalidate=""
           >
+            <div class="form-group mb-3">
+              <label class="form-label">
+                Логин
+              </label>
+              <input
+                id="login"
+                name="login"
+                class="form-control"
+                required=""
+                data-validation-required-message="Введите логин"
+              />
+            </div>
             <div class="form-group mb-3">
               <label class="form-label">
                 Имя
@@ -73,6 +82,62 @@
                 class="form-control"
                 required=""
                 data-validation-required-message="Введите имя"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">
+                Фамилия
+              </label>
+              <input
+                id="surname"
+                name="surname"
+                class="form-control"
+                required=""
+                data-validation-required-message="Введите фамилию"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="gender">
+                Пол:
+              </label>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="gender"
+                  id="male"
+                  value="male"
+                />
+                <label class="form-check-label" for="male">
+                  Мужской
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="gender"
+                  id="female"
+                  value="female"
+                />
+                <label class="form-check-label" for="female">
+                  Женский
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">
+                Возраст
+              </label>
+              <input
+                id="age"
+                type="number"
+                name="age"
+                class="form-control"
+                required=""
+                data-validation-required-message="Введите возраст"
               />
             </div>
             <div class="form-group mb-3">
@@ -89,6 +154,7 @@
                 data-validation-required-message="Введите почту"
               />
             </div>
+            <hr />
             <div class="form-group mb-3">
               <label class="form-label">
                 Пароль
@@ -107,13 +173,24 @@
                 Повторите пароль
               </label>
               <input
-                id="password-verif"
-                name="password-verif"
+                id="password_verif"
+                name="password_verif"
                 class="form-control"
                 type="password"
                 required=""
                 data-validation-required-message="Повторите пароль"
               />
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input mb-lg-3"
+                type="checkbox"
+                id="expert"
+                name="exper"
+              />
+              <label class="form-check-label">
+                Я - экспертный эксперт
+              </label>
             </div>
             <div class="form-check">
               <input

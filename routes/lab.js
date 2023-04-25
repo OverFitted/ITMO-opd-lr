@@ -7,7 +7,7 @@ const router = Router()
 router.get('/pvk', (req, res, next) => {
     res.status(200)
 
-    CLIENT.query('select * from pvk').then(result => {
+    CLIENT.query('select * from pvk_lab1').then(result => {
         res.render('pvk', {
             title: "ПВК | без CHATGPT",
             pvks: result.rows
@@ -20,7 +20,7 @@ router.post('/pvk', (req, res, next) => {
     chosenPvks = Object.keys(req.body)
     chosenPvksIds = chosenPvks.map(obj => parseInt(obj));
 
-    CLIENT.query(`select * from pvk where id in (${chosenPvksIds.toString()})`).then(result => {
+    CLIENT.query(`select * from pvk_lab1 where id in (${chosenPvksIds.toString()})`).then(result => {
         res.render('pvk2', {
             title: "ПВК | без CHATGPT",
             pvks: result.rows,

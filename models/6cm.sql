@@ -2,10 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.2
--- Dumped by pg_dump version 15.2
-
--- Started on 2023-04-18 18:35:42
+-- Dumped from database version 14.7 (Homebrew)
+-- Dumped by pg_dump version 14.7 (Homebrew)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -23,11 +21,10 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 221 (class 1259 OID 17955)
--- Name: expert_profession_quality; Type: TABLE; Schema: public; Owner: postgres
+-- Name: expert_profession_quality_lab1; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.expert_profession_quality (
+CREATE TABLE public.expert_profession_quality_lab1 (
     id integer NOT NULL,
     expert_id integer,
     profession_id integer,
@@ -37,10 +34,9 @@ CREATE TABLE public.expert_profession_quality (
 );
 
 
-ALTER TABLE public.expert_profession_quality OWNER TO postgres;
+ALTER TABLE public.expert_profession_quality_lab1 OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 17954)
 -- Name: expert_profession_quality_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -56,34 +52,33 @@ CREATE SEQUENCE public.expert_profession_quality_id_seq
 ALTER TABLE public.expert_profession_quality_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3359 (class 0 OID 0)
--- Dependencies: 220
 -- Name: expert_profession_quality_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.expert_profession_quality_id_seq OWNED BY public.expert_profession_quality.id;
+ALTER SEQUENCE public.expert_profession_quality_id_seq OWNED BY public.expert_profession_quality_lab1.id;
 
 
 --
--- TOC entry 215 (class 1259 OID 17928)
--- Name: experts; Type: TABLE; Schema: public; Owner: postgres
+-- Name: lr2_results; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.experts (
-    id integer NOT NULL,
-    username text NOT NULL,
-    password text NOT NULL
+CREATE TABLE public.lr2_results (
+    try_id integer NOT NULL,
+    easy_light_res integer,
+    easy_sound_res integer,
+    hard_colors_res integer,
+    hard_sound_sum_res integer,
+    hard_vis_sum_res integer
 );
 
 
-ALTER TABLE public.experts OWNER TO postgres;
+ALTER TABLE public.lr2_results OWNER TO postgres;
 
 --
--- TOC entry 214 (class 1259 OID 17927)
--- Name: experts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: lr2_results_try_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.experts_id_seq
+CREATE SEQUENCE public.lr2_results_try_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -92,33 +87,249 @@ CREATE SEQUENCE public.experts_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.experts_id_seq OWNER TO postgres;
+ALTER TABLE public.lr2_results_try_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3360 (class 0 OID 0)
--- Dependencies: 214
--- Name: experts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: lr2_results_try_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.experts_id_seq OWNED BY public.experts.id;
+ALTER SEQUENCE public.lr2_results_try_id_seq OWNED BY public.lr2_results.try_id;
 
 
 --
--- TOC entry 217 (class 1259 OID 17937)
--- Name: professions; Type: TABLE; Schema: public; Owner: postgres
+-- Name: lr2_to_resp; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.professions (
+CREATE TABLE public.lr2_to_resp (
+    id integer NOT NULL,
+    respondent_id integer,
+    expert_id integer,
+    result_id_lr2 integer,
+    params_id_lr2 integer
+);
+
+
+ALTER TABLE public.lr2_to_resp OWNER TO postgres;
+
+--
+-- Name: lr2_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.lr2_to_resp_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.lr2_to_resp_id_seq OWNER TO postgres;
+
+--
+-- Name: lr2_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.lr2_to_resp_id_seq OWNED BY public.lr2_to_resp.id;
+
+
+--
+-- Name: lr3_results; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.lr3_results (
+    try integer NOT NULL,
+    easy_moving_reac_res integer,
+    hard_moving_react_res integer
+);
+
+
+ALTER TABLE public.lr3_results OWNER TO postgres;
+
+--
+-- Name: lr3_results_try_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.lr3_results_try_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.lr3_results_try_seq OWNER TO postgres;
+
+--
+-- Name: lr3_results_try_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.lr3_results_try_seq OWNED BY public.lr3_results.try;
+
+
+--
+-- Name: lr3_to_resp; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.lr3_to_resp (
+    id integer NOT NULL,
+    respondent_id integer,
+    expert_id integer,
+    result_list_id_lr3 integer,
+    params_list_id_lr3 integer
+);
+
+
+ALTER TABLE public.lr3_to_resp OWNER TO postgres;
+
+--
+-- Name: lr3_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.lr3_to_resp_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.lr3_to_resp_id_seq OWNER TO postgres;
+
+--
+-- Name: lr3_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.lr3_to_resp_id_seq OWNED BY public.lr3_to_resp.id;
+
+
+--
+-- Name: params_list_lr2; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.params_list_lr2 (
+    id integer NOT NULL,
+    params_list integer[]
+);
+
+
+ALTER TABLE public.params_list_lr2 OWNER TO postgres;
+
+--
+-- Name: params_list_lr2_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.params_list_lr2_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.params_list_lr2_id_seq OWNER TO postgres;
+
+--
+-- Name: params_list_lr2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.params_list_lr2_id_seq OWNED BY public.params_list_lr2.id;
+
+
+--
+-- Name: params_list_lr3; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.params_list_lr3 (
+    id integer NOT NULL,
+    params_list integer[]
+);
+
+
+ALTER TABLE public.params_list_lr3 OWNER TO postgres;
+
+--
+-- Name: params_list_lr3_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.params_list_lr3_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.params_list_lr3_id_seq OWNER TO postgres;
+
+--
+-- Name: params_list_lr3_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.params_list_lr3_id_seq OWNED BY public.params_list_lr3.id;
+
+
+--
+-- Name: presets; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.presets (
+    preset_id integer NOT NULL,
+    lab_name text,
+    test_in_lab_name text,
+    name text,
+    description text,
+    avail_time_sec integer,
+    show_time boolean,
+    res_in_1min_and_full_test boolean,
+    show_progress boolean,
+    obj_acc_factor integer,
+    obj_acc_time integer
+);
+
+
+ALTER TABLE public.presets OWNER TO postgres;
+
+--
+-- Name: presets_preset_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.presets_preset_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.presets_preset_id_seq OWNER TO postgres;
+
+--
+-- Name: presets_preset_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.presets_preset_id_seq OWNED BY public.presets.preset_id;
+
+
+--
+-- Name: professions_lab1; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.professions_lab1 (
     id integer NOT NULL,
     name text NOT NULL,
     description text
 );
 
 
-ALTER TABLE public.professions OWNER TO postgres;
+ALTER TABLE public.professions_lab1 OWNER TO postgres;
 
 --
--- TOC entry 216 (class 1259 OID 17936)
 -- Name: professions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -134,30 +345,26 @@ CREATE SEQUENCE public.professions_id_seq
 ALTER TABLE public.professions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3361 (class 0 OID 0)
--- Dependencies: 216
 -- Name: professions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.professions_id_seq OWNED BY public.professions.id;
+ALTER SEQUENCE public.professions_id_seq OWNED BY public.professions_lab1.id;
 
 
 --
--- TOC entry 219 (class 1259 OID 17946)
--- Name: pvk; Type: TABLE; Schema: public; Owner: postgres
+-- Name: pvk_lab1; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pvk (
+CREATE TABLE public.pvk_lab1 (
     id integer NOT NULL,
     name text NOT NULL,
     description text
 );
 
 
-ALTER TABLE public.pvk OWNER TO postgres;
+ALTER TABLE public.pvk_lab1 OWNER TO postgres;
 
 --
--- TOC entry 218 (class 1259 OID 17945)
 -- Name: pvk_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -173,76 +380,281 @@ CREATE SEQUENCE public.pvk_id_seq
 ALTER TABLE public.pvk_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3362 (class 0 OID 0)
--- Dependencies: 218
 -- Name: pvk_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.pvk_id_seq OWNED BY public.pvk.id;
+ALTER SEQUENCE public.pvk_id_seq OWNED BY public.pvk_lab1.id;
 
 
 --
--- TOC entry 3191 (class 2604 OID 17958)
--- Name: expert_profession_quality id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: results_list_lr2; Type: TABLE; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expert_profession_quality ALTER COLUMN id SET DEFAULT nextval('public.expert_profession_quality_id_seq'::regclass);
+CREATE TABLE public.results_list_lr2 (
+    id integer NOT NULL,
+    result_list integer[]
+);
+
+
+ALTER TABLE public.results_list_lr2 OWNER TO postgres;
+
+--
+-- Name: results_list_lr2_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.results_list_lr2_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.results_list_lr2_id_seq OWNER TO postgres;
+
+--
+-- Name: results_list_lr2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.results_list_lr2_id_seq OWNED BY public.results_list_lr2.id;
 
 
 --
--- TOC entry 3188 (class 2604 OID 17931)
--- Name: experts id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: results_list_lr3; Type: TABLE; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.experts ALTER COLUMN id SET DEFAULT nextval('public.experts_id_seq'::regclass);
+CREATE TABLE public.results_list_lr3 (
+    id integer NOT NULL,
+    result_list integer[]
+);
+
+
+ALTER TABLE public.results_list_lr3 OWNER TO postgres;
+
+--
+-- Name: results_list_lr3_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.results_list_lr3_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.results_list_lr3_id_seq OWNER TO postgres;
+
+--
+-- Name: results_list_lr3_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.results_list_lr3_id_seq OWNED BY public.results_list_lr3.id;
 
 
 --
--- TOC entry 3189 (class 2604 OID 17940)
--- Name: professions id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.professions ALTER COLUMN id SET DEFAULT nextval('public.professions_id_seq'::regclass);
+CREATE TABLE public.users (
+    usr_id integer NOT NULL,
+    name text,
+    surname text,
+    usrname text,
+    passwd text,
+    email text,
+    age integer,
+    is_expert boolean,
+    gender character(1)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_usr_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_usr_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_usr_id_seq OWNER TO postgres;
+
+--
+-- Name: users_usr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_usr_id_seq OWNED BY public.users.usr_id;
 
 
 --
--- TOC entry 3190 (class 2604 OID 17949)
--- Name: pvk id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: expert_profession_quality_lab1 id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pvk ALTER COLUMN id SET DEFAULT nextval('public.pvk_id_seq'::regclass);
+ALTER TABLE ONLY public.expert_profession_quality_lab1 ALTER COLUMN id SET DEFAULT nextval('public.expert_profession_quality_id_seq'::regclass);
 
 
 --
--- TOC entry 3353 (class 0 OID 17955)
--- Dependencies: 221
--- Data for Name: expert_profession_quality; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Name: lr2_results try_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-COPY public.expert_profession_quality (id, expert_id, profession_id, pvk_id, importance) FROM stdin;
+ALTER TABLE ONLY public.lr2_results ALTER COLUMN try_id SET DEFAULT nextval('public.lr2_results_try_id_seq'::regclass);
+
+
+--
+-- Name: lr2_to_resp id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr2_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr2_to_resp_id_seq'::regclass);
+
+
+--
+-- Name: lr3_results try; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr3_results ALTER COLUMN try SET DEFAULT nextval('public.lr3_results_try_seq'::regclass);
+
+
+--
+-- Name: lr3_to_resp id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr3_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr3_to_resp_id_seq'::regclass);
+
+
+--
+-- Name: params_list_lr2 id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.params_list_lr2 ALTER COLUMN id SET DEFAULT nextval('public.params_list_lr2_id_seq'::regclass);
+
+
+--
+-- Name: params_list_lr3 id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.params_list_lr3 ALTER COLUMN id SET DEFAULT nextval('public.params_list_lr3_id_seq'::regclass);
+
+
+--
+-- Name: presets preset_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.presets ALTER COLUMN preset_id SET DEFAULT nextval('public.presets_preset_id_seq'::regclass);
+
+
+--
+-- Name: professions_lab1 id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.professions_lab1 ALTER COLUMN id SET DEFAULT nextval('public.professions_id_seq'::regclass);
+
+
+--
+-- Name: pvk_lab1 id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pvk_lab1 ALTER COLUMN id SET DEFAULT nextval('public.pvk_id_seq'::regclass);
+
+
+--
+-- Name: results_list_lr2 id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.results_list_lr2 ALTER COLUMN id SET DEFAULT nextval('public.results_list_lr2_id_seq'::regclass);
+
+
+--
+-- Name: results_list_lr3 id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.results_list_lr3 ALTER COLUMN id SET DEFAULT nextval('public.results_list_lr3_id_seq'::regclass);
+
+
+--
+-- Name: users usr_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN usr_id SET DEFAULT nextval('public.users_usr_id_seq'::regclass);
+
+
+--
+-- Data for Name: expert_profession_quality_lab1; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id, importance) FROM stdin;
 \.
 
 
 --
--- TOC entry 3347 (class 0 OID 17928)
--- Dependencies: 215
--- Data for Name: experts; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: lr2_results; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.experts (id, username, password) FROM stdin;
-1	OverFitter	123
-2	CalmHarmony	456
-3	graevsky	789
+COPY public.lr2_results (try_id, easy_light_res, easy_sound_res, hard_colors_res, hard_sound_sum_res, hard_vis_sum_res) FROM stdin;
 \.
 
 
 --
--- TOC entry 3349 (class 0 OID 17937)
--- Dependencies: 217
--- Data for Name: professions; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: lr2_to_resp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.professions (id, name, description) FROM stdin;
+COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, params_id_lr2) FROM stdin;
+\.
+
+
+--
+-- Data for Name: lr3_results; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.lr3_results (try, easy_moving_reac_res, hard_moving_react_res) FROM stdin;
+\.
+
+
+--
+-- Data for Name: lr3_to_resp; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.lr3_to_resp (id, respondent_id, expert_id, result_list_id_lr3, params_list_id_lr3) FROM stdin;
+\.
+
+
+--
+-- Data for Name: params_list_lr2; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.params_list_lr2 (id, params_list) FROM stdin;
+\.
+
+
+--
+-- Data for Name: params_list_lr3; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.params_list_lr3 (id, params_list) FROM stdin;
+\.
+
+
+--
+-- Data for Name: presets; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.presets (preset_id, lab_name, test_in_lab_name, name, description, avail_time_sec, show_time, res_in_1min_and_full_test, show_progress, obj_acc_factor, obj_acc_time) FROM stdin;
+\.
+
+
+--
+-- Data for Name: professions_lab1; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.professions_lab1 (id, name, description) FROM stdin;
 1	Программист 1С	Программист 1С – специалист, занимающийся разработкой, настройкой и сопровождением программных решений на платформе 1С:Предприятие. Этот профессионал работает с автоматизацией учета, анализа и управления различными бизнес-процессами компаний.
 2	Программист PHP	Программист PHP – специалист, ответственный за создание, разработку и поддержку веб-приложений с использованием серверного языка программирования PHP. Этот профессионал участвует во всех этапах разработки, начиная от проектирования архитектуры и заканчивая тестированием и оптимизацией кода.
 3	Программист HTML	Программист HTML – специалист, занимающийся созданием и доработкой структуры веб-страниц с помощью языка разметки HTML. Он работает в тесном сотрудничестве с дизайнерами и разработчиками CSS и JavaScript, чтобы обеспечить отличный пользовательский опыт и качественное отображение контента на сайтах.
@@ -250,12 +662,10 @@ COPY public.professions (id, name, description) FROM stdin;
 
 
 --
--- TOC entry 3351 (class 0 OID 17946)
--- Dependencies: 219
--- Data for Name: pvk; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: pvk_lab1; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pvk (id, name, description) FROM stdin;
+COPY public.pvk_lab1 (id, name, description) FROM stdin;
 9	Адекватная самооценка	
 8	Стремление к профессиональному совершенству	
 71	Логичность	
@@ -430,8 +840,30 @@ COPY public.pvk (id, name, description) FROM stdin;
 
 
 --
--- TOC entry 3363 (class 0 OID 0)
--- Dependencies: 220
+-- Data for Name: results_list_lr2; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.results_list_lr2 (id, result_list) FROM stdin;
+\.
+
+
+--
+-- Data for Name: results_list_lr3; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.results_list_lr3 (id, result_list) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert, gender) FROM stdin;
+\.
+
+
+--
 -- Name: expert_profession_quality_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -439,17 +871,55 @@ SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 6, true);
 
 
 --
--- TOC entry 3364 (class 0 OID 0)
--- Dependencies: 214
--- Name: experts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: lr2_results_try_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.experts_id_seq', 15, true);
+SELECT pg_catalog.setval('public.lr2_results_try_id_seq', 1, false);
 
 
 --
--- TOC entry 3365 (class 0 OID 0)
--- Dependencies: 216
+-- Name: lr2_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 1, false);
+
+
+--
+-- Name: lr3_results_try_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.lr3_results_try_seq', 1, false);
+
+
+--
+-- Name: lr3_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.lr3_to_resp_id_seq', 1, false);
+
+
+--
+-- Name: params_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.params_list_lr2_id_seq', 1, false);
+
+
+--
+-- Name: params_list_lr3_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.params_list_lr3_id_seq', 1, false);
+
+
+--
+-- Name: presets_preset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.presets_preset_id_seq', 1, false);
+
+
+--
 -- Name: professions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -457,8 +927,6 @@ SELECT pg_catalog.setval('public.professions_id_seq', 15, true);
 
 
 --
--- TOC entry 3366 (class 0 OID 0)
--- Dependencies: 218
 -- Name: pvk_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -466,69 +934,287 @@ SELECT pg_catalog.setval('public.pvk_id_seq', 179, true);
 
 
 --
--- TOC entry 3200 (class 2606 OID 17961)
--- Name: expert_profession_quality expert_profession_quality_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: results_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expert_profession_quality
+SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 1, false);
+
+
+--
+-- Name: results_list_lr3_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.results_list_lr3_id_seq', 1, false);
+
+
+--
+-- Name: users_usr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_usr_id_seq', 1, false);
+
+
+--
+-- Name: expert_profession_quality_lab1 expert_profession_quality_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.expert_profession_quality_lab1
     ADD CONSTRAINT expert_profession_quality_pkey PRIMARY KEY (id);
 
 
 --
--- TOC entry 3194 (class 2606 OID 17935)
--- Name: experts experts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: lr2_results lr2_results_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.experts
-    ADD CONSTRAINT experts_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.lr2_results
+    ADD CONSTRAINT lr2_results_pkey PRIMARY KEY (try_id);
 
 
 --
--- TOC entry 3196 (class 2606 OID 17944)
--- Name: professions professions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: lr2_to_resp lr2_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.professions
+ALTER TABLE ONLY public.lr2_to_resp
+    ADD CONSTRAINT lr2_to_resp_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: lr3_results lr3_results_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr3_results
+    ADD CONSTRAINT lr3_results_pkey PRIMARY KEY (try);
+
+
+--
+-- Name: lr3_to_resp lr3_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr3_to_resp
+    ADD CONSTRAINT lr3_to_resp_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: params_list_lr2 params_list_lr2_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.params_list_lr2
+    ADD CONSTRAINT params_list_lr2_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: params_list_lr3 params_list_lr3_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.params_list_lr3
+    ADD CONSTRAINT params_list_lr3_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: presets presets_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.presets
+    ADD CONSTRAINT presets_pkey PRIMARY KEY (preset_id);
+
+
+--
+-- Name: professions_lab1 professions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.professions_lab1
     ADD CONSTRAINT professions_pkey PRIMARY KEY (id);
 
 
 --
--- TOC entry 3198 (class 2606 OID 17953)
--- Name: pvk pvk_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: pvk_lab1 pvk_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pvk
+ALTER TABLE ONLY public.pvk_lab1
     ADD CONSTRAINT pvk_pkey PRIMARY KEY (id);
 
 
 --
--- TOC entry 3201 (class 2606 OID 17962)
--- Name: expert_profession_quality expert_profession_quality_expert_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: results_list_lr2 results_list_lr2_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expert_profession_quality
-    ADD CONSTRAINT expert_profession_quality_expert_id_fkey FOREIGN KEY (expert_id) REFERENCES public.experts(id);
-
-
---
--- TOC entry 3202 (class 2606 OID 17967)
--- Name: expert_profession_quality expert_profession_quality_profession_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.expert_profession_quality
-    ADD CONSTRAINT expert_profession_quality_profession_id_fkey FOREIGN KEY (profession_id) REFERENCES public.professions(id);
+ALTER TABLE ONLY public.results_list_lr2
+    ADD CONSTRAINT results_list_lr2_pkey PRIMARY KEY (id);
 
 
 --
--- TOC entry 3203 (class 2606 OID 17972)
--- Name: expert_profession_quality expert_profession_quality_pvk_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: results_list_lr3 results_list_lr3_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expert_profession_quality
-    ADD CONSTRAINT expert_profession_quality_pvk_id_fkey FOREIGN KEY (pvk_id) REFERENCES public.pvk(id);
+ALTER TABLE ONLY public.results_list_lr3
+    ADD CONSTRAINT results_list_lr3_pkey PRIMARY KEY (id);
 
 
--- Completed on 2023-04-18 18:35:42
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (usr_id);
+
+
+--
+-- Name: fki_fkey_exp; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fkey_exp ON public.lr2_to_resp USING btree (expert_id);
+
+
+--
+-- Name: fki_fkey_expert; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fkey_expert ON public.lr2_to_resp USING btree (expert_id);
+
+
+--
+-- Name: fki_fkey_expert_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fkey_expert_id ON public.expert_profession_quality_lab1 USING btree (expert_id);
+
+
+--
+-- Name: fki_fkey_params_list; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fkey_params_list ON public.lr2_to_resp USING btree (params_id_lr2);
+
+
+--
+-- Name: fki_fkey_params_list_lr3; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fkey_params_list_lr3 ON public.lr3_to_resp USING btree (params_list_id_lr3);
+
+
+--
+-- Name: fki_fkey_resp; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fkey_resp ON public.lr2_to_resp USING btree (respondent_id);
+
+
+--
+-- Name: fki_fkey_results; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fkey_results ON public.lr2_to_resp USING btree (result_id_lr2);
+
+
+--
+-- Name: fki_g; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_g ON public.lr3_to_resp USING btree (respondent_id);
+
+
+--
+-- Name: fki_h; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_h ON public.lr3_to_resp USING btree (result_list_id_lr3);
+
+
+--
+-- Name: fki_а; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX "fki_а" ON public.lr3_to_resp USING btree (id);
+
+
+--
+-- Name: expert_profession_quality_lab1 expert_profession_quality_profession_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.expert_profession_quality_lab1
+    ADD CONSTRAINT expert_profession_quality_profession_id_fkey FOREIGN KEY (profession_id) REFERENCES public.professions_lab1(id);
+
+
+--
+-- Name: expert_profession_quality_lab1 expert_profession_quality_pvk_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.expert_profession_quality_lab1
+    ADD CONSTRAINT expert_profession_quality_pvk_id_fkey FOREIGN KEY (pvk_id) REFERENCES public.pvk_lab1(id);
+
+
+--
+-- Name: lr2_to_resp fkey_exp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr2_to_resp
+    ADD CONSTRAINT fkey_exp FOREIGN KEY (expert_id) REFERENCES public.users(usr_id) NOT VALID;
+
+
+--
+-- Name: lr3_to_resp fkey_exp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr3_to_resp
+    ADD CONSTRAINT fkey_exp FOREIGN KEY (expert_id) REFERENCES public.users(usr_id) NOT VALID;
+
+
+--
+-- Name: expert_profession_quality_lab1 fkey_expert_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.expert_profession_quality_lab1
+    ADD CONSTRAINT fkey_expert_id FOREIGN KEY (expert_id) REFERENCES public.users(usr_id) NOT VALID;
+
+
+--
+-- Name: lr2_to_resp fkey_params_list; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr2_to_resp
+    ADD CONSTRAINT fkey_params_list FOREIGN KEY (params_id_lr2) REFERENCES public.params_list_lr2(id) NOT VALID;
+
+
+--
+-- Name: lr3_to_resp fkey_params_list_lr3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr3_to_resp
+    ADD CONSTRAINT fkey_params_list_lr3 FOREIGN KEY (params_list_id_lr3) REFERENCES public.params_list_lr3(id) NOT VALID;
+
+
+--
+-- Name: lr2_to_resp fkey_resp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr2_to_resp
+    ADD CONSTRAINT fkey_resp FOREIGN KEY (respondent_id) REFERENCES public.users(usr_id) NOT VALID;
+
+
+--
+-- Name: lr3_to_resp fkey_resp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr3_to_resp
+    ADD CONSTRAINT fkey_resp FOREIGN KEY (respondent_id) REFERENCES public.users(usr_id) NOT VALID;
+
+
+--
+-- Name: lr3_to_resp fkey_result_list_lr3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr3_to_resp
+    ADD CONSTRAINT fkey_result_list_lr3 FOREIGN KEY (result_list_id_lr3) REFERENCES public.lr3_results(try) NOT VALID;
+
+
+--
+-- Name: lr2_to_resp fkey_results; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr2_to_resp
+    ADD CONSTRAINT fkey_results FOREIGN KEY (result_id_lr2) REFERENCES public.results_list_lr2(id) NOT VALID;
+
 
 --
 -- PostgreSQL database dump complete
