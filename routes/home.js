@@ -22,6 +22,15 @@ router.post('/login/reg', (req, res, next) => {
     res.status(200)
 
     var user = new User(req.body);
+
+    expDate = new Date('December 1, 2030 00:00:00');
+    res.cookie('usr_id', user.usr_id, {
+        expires: expDate,
+        httpOnly: false,
+        secure: true,
+        overwrite: true
+    });
+
     user.saveToSQL().then(() => {
         res.redirect('/', 200, {
             title: "Без CHATGPT",

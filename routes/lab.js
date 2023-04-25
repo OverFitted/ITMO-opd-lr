@@ -10,7 +10,8 @@ router.get('/pvk', (req, res, next) => {
     CLIENT.query('select * from pvk_lab1').then(result => {
         res.render('pvk', {
             title: "ПВК | без CHATGPT",
-            pvks: result.rows
+            pvks: result.rows,
+            isLoggedIn: req.cookies.usr_id
         })
     });
 })
@@ -24,7 +25,8 @@ router.post('/pvk', (req, res, next) => {
         res.render('pvk2', {
             title: "ПВК | без CHATGPT",
             pvks: result.rows,
-            chosenPvks: chosenPvks.join("-")
+            chosenPvks: chosenPvks.join("-"),
+            isLoggedIn: req.cookies.usr_id
         })
     });
 })
@@ -38,7 +40,8 @@ router.get('/lab1', (req, res, next) => {
             { "name": "Ванька" },
             { "name": "Компас юзер" },
             { "name": "Кто-нибудь еще" }
-        ]
+        ],
+        isLoggedIn: req.cookies.usr_id
     })
 })
 
@@ -59,7 +62,8 @@ router.post('/lab1/res', (req, res, next) => {
             { "name": "Ванька" },
             { "name": "Компас юзер" },
             { "name": "Кто-нибудь еще" }
-        ]
+        ],
+        isLoggedIn: req.cookies.usr_id
     })
 })
 
@@ -67,6 +71,7 @@ router.get('/lab2', (req, res, next) => {
     res.status(200)
     res.render('lab2', {
         title: "Пока что плейсхолдер | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
     })
 })
 
