@@ -87,13 +87,10 @@ router.post('/pvk2', (req, res, next) => {
     delete req.body.selectedLanguage;
 
     chosenPvks = Object.keys(req.body)
+    pvkValues = Object.values(req.body)
     chosenPvksIds = chosenPvks.map(obj => parseInt(obj));
 
-    console.log(req.body)
-    console.log(chosenPvks)
-    console.log(chosenPvksIds)
-
-    if (req.cookies.usr_id) {
+    if (!req.cookies.usr_id) {
         chosenPvksIds.forEach(pvk => {
             const query = {
                 text: 'INSERT INTO expert_profession_quality_lab1 (expert_id, profession_id, pvk_id, importance) VALUES ($1, $2, $3, $4)',
@@ -106,12 +103,36 @@ router.post('/pvk2', (req, res, next) => {
         });
     }
 
-    res.redirect('/labs/lab1/res')
+    res.redirect(`/labs/lab1/res?chosenPvksIds=${chosenPvksIds.join("-")}&selectedLanguage=${selectedLanguage}&pvkValues=${pvkValues.join("-")}`)
 })
 
 router.get('/lab1/res', (req, res, next) => {
     res.status(200)
-    res.redirect("../lab1")
+    const pvkValues = req.query.pvkValues.split("-")
+    const chosenPvksIds = req.query.chosenPvksIds.split("-")
+    const selectedLanguage = req.query.selectedLanguage
+
+    var pvks = []
+    for (let i = 0; i < chosenPvksIds.length; i++){
+        CLIENT.query(`select * from pvk_lab1 where id = ${chosenPvksIds[i]}`).then((result) => {
+            const cur = result.rows[0];
+
+            pvks.push({
+                cur: cur,
+                value: pvkValues[i]
+            })
+        })
+    }
+
+    if (!((!pvkValues) || (!chosenPvksIds) || (!selectedLanguage))){
+        res.render('lab1', {
+            title: "Лаба 1 | без CHATGPT",
+            isLoggedIn: req.cookies.usr_id,
+            pvks: pvks,
+            selectedLanguage: selectedLanguage
+    })} else {
+        res.redirect("/labs/lab1")
+    }
 })
 
 router.get('/lab2', (req, res, next) => {

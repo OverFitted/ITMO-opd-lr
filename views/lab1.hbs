@@ -1,9 +1,26 @@
 <div id="overlay" class="overlay">
   <div class="slider-card">
-    
+    {{#each pvks}}
+      <div class="blocs-grid-container grid-bloc-8-style">
+        <div class="text-lg-center">
+          <p class="text-lg-start bento-box active-token">
+            {{this.cur.name}}
+          </p>
+        </div>
+        <div class="text-lg-center">
+          <p class="bento-box active-token">
+            {{this.value}}
+          </p>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+  <div class="col-md-12 text-center">
+    <button data="{{this.id}}" type="button" class="btn btn-primary">
+      ОК
+    </button>
   </div>
 </div>
-
 <div class="bloc l-bloc" id="bloc-5">
   <div class="container bloc-lg">
     <div class="row">
@@ -223,3 +240,20 @@
             });
         });
 </script>
+{{#if pvks}}
+<style>
+  .active-token {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .blocs-grid-container {
+    row-gap: .2rem;
+  }
+</style>
+<script>
+  $(".btn-primary").click((e) => {
+    $('#overlay').hide()
+  });
+</script>
+{{/if}}
