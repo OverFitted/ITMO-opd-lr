@@ -1,259 +1,169 @@
 <div id="overlay" class="overlay">
-  <div class="slider-card">
-    {{#each pvks}}
-      <div class="blocs-grid-container grid-bloc-8-style">
-        <div class="text-lg-center">
-          <p class="text-lg-start bento-box active-token">
-            {{this.cur.name}}
-          </p>
+    <div class="slider-card">
+        {{#each pvks}}
+            <div class="blocs-grid-container grid-bloc-8-style">
+                <div class="text-lg-center">
+                    <p class="text-lg-start bento-box active-token">
+                        {{this.cur.name}}
+                    </p>
+                </div>
+                <div class="text-lg-center">
+                    <p class="bento-box active-token">
+                        {{this.value}}
+                    </p>
+                </div>
+            </div>
+        {{/each}}
+        <div class="col-md-12 text-center">
+            <button data="{{this.id}}" type="button" class="btn btn-primary">
+                ОК
+            </button>
         </div>
-        <div class="text-lg-center">
-          <p class="bento-box active-token">
-            {{this.value}}
-          </p>
-        </div>
-      </div>
-    {{/each}}
-  </div>
-  <div class="col-md-12 text-center">
-    <button data="{{this.id}}" type="button" class="btn btn-primary">
-      ОК
-    </button>
-  </div>
+    </div>
 </div>
 <div class="bloc l-bloc" id="bloc-5">
-  <div class="container bloc-lg">
-    <div class="row">
-      <div class="col-sm-8 text-start">
-        <div class="text-lg-center">
-          <h3 class="mb-4 section-heading primary-text">
-            Первая лабораторная
-            <br />
-          </h3>
-        </div>
-        <h5 class="mb-4 text-lg-start">
-          Определение видов программистов и ИТ, ПВК для определенного вида деятельности
-        </h5>
-        <form method="POST" action="/labs/lab1">
-          <input
-            type="hidden"
-            name="selectedLanguage"
-            id="selectedLanguage"
-            value="C1"
-          />
-          <ul class="nav nav-tabs" id="nav-11978-tab" role="tablist">
-            <li class="nav-item">
-              <a
-                class="a-btn nav-link active mini-heading token-link"
-                id="nav-11978-tab-1"
-                data-bs-toggle="tab"
-                href="#"
-                role="tab"
-                aria-controls="nav-11978-content-1"
-                aria-selected="true"
-                data-bs-target="#nav-11978-content-1"
-              >
-                C1
-                <br />
-              </a>
-            </li>
-            <li class="nav-item">
-              <a
-                class="a-btn nav-link mini-heading token-link"
-                id="nav-11978-tab-2"
-                data-bs-toggle="tab"
-                href="#"
-                role="tab"
-                aria-controls="nav-11978-content-2"
-                aria-selected="false"
-                data-bs-target="#nav-11978-content-2"
-              >
-                PHP
-              </a>
-            </li>
-            <li class="nav-item">
-              <a
-                class="a-btn nav-link mini-heading token-link"
-                id="nav-11978-tab-3"
-                data-bs-toggle="tab"
-                href="#"
-                role="tab"
-                aria-controls="nav-11978-content-3"
-                aria-selected="false"
-                data-bs-target="#nav-11978-content-3"
-              >
-                HTML
-              </a>
-            </li>
-          </ul>
-          <div class="tab-content">
-            <div
-              class="tab-pane fade show active"
-              id="nav-11978-content-1"
-              role="tabpanel"
-              aria-labelledby="nav-11978-content-1"
-            >
-              <div class="pb-lg-3">
-                <div class="row">
-                  <div class="col">
-                    <p class="bento-box">
-                      Программист 1С - это специалист, который занимается разработкой программных решений на платформе 1С:Предприятие. Он создает и поддерживает информационные системы для управления бизнес-процессами в компаниях различных отраслей.
-                    </p>
-                  </div>
-                  <div class="col">
-                    <img
-                      class="img-fluid bento-box img-style img-fluid-up lazyload"
-                      src="/img/lazyload-ph.png"
-                      data-src="/img/1_52551a557a5fc52551a557a639.jpg"
-                      alt="1675879972_shutok.ru.17690949"
-                    />
-                  </div>
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col-sm-8 text-start">
+                <div class="text-lg-center">
+                    <h3 class="mb-4 section-heading primary-text">
+                        Первая лабораторная
+                        <br/>
+                    </h3>
                 </div>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-d btn-lg btn-rd mb-lg-3 w-100 box-btn fill-mob-btn primary-btn"
-              >
-                Определить ПВК
-                <br />
-              </button>
-            </div>
-            <div
-              class="tab-pane fade-tab-bs"
-              id="nav-11978-content-2"
-              role="tabpanel"
-              aria-labelledby="nav-11978-content-2"
-            >
-              <div class="pb-lg-3">
-                <div class="row">
-                  <div class="col">
-                    <p class="bento-box text-lg-start">
-                      Программист PHP - это специалист, который разрабатывает веб-приложения и сайты на языке программирования PHP. Он использует этот язык для написания скриптов, которые обрабатывают данные и взаимодействуют с базами данных.
-                    </p>
-                  </div>
-                  <div class="col">
-                    <img
-                      class="img-fluid bento-box lazyload"
-                      src="/img/lazyload-ph.png"
-                      data-src="/img/1675879972_shutok.ru.17690949.jpg"
-                      alt="1675879972_shutok.ru.17690949"
+                <h5 class="mb-4 text-lg-start">
+                    Определение видов программистов и ИТ, ПВК для определенного вида деятельности
+                </h5>
+                <form method="POST" action="/labs/lab1">
+                    <input
+                            type="hidden"
+                            name="selectedLanguage"
+                            id="selectedLanguage"
+                            value="C1"
                     />
-                  </div>
-                </div>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-d btn-lg btn-rd mb-lg-3 w-100 box-btn fill-mob-btn primary-btn"
-              >
-                Определить ПВК
-                <br />
-              </button>
+                    <ul class="nav nav-tabs" id="nav-11978-tab" role="tablist">
+                        {{#each profs}}
+                            <li class="nav-item">
+                                <a class="a-btn clickable nav-link mini-heading token-link {{#if @first}}active{{/if}}" id="nav-11978-tab-{{this.id}}"
+                                   data-bs-toggle="tab"
+                                   href="#" role="tab"
+                                   data="{{this.id}}"
+                                   aria-controls="nav-11978-content-{{this.id}}"
+                                   aria-selected={{#if @first}}"true"{{else}}"false"{{/if}}
+                                   data-bs-target="#nav-11978-content-{{this.id}}">{{this.name}}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                    <div class="tab-content">
+                        {{#each profs}}
+                            <div
+                                    class="tab-pane fade-tab-bs {{#if @first}}show active{{else}}hide{{/if}}"
+                                    id="nav-11978-content-{{this.id}}"
+                                    role="tabpanel"
+                                    aria-labelledby="nav-11978-content-{{this.id}}"
+                            >
+
+                                <div class="pb-lg-3">
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="bento-box">
+                                                {{this.description}}
+                                            </p>
+                                        </div>
+                                        <div class="col">
+                                            <img
+                                                    class="img-fluid bento-box img-style img-fluid-up lazyload"
+                                                    src="/img/lazyload-ph.png"
+                                                    data-src="/img/1_52551a557a5fc52551a557a639.jpg"
+                                                    alt="1675879972_shutok.ru.17690949"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                        type="submit"
+                                        class="btn btn-d btn-lg btn-rd mb-lg-3 w-100 box-btn fill-mob-btn primary-btn"
+                                >
+                                    Определить ПВК
+                                    <br/>
+                                </button>
+                            </div>
+                        {{/each}}
+                    </div>
+                </form>
             </div>
-            <div
-              class="tab-pane fade-tab-bs"
-              id="nav-11978-content-3"
-              role="tabpanel"
-              aria-labelledby="nav-11978-content-3"
-            >
-              <div class="pb-lg-3">
-                <div class="row">
-                  <div class="col">
-                    <p class="bento-box">
-                      Программист HTML - это специалист, который занимается созданием веб-страниц с использованием языка разметки HTML. Он работает над версткой сайтов и обеспечивает корректное отображение контента в браузерах.
+            <div class="col-sm-4 text-start">
+                <div>
+                    <h3 class="mb-4 primary-text box-heading">
+                        Список ПВК
+                    </h3>
+                    <p class="token-link">
+                        Адекватная самооценка
                     </p>
-                  </div>
-                  <div class="col">
-                    <img
-                      class="img-fluid bento-box lazyload"
-                      src="/img/lazyload-ph.png"
-                      data-src="/img/iL8ZtzPtDYI.jpg"
-                      alt="1675879972_shutok.ru.17690949"
-                    />
-                  </div>
+                    <p class="token-link">
+                        Дисциплинированность
+                    </p>
+                    <p class="token-link">
+                        Реакция
+                    </p>
+                    <p class="token-link">
+                        Креативность
+                    </p>
+                    <p class="token-link">
+                        Пунктуальность
+                    </p>
+                    <p class="token-link">
+                        Лидерство
+                    </p>
+                    <p class="token-link">
+                        Целеустремленность
+                    </p>
+                    <p class="token-link">
+                        ...
+                    </p>
                 </div>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-d btn-lg btn-rd mb-lg-3 w-100 box-btn fill-mob-btn primary-btn"
-              >
-                Определить ПВК
-                <br />
-              </button>
+                <div>
+                    <div>
+                        <h3 class="mb-4 primary-text box-heading">
+                            Список экспертов
+                        </h3>
+                        {{#each experts}}
+                            <p class="token-link mb-lg-3">
+                                {{this.surname}}
+                                {{this.name}}
+                            </p>
+                        {{/each}}
+                    </div>
+                </div>
             </div>
-          </div>
-        </form>
-      </div>
-      <div class="col-sm-4 text-start">
-        <div>
-          <h3 class="mb-4 primary-text box-heading">
-            Список ПВК
-          </h3>
-          <p class="token-link">
-            Адекватная самооценка
-          </p>
-          <p class="token-link">
-            Дисциплинированность
-          </p>
-          <p class="token-link">
-            Реакция
-          </p>
-          <p class="token-link">
-            Креативность
-          </p>
-          <p class="token-link">
-            Пунктуальность
-          </p>
-          <p class="token-link">
-            Лидерство
-          </p>
-          <p class="token-link">
-            Целеустремленность
-          </p>
-          <p class="token-link">
-            ...
-          </p>
         </div>
-        <div>
-          <div>
-            <h3 class="mb-4 primary-text box-heading">
-              Список экспертов
-            </h3>
-            {{#each experts}}
-              <p class="token-link mb-lg-3">
-                {{this.surname}}
-                {{this.name}}
-              </p>
-            {{/each}}
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 <script>
-  document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const selectedLanguage = e.target.textContent.trim();
-                document.getElementById('selectedLanguage').value = selectedLanguage;
-                document.getElementById('language-form').submit();
-            });
+    document.querySelectorAll('.clickable').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const selectedLanguage = e.target.getAttribute("data");
+            document.getElementById('selectedLanguage').value = selectedLanguage;
         });
+    });
 </script>
 {{#if pvks}}
-<style>
-  .active-token {
-    padding-top: 5px;
-    padding-bottom: 5px;
-  }
+    <style>
+        .active-token {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
 
-  .blocs-grid-container {
-    row-gap: .2rem;
-  }
-</style>
-<script>
-  $(".btn-primary").click((e) => {
-    $('#overlay').hide()
-  });
-</script>
+        .blocs-grid-container {
+            row-gap: .2rem;
+        }
+    </style>
+    <script>
+        $(".btn-primary").click((e) => {
+            $('#overlay').hide()
+        });
+
+        $("#overlay").show()
+    </script>
 {{/if}}
