@@ -6,9 +6,9 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 	<meta name="robots" content="index, follow">
-    <link rel="shortcut icon" type="image/png" href="../favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../favicon.png?1312?1458?6796?9299?7949">
     
-	<link rel="stylesheet" type="text/css" href="../all.css?3905">
+	<link rel="stylesheet" type="text/css" href="../all.css?1289">
 	
     <title>Settings</title>
 
@@ -41,7 +41,7 @@
 							<span class="navbar-toggler-icon"><svg height="32" viewBox="0 0 32 32" width="32"><path class="svg-menu-icon" d="m2 9h28m-28 7h28m-28 7h28"></path></svg></span>
 						</button>
 						<div class="collapse navbar-collapse navbar-18508">
-								<ul class="site-navigation nav navbar-nav ms-auto ">
+								<ul class="site-navigation nav navbar-nav ms-auto">
 									<li class="nav-item">
 										<a href="." class="nav-link a-btn">Настройки</a>
 									</li>
@@ -217,7 +217,7 @@
 						</div>
 						<div class="col offset-lg-0 text-lg-start">
 							<div class="bento-box primary-gradient mb-lg-3">
-								<picture><source type="image/webp" srcset="../img/lazyload-ph.png" data-srcset="../img/avatar@2x.webp"><img src="../img/lazyload-ph.png" data-src="../img/avatar@2x.png" class="img-fluid mx-auto d-block avatar mb-4 mt-4 lazyload" alt="avatar@2x" width="150" height="215"></picture>
+								<img src="../img/lazyload-ph.png" data-src="../img/avatar@2x.png" class="img-fluid mx-auto d-block avatar mb-4 mt-4 lazyload" alt="avatar@2x">
 								<h3 class="box-heading tc-3849 mb-0">
 									Настраивайся!
 								</h3>
@@ -373,28 +373,28 @@
 <!-- bloc-2 END -->
 
 <!-- extra -->
-<div class="bloc l-bloc hidden" id="extra">
+<div class="bloc l-bloc" id="extra">
 	<div class="container bloc-lg">
 		<div class="row">
-			<div class="col text-start">
-				<h3 class="section-heading primary-text mb-3 mb-md-4">
-					Расширенные настройки<br>
-				</h3>
-				<div>
-					<div class="row">
-						<div class="col offset-lg-0">
-							<div class="bento-box primary-gradient mb-lg-3">
-								<picture><source type="image/webp" srcset="../img/lazyload-ph.png" data-srcset="../img/avatar@2x.webp"><img src="../img/lazyload-ph.png" data-src="../img/avatar@2x.png" class="img-fluid mx-auto d-block avatar mb-4 mt-4 lazyload" alt="avatar@2x" width="150" height="215"></picture>
-								<h3 class="box-heading tc-3849 mb-0">
-									Обустраивайся!
-								</h3>
-								<p class="box-info tc-3849">
-									Не чини того, что работает, — если только ты не эксперт.<br>
-								</p>
-							</div><a href="#" class="btn btn-d primary-btn box-btn fill-mob-btn btn-xl btn-rd float-lg-none" data-toggle-visibility="extra">Скрыть расширенные настройки<br></a>
-						</div>
-						<div class="col-lg-7">
-							<div>
+			<div class="col-12">
+				<div class="row">
+					<div class="col-12">
+						<h3 class="section-heading primary-text mb-3 mb-md-4">
+							Расширенные настройки<br>
+						</h3>
+						<div class="row">
+							<div class="col-lg-5">
+								<div class="bento-box primary-gradient mb-lg-3">
+									<img src="../img/lazyload-ph.png" data-src="../img/avatar@2x.png" class="img-fluid mx-auto d-block avatar mb-4 mt-4 lazyload" alt="avatar@2x">
+									<h3 class="box-heading tc-3849 mb-0">
+										Обустраивайся!
+									</h3>
+									<p class="box-info tc-3849">
+										Не чини того, что работает, — если только ты не эксперт.<br>
+									</p>
+								</div><a href="#" class="btn btn-d primary-btn box-btn fill-mob-btn btn-rd float-lg-none btn-xl" data-toggle-visibility="extra">Скрыть расширенные настройки<br></a>
+							</div>
+							<div class="col">
 								<div class="pb-lg-3">
 									<div>
 										<div class="row mb-lg-3">
@@ -411,7 +411,7 @@
 															<a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#add-user">Добавить</a>
 														</li>
 														<li>
-															<a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#edit-user">Редактировать<br></a><a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#modal-28870">Удалить<br></a>
+															<a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#edit-user">Редактировать<br></a><a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#delete-user">Удалить<br></a>
 														</li>
 													</ul>
 												</div>
@@ -473,164 +473,178 @@
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col">
-							<div class="mb-lg-3">
-								<div id="add-user" class="modal fade" tabindex="-1" role="dialog">
-									<div class="modal-dialog  modal-dialog-centered" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h3 class="mg-clear primary-text box-heading">
-													Добавить пользователя
-												</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- extra END -->
+
+<!-- bloc-8 -->
+<div class="bloc l-bloc" id="bloc-8">
+	<div class="container bloc-lg">
+		<div class="row">
+			<div class="col text-start">
+				<div>
+					<div id="add-user" class="modal fade" tabindex="-1" role="dialog">
+						<div class="modal-dialog  modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h3 class="mg-clear primary-text box-heading">
+										Добавить пользователя
+									</h3>
+								</div>
+								<div class="modal-body">
+									<div>
+										<form data-clean-url-used="true" id="form_20971" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Имя
+												</label>
+												<input id="name5_31692_7100_20971" class="form-control" placeholder="Филипп" required="" data-validation-required-message="Введите имя">
 											</div>
-											<div class="modal-body">
-												<div>
-													<form data-clean-url-used="true" id="form_31692" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Имя
-															</label>
-															<input id="name5_31692" class="form-control" placeholder="Филипп" required="" data-validation-required-message="Введите имя">
-														</div>
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Почта
-															</label>
-															<input id="email5_31692" class="form-control" type="email" data-error-validation-msg="Введите нормальную почту" placeholder="preobrajensky@clinic.ru" required="">
-														</div>
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Пароль
-															</label>
-															<input id="email5_31692" class="form-control" type="password" placeholder="dogheart" required="" data-validation-required-message="Введите пароль">
-														</div>
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Пароль
-															</label>
-															<input id="email5_31692" class="form-control" type="password" placeholder="dogheart" required="" data-validation-required-message="Повторите пароль">
-														</div> 
-														<button class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn" type="submit">
-															Добавить
-														</button>
-													</form>
-												</div>
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Почта
+												</label>
+												<input id="email5_31692_7100_20971" class="form-control" type="email" data-error-validation-msg="Введите нормальную почту" placeholder="preobrajensky@clinic.ru" required="">
 											</div>
-											<div class="modal-footer">
-												<a href="#" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="#add-user">Закрыть</a>
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Пароль
+												</label>
+												<input id="email5_31692_7100_20971" class="form-control" type="password" placeholder="dogheart" required="" data-validation-required-message="Введите пароль">
 											</div>
-										</div>
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Пароль
+												</label>
+												<input id="email5_31692_7100_20971" class="form-control" type="password" placeholder="dogheart" required="" data-validation-required-message="Повторите пароль">
+											</div> 
+											<button class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn" type="submit">
+												Добавить
+											</button>
+										</form>
 									</div>
 								</div>
-							</div>
-							<div class="mb-lg-3">
-								<div id="edit-user" class="modal fade" tabindex="-1" role="dialog">
-									<div class="modal-dialog  modal-dialog-centered" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h3 class="mg-clear primary-text box-heading">
-													Редактировать пользователя&nbsp;
-												</h3>
-											</div>
-											<div class="modal-body">
-												<div>
-													<form data-clean-url-used="true" id="form_46814" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Выберите пользователя
-															</label>
-															<select class="form-control" id="select_544">
-																<option value="Преображенский">
-																	Преображенский
-																</option>
-																<option value="Иванов">
-																	Иванов
-																</option>
-																<option value="Петров">
-																	Петров
-																</option>
-																<option value="Сидоров">
-																	Сидоров
-																</option>
-															</select>
-														</div>
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Имя
-															</label>
-															<input id="name5_31692_46814" class="form-control" placeholder="Филипп">
-														</div>
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Почта
-															</label>
-															<input id="email5_31692_46814" class="form-control" type="email" data-error-validation-msg="Введите нормальную почту" placeholder="preobrajensky@clinic.ru">
-														</div>
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Пароль
-															</label>
-															<input id="email5_31692_46814" class="form-control" type="password" placeholder="dogheart">
-														</div>
-														<div class="form-group mb-3">
-															<label class="form-label">
-																Пароль
-															</label>
-															<input id="email5_31692_46814" class="form-control" type="password" placeholder="dogheart">
-														</div> 
-														<button class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn" type="submit">
-															Сохранить
-														</button>
-													</form>
-												</div>
-											</div>
-											<div class="modal-footer">
-												<a href="#" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="#edit-user">Закрыть</a>
-											</div>
-										</div>
-									</div>
+								<div class="modal-footer">
+									<a href="#" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="#add-user">Закрыть</a>
 								</div>
 							</div>
-							<div class="mb-lg-3">
-								<div id="modal-28870" class="modal fade" tabindex="-1" role="dialog">
-									<div class="modal-dialog  modal-dialog-centered" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h3 class="mg-clear primary-text box-heading">
-													Удалить пользователя&nbsp;
-												</h3>
-											</div>
-											<div class="modal-body">
-												<div>
-													<form data-clean-url-used="true" id="form_12990" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
-														<div class="form-group mb-3">
-															<select class="form-control" id="select_544_[data_blocs_cloned_obj=&quot;true&quot;]">
-																<option value="Преображенский">
-																	Преображенский
-																</option>
-																<option value="Иванов">
-																	Иванов
-																</option>
-																<option value="Петров">
-																	Петров
-																</option>
-																<option value="Сидоров">
-																	Сидоров
-																</option>
-															</select>
-														</div> 
-														<button class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn" type="submit">
-															Удалить
-														</button>
-													</form>
+						</div>
+					</div>
+				</div>
+				<div class="mb-lg-3 mt-lg-3">
+					<div id="edit-user" class="modal fade" tabindex="-1" role="dialog">
+						<div class="modal-dialog  modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h3 class="mg-clear primary-text box-heading">
+										Редактировать пользователя
+									</h3>
+								</div>
+								<div class="modal-body">
+									<div>
+										<form data-clean-url-used="true" id="form_41372" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Выберите пользователя
+												</label>
+												<div class="form-group mb-3">
+													<select class="form-control" id="select_51">
+														<option value="Преображенский">
+															Преображенский
+														</option>
+														<option value="Иванов">
+															Иванов
+														</option>
+														<option value="Петров">
+															Петров
+														</option>
+														<option value="Сидоров">
+															Сидоров
+														</option>
+													</select>
 												</div>
 											</div>
-											<div class="modal-footer">
-												<a href="#" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="#modal-28870">Закрыть</a>
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Имя
+												</label>
+												<input id="name5_31692_7100_20971_41372" class="form-control" placeholder="Филипп" required="" data-validation-required-message="Введите имя">
 											</div>
-										</div>
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Почта
+												</label>
+												<input id="email5_31692_7100_20971_41372" class="form-control" type="email" data-error-validation-msg="Введите нормальную почту" placeholder="preobrajensky@clinic.ru" required="">
+											</div>
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Пароль
+												</label>
+												<input id="email5_31692_7100_20971_41372" class="form-control" type="password" placeholder="dogheart" required="" data-validation-required-message="Введите пароль">
+											</div>
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Пароль
+												</label>
+												<input id="email5_31692_7100_20971_41372" class="form-control" type="password" placeholder="dogheart" required="" data-validation-required-message="Повторите пароль">
+											</div> 
+											<button class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn" type="submit">
+												Сохранить
+											</button>
+										</form>
 									</div>
+								</div>
+								<div class="modal-footer">
+									<a href="#" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="#edit-user">Закрыть</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mb-lg-3 mt-lg-3">
+					<div id="delete-user" class="modal fade" tabindex="-1" role="dialog">
+						<div class="modal-dialog  modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class=" modal-header">
+									<h3 class="mg-clear primary-text box-heading">
+										Удалить пользователя
+									</h3>
+								</div>
+								<div class="modal-body">
+									<div>
+										<form data-clean-url-used="true" id="form_44892" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
+											<div class="form-group mb-3">
+												<label class="form-label">
+													Выберите пользователя
+												</label>
+												<div class="form-group mb-3">
+													<select class="form-control" id="select_2426">
+														<option value="Преображенский">
+															Преображенский
+														</option>
+														<option value="Иванов">
+															Иванов
+														</option>
+														<option value="Петров">
+															Петров
+														</option>
+														<option value="Сидоров">
+															Сидоров
+														</option>
+													</select>
+												</div>
+											</div> 
+											<button class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn" type="submit">
+												Удалить
+											</button>
+										</form>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<a href="#" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="#delete-user">Закрыть</a>
 								</div>
 							</div>
 						</div>
@@ -640,7 +654,7 @@
 		</div>
 	</div>
 </div>
-<!-- extra END -->
+<!-- bloc-8 END -->
 
 <!-- ScrollToTop Button -->
 <button aria-label="Scroll to top button" class="bloc-button btn btn-d scrollToTop" onclick="scrollToTarget('1',this)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32"><path class="scroll-to-top-btn-icon" d="M30,22.656l-14-13-14,13"/></svg></button>
@@ -671,7 +685,7 @@
 
 
 <!-- Additional JS -->
-<script src="../js/all.js?554"></script><!-- Additional JS END -->
+<script src="../js/all.js?8967"></script><!-- Additional JS END -->
 
 
 </body>
