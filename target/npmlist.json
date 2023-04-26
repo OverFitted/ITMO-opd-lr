@@ -1,1 +1,0 @@
-{"version":"1.0.0","name":"itmo-opd-lr1","dependencies":{"express-handlebars":{"version":"5.3.5"},"express":{"version":"4.18.2"},"iconv":{"version":"3.0.1"},"jquery":{"version":"3.6.4"},"morgan":{"version":"1.10.0"},"multer":{"version":"1.4.4"},"uuid":{"version":"8.3.2"}}}
