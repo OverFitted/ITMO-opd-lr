@@ -253,6 +253,19 @@ button{
 	padding: 16px 40px;
 	font-size: 28px;
 }
+.a-block{
+	width:100%;
+	text-align:left;
+	display: inline-block;
+}
+.text-center .a-block{
+	text-align:center;
+}
+.btn .caret{
+	margin:0 0 0 5px}.dropdown a .caret{
+	margin:0 0 0 5px}.btn-dropdown .dropdown-menu .dropdown{
+	padding: 3px 20px;
+}
 
 /* = Icons
 -------------------------------------------------------------- */
@@ -351,6 +364,25 @@ button{
 	stroke-width: 2px;
 	fill-rule: evenodd;
 	stroke-linecap:round;
+}
+
+/* Toggle Visibility */
+.toggled-item{
+	transition: height 350ms ease-in-out, padding 350ms ease-in-out, opacity 350ms ease-in-out;
+	overflow: hidden;
+}
+.toggled-item-hidden{
+	padding-top:0!important;
+	padding-bottom:0!important;
+	border-top:0!important;
+	border-bottom:0!important;
+	outline:0!important;
+	opacity: 0;
+}
+
+/* Hide Object */
+.object-hidden{
+	display:none;
 }
 
 /* = Custom Styling
