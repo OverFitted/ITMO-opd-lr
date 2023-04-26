@@ -20,7 +20,8 @@ class User {
     }
 
     toHash(usr_id) {
-        var hash = 0, i, chr;
+        var hash = 0,
+            i, chr;
         if (usr_id.length === 0) return hash;
         for (i = 0; i < usr_id.length; i++) {
             chr = usr_id.charCodeAt(i);
@@ -64,20 +65,20 @@ class User {
         }
     }
 
-    static userById(usr_id = 0) {
+    static async userById(usr_id = 0) {
         try {
             const query = {
                 text: 'SELECT * FROM users WHERE usr_id = $1',
                 values: [usr_id],
             }
 
-            CLIENT.query(query).then((result) => {
-                if (result.rows.length === 0) {
-                    throw new Error(`No user found with usr_id ${usr_id}`)
-                }
+            const result = await CLIENT.query(query)
 
-                return result.rows[0]
-            })
+            if (result.rows.length === 0) {
+                throw new Error(`No user found with usr_id ${usr_id}`)
+            }
+
+            return result.rows[0]
         } catch (error) {
             throw error
         }

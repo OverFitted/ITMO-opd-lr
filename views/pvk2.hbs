@@ -28,13 +28,12 @@
                       type="range"
                       id="slider"
                       name="slider"
-                      min="0"
+                      min="1"
                       max="5"
                       step="1"
                       list="slider-helpers"
                     />
                     <datalist id="slider-helpers">
-                      <option value="0" label="Not rated"></option>
                       <option value="1" label="Poor"></option>
                       <option value="2" label="Fair"></option>
                       <option value="3" label="Average"></option>
@@ -80,6 +79,7 @@
     </form>
   </div>
 </div>
+
 <script>
   $(".token-link").click((e) => {
     var id = $(event.target)[0].attributes["data"].value;

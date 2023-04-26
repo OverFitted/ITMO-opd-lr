@@ -5,12 +5,13 @@ const CLIENT = require('../models/connector');
 const router = Router()
 
 const languageHasher = {
-    "C1": 0,
-    "PHP": 1,
-    "HTML": 2,
+    "C1": 1,
+    "PHP": 2,
+    "HTML": 3,
     "0": 0,
     "1": 1,
-    "2": 2
+    "2": 2,
+    "3": 3
 }
 
 
@@ -92,16 +93,18 @@ router.post('/pvk2', (req, res, next) => {
     console.log(chosenPvks)
     console.log(chosenPvksIds)
 
-    chosenPvksIds.forEach(pvk => {
-        const query = {
-            text: 'INSERT INTO expert_profession_quality_lab1 (expert_id, profession_id, pvk_id, importance) VALUES ($1, $2, $3, $4)',
-            values: [expert_id, selectedLanguage, pvk, req.body[pvk.toString()]],
-        }
+    if (req.cookies.usr_id) {
+        chosenPvksIds.forEach(pvk => {
+            const query = {
+                text: 'INSERT INTO expert_profession_quality_lab1 (expert_id, profession_id, pvk_id, importance) VALUES ($1, $2, $3, $4)',
+                values: [expert_id, selectedLanguage, pvk, req.body[pvk.toString()]],
+            }
 
-        CLIENT.query(query).then((res) => {
-            confirm(res)
-        })
-    });
+            CLIENT.query(query).then((res) => {
+                return res
+            })
+        });
+    }
 
     res.redirect('/labs/lab1/res')
 })

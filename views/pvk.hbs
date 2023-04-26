@@ -17,7 +17,7 @@
               <div id="pvks" class="blocs-grid-container grid-style justify-content-center align-items-center">
                   {{#each pvks}}
                     <div id="popover-{{this.id}}" class="text-lg-center" data-toggle="popover" data-content="{{this.description}}">
-                      <p id="hoverable-{{this.id}}" class="token-link" style="position: relative;">
+                      <p id="hoverable-{{this.id}}" class="token-link" data="{{this.id}}" style="position: relative;">
                         {{this.name}}
                         <input name="{{this.id}}" id="{{this.id}}" type="checkbox" class="invisible-checkbox">
                       </p>
@@ -65,4 +65,13 @@
         checkbox.removeClass("programmatic-click");
       });
   });
+</script>
+
+<script>
+  $(document).ready(function() {
+  document.querySelector("#pvks").childNodes.forEach(function(item){
+    new bootstrap.Popover(this, {
+      trigger: 'hover'
+    })
+  })})
 </script>

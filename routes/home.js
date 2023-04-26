@@ -56,7 +56,17 @@ router.post('/login/login', (req, res, next) => {
             isLoggedIn: true
         })
     });
+})
 
+router.get('/user', (req, res, next) => {
+    res.status(200)
+    User.userById(req.cookies.usr_id).then((user) => {
+        res.render('settings', {
+            title: "Вход | Без CHATGPT",
+            isLoggedIn: req.cookies.usr_id,
+            user: user
+        })
+    })
 })
 
 module.exports = router
