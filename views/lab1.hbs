@@ -1,3 +1,6 @@
+<div class="bloc l-bloc" id="bloc-8">
+  <div class="container bloc-lg"></div>
+</div>
 <div class="bloc l-bloc" id="bloc-5">
   <div class="container bloc-lg">
     <div class="row">
@@ -11,7 +14,13 @@
         <h5 class="mb-4 text-lg-start">
           Определение видов программистов и ИТ, ПВК для определенного вида деятельности
         </h5>
-        <div>
+        <form method="POST" action="/labs/lab1">
+          <input
+            type="hidden"
+            name="selectedLanguage"
+            id="selectedLanguage"
+            value="C1"
+          />
           <ul class="nav nav-tabs" id="nav-11978-tab" role="tablist">
             <li class="nav-item">
               <a
@@ -74,20 +83,20 @@
                   <div class="col">
                     <img
                       class="img-fluid bento-box img-style img-fluid-up lazyload"
-                      src="../img/lazyload-ph.png"
-                      data-src="../img/1_52551a557a5fc52551a557a639.jpg"
+                      src="/img/lazyload-ph.png"
+                      data-src="/img/1_52551a557a5fc52551a557a639.jpg"
                       alt="1675879972_shutok.ru.17690949"
                     />
                   </div>
                 </div>
               </div>
-              <a
-                href="/labs/pvk/"
+              <button
+                type="submit"
                 class="btn btn-d btn-lg btn-rd mb-lg-3 w-100 box-btn fill-mob-btn primary-btn"
               >
                 Определить ПВК
                 <br />
-              </a>
+              </button>
             </div>
             <div
               class="tab-pane fade-tab-bs"
@@ -105,19 +114,20 @@
                   <div class="col">
                     <img
                       class="img-fluid bento-box lazyload"
-                      src="../img/lazyload-ph.png"
-                      data-src="../img/1675879972_shutok.ru.17690949.jpg"
+                      src="/img/lazyload-ph.png"
+                      data-src="/img/1675879972_shutok.ru.17690949.jpg"
                       alt="1675879972_shutok.ru.17690949"
                     />
                   </div>
                 </div>
               </div>
-              <a
-                href="/labs/pvk/"
+              <button
+                type="submit"
                 class="btn btn-d btn-lg btn-rd mb-lg-3 w-100 box-btn fill-mob-btn primary-btn"
               >
                 Определить ПВК
-              </a>
+                <br />
+              </button>
             </div>
             <div
               class="tab-pane fade-tab-bs"
@@ -135,22 +145,23 @@
                   <div class="col">
                     <img
                       class="img-fluid bento-box lazyload"
-                      src="../img/lazyload-ph.png"
-                      data-src="../img/iL8ZtzPtDYI.jpg"
+                      src="/img/lazyload-ph.png"
+                      data-src="/img/iL8ZtzPtDYI.jpg"
                       alt="1675879972_shutok.ru.17690949"
                     />
                   </div>
                 </div>
               </div>
-              <a
-                href="/labs/pvk/"
+              <button
+                type="submit"
                 class="btn btn-d btn-lg btn-rd mb-lg-3 w-100 box-btn fill-mob-btn primary-btn"
               >
                 Определить ПВК
-              </a>
+                <br />
+              </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
       <div class="col-sm-4 text-start">
         <div>
@@ -189,6 +200,7 @@
             </h3>
             {{#each experts}}
               <p class="token-link mb-lg-3">
+                {{this.surname}}
                 {{this.name}}
               </p>
             {{/each}}
@@ -198,3 +210,14 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const selectedLanguage = e.target.textContent.trim();
+                document.getElementById('selectedLanguage').value = selectedLanguage;
+                document.getElementById('language-form').submit();
+            });
+        });
+</script>
