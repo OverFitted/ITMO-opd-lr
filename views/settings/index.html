@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="">
@@ -8,7 +8,7 @@
 	<meta name="robots" content="index, follow">
     <link rel="shortcut icon" type="image/png" href="../favicon.png">
     
-	<link rel="stylesheet" type="text/css" href="../all.css?6071">
+	<link rel="stylesheet" type="text/css" href="../all.css?587">
 	
     <title>Settings</title>
 
@@ -65,11 +65,9 @@
 			<div class="text-md-start col-lg-12 col-md-12 text-start ps-0 pe-0 ps-md-2 pe-md-2 ps-lg-3 pe-lg-3">
 				<h3 class="section-heading primary-text mb-3 mb-md-4">
 					Настройки<br><br>
-				</h3>
+				</h3><a href="#" class="btn btn-d btn-lg mt-lg-0 primary-btn box-btn fill-mob-btn float-lg-end" data-bs-toggle="modal" data-bs-target="#change-data">Выйти<span class="special-tag-for-editing-text-with-html"></span></a>
 			</div>
 			<div class="col">
-				<div>
-				</div>
 				<div>
 					<div class="row">
 						<div class="col-lg-7">
@@ -118,7 +116,7 @@
 												Мои результаты
 											</h3>
 										</div>
-										<div class="col text-lg-center">
+										<div class="col text-lg-center ">
 											<a href="#" class="btn btn-d btn-lg mt-lg-0 primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="#remove-results">Сбросить</a>
 										</div>
 									</div>
@@ -500,8 +498,8 @@
 							Расширенные настройки<br>
 						</h3>
 						<div class="row">
-							<div class="col-lg-5">
-								<div class="bento-box primary-gradient mb-lg-3">
+							<div class="col-lg-4">
+								<div class="bento-box primary-gradient mb-lg-3 container-div-extra-style">
 									<picture><source type="image/webp" srcset="../img/lazyload-ph.png" data-srcset="../img/avatar@2x.webp"><img src="../img/lazyload-ph.png" data-src="../img/avatar@2x.png" class="img-fluid mx-auto d-block avatar mb-4 mt-4 lazyload" alt="avatar@2x" width="150" height="215"></picture>
 									<h3 class="box-heading tc-3849 mb-0">
 										Обустраивайся!
@@ -535,7 +533,7 @@
 											</div>
 										</div>
 										<div class="row mb-lg-3">
-											<div class="text-lg-center col-lg-3">
+											<div class="text-lg-center col-lg-2">
 												<ul class="list-unstyled">
 													<li>
 														<div class="card mb-lg-3">
@@ -558,7 +556,7 @@
 													</li>
 												</ul>
 											</div>
-											<div class="text-lg-center col-lg-4">
+											<div class="text-lg-center col-lg-3">
 												<ul class="list-unstyled">
 													<li>
 														<div class="card mb-lg-3">
@@ -590,50 +588,43 @@
 																	Лабы
 																</p>
 															</div>
-															<div class="card-body mini-heading ">
-																<div class="mb-lg-3">
-																	<div class="form-check form-check-inline">
-																		<input class="form-check-input" type="checkbox">
-																		<label class="form-check-label">
-																			1
-																		</label>
-																	</div>
-																	<div class="form-check form-check-inline">
-																		<input class="form-check-input" type="checkbox" id="input_103">
-																		<label class="form-check-label">
-																			2
-																		</label>
-																	</div>
-																	<div class="form-check form-check-inline">
-																		<input class="form-check-input" type="checkbox" id="input_1303">
-																		<label class="form-check-label">
-																			3
-																		</label>
+															<div class="card-body mini-heading">
+																<div>
+																	<div class=" " id="my-sortable-list">
+																		<script>
+  const mySortableList = document.getElementById('my-sortable-list');
+  Sortable.create(mySortableList, {
+    animation: 150,
+    ghostClass: 'sortable-ghost'
+  });
+</script>
+
+																		
 																	</div>
 																</div>
 															</div>
 															<div class="card-body mini-heading">
-																<div class="mb-lg-3">
-																	<div class="form-check form-check-inline">
-																		<input class="form-check-input" type="checkbox">
-																		<label class="form-check-label">
-																			1
-																		</label>
-																	</div>
-																	<div class="form-check form-check-inline">
-																		<input class="form-check-input" type="checkbox" id="input_103">
-																		<label class="form-check-label">
-																			2
-																		</label>
-																	</div>
-																	<div class="form-check form-check-inline">
-																		<input class="form-check-input" type="checkbox" id="input_1303">
-																		<label class="form-check-label">
-																			3
-																		</label>
+																	<div class="mb-lg-3">
+																		<div class="form-check form-check-inline">
+																			<input class="form-check-input" type="checkbox">
+																			<label class="form-check-label">
+																				1
+																			</label>
+																		</div>
+																		<div class="form-check form-check-inline">
+																			<input class="form-check-input" type="checkbox" id="input_103">
+																			<label class="form-check-label">
+																				2
+																			</label>
+																		</div>
+																		<div class="form-check form-check-inline">
+																			<input class="form-check-input" type="checkbox" id="input_1303">
+																			<label class="form-check-label">
+																				3
+																			</label>
+																		</div>
 																	</div>
 																</div>
-															</div>
 														</div>
 													</li>
 												</ul>
@@ -642,80 +633,80 @@
 									</div>
 								</div>
 								<div class="pb-lg-3">
-									<div>
-										<div class="row mb-lg-3">
-											<div class="text-lg-center col-lg-8">
-												<h3 class="mb-4 primary-text box-heading text-lg-center">
-													Профессии<br>
-												</h3>
-											</div>
-											<div class="col text-lg-center">
-												<div class="btn-group btn-dropdown dropdown">
-													<a href="#" class="btn dropdown-toggle  btn-d  btn-lg primary-btn box-btn fill-mob-btn" data-bs-toggle="dropdown" aria-expanded="false">Изменить</a>
-													<ul class="dropdown-menu" role="menu">
-														<li>
-															<a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#add-prof">Добавить</a>
-														</li>
-														<li>
-															<a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#edit-prof">Редактировать<br></a><a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#delete-prof">Удалить<br></a>
-														</li>
-													</ul>
+										<div>
+											<div class="row mb-lg-3">
+												<div class="text-lg-center col-lg-8">
+													<h3 class="mb-4 primary-text box-heading text-lg-center">
+														Профессии<br>
+													</h3>
+												</div>
+												<div class="col text-lg-center">
+													<div class="btn-group btn-dropdown dropdown">
+														<a href="#" class="btn dropdown-toggle  btn-d  btn-lg primary-btn box-btn fill-mob-btn" data-bs-toggle="dropdown" aria-expanded="false">Изменить</a>
+														<ul class="dropdown-menu" role="menu">
+															<li>
+																<a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#add-prof">Добавить</a>
+															</li>
+															<li>
+																<a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#edit-prof">Редактировать<br></a><a href="#" class="dropdown-item a-block" data-bs-toggle="modal" data-bs-target="#delete-prof">Удалить<br></a>
+															</li>
+														</ul>
+													</div>
 												</div>
 											</div>
 										</div>
+										<ul class="list-unstyled">
+											<li>
+												<div class="card mb-lg-3">
+													<div class="card-body mini-heading">
+														<p class="mini-heading">
+															Фронт
+														</p>
+													</div>
+													<div class="card-body mini-heading">
+														<p class="mini-heading">
+															Бек
+														</p>
+													</div>
+													<div class="card-body mini-heading">
+														<p class="mini-heading">
+															БД
+														</p>
+													</div>
+												</div>
+											</li>
+										</ul>
 									</div>
-									<ul class="list-unstyled">
-										<li>
-											<div class="card mb-lg-3">
-												<div class="card-body mini-heading">
-													<p class="mini-heading">
-														Фронт
-													</p>
-												</div>
-												<div class="card-body mini-heading">
-													<p class="mini-heading">
-														Бек
-													</p>
-												</div>
-												<div class="card-body mini-heading">
-													<p class="mini-heading">
-														БД
-													</p>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</div>
 								<div class="pb-lg-3">
-									<div>
-										<div class="row mb-lg-3">
-											<div class="text-lg-center col-lg-8">
-												<h3 class="mb-4 primary-text box-heading text-lg-center">
-													Тесты<br>
-												</h3>
-											</div>
-											<div class="col text-lg-center">
-												<a href="#" class="btn btn-d btn-lg mt-lg-0 primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="No Selection">Изменить</a>
+										<div>
+											<div class="row mb-lg-3">
+												<div class="text-lg-center col-lg-8">
+													<h3 class="mb-4 primary-text box-heading text-lg-center">
+														Тесты<br>
+													</h3>
+												</div>
+												<div class="col text-lg-center">
+													<a href="#" class="btn btn-d btn-lg mt-lg-0 primary-btn box-btn fill-mob-btn" data-bs-toggle="modal" data-bs-target="No Selection">Изменить</a>
+												</div>
 											</div>
 										</div>
+										<ul class="list-unstyled">
+											<li>
+												<div class="card mb-lg-3">
+													<div class="card-body mini-heading">
+														<p class="mini-heading">
+															Какие-то
+														</p>
+													</div>
+													<div class="card-body mini-heading">
+														<p class="mini-heading">
+															Тесты
+														</p>
+													</div>
+												</div>
+											</li>
+										</ul>
 									</div>
-									<ul class="list-unstyled">
-										<li>
-											<div class="card mb-lg-3">
-												<div class="card-body mini-heading">
-													<p class="mini-heading">
-														Какие-то
-													</p>
-												</div>
-												<div class="card-body mini-heading">
-													<p class="mini-heading">
-														Тесты
-													</p>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -1096,7 +1087,7 @@
 
 
 <!-- Additional JS -->
-<script src="../js/all.js?3318"></script><!-- Additional JS END -->
+<script src="../js/all.js?3047"></script><!-- Additional JS END -->
 
 
 </body>
