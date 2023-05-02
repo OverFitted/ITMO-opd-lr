@@ -38,6 +38,13 @@
               </a>
             {{/if}}
           </li>
+          {{#if isLoggedIn}}
+            <li class="nav-item">
+              <a href="/user/logout" class="nav-link">
+                Выйти
+              </a>
+            </li>
+          {{/if}}
         </ul>
       </div>
     </div>

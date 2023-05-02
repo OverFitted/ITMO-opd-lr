@@ -6,6 +6,7 @@ const aboutRoutes = require('./routes/about');
 const homeRoutes = require('./routes/home');
 const contactRoutes = require('./routes/contact');
 const adminRoutes = require('./routes/admin');
+const userRoutes = require('./routes/user');
 const labRoutes = require('./routes/lab');
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/', homeRoutes);
 app.use('/about', aboutRoutes);
 app.use('/contact', contactRoutes);
 app.use('/admin', adminRoutes);
+app.use('/user', userRoutes);
 app.use('/labs', labRoutes);
 
 const PORT = process.env.PORT || 3001;
