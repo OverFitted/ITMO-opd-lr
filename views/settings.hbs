@@ -39,7 +39,7 @@
                                             </div>
                                             <div class="card">
                                                 <div class="card-body mini-heading">
-                                                    <p>
+                                                    <p class="mini-heading">
                                                         Пароль: {{user.passwd}}
                                                     </p>
                                                 </div>
@@ -255,36 +255,27 @@
                                 </div>
                                 <div class="modal-body">
                                     <div>
-                                        <form data-clean-url-used="true" id="form_5" data-form-type="blocs-form"
-                                              novalidate="" data-success-msg="Your message has been sent."
-                                              data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
+                                        <form data-clean-url-used="true" action="/user/change-data" method="post" data-form-type="blocs-form" novalidate="">
                                             <div class="form-group mb-3">
                                                 <label class="form-label">
                                                     Имя
                                                 </label>
-                                                <input id="name5" class="form-control" placeholder="Филипп">
+                                                <input id="name" name="name" class="form-control" placeholder="{{user.name}}">
                                             </div>
                                             <div class="form-group mb-3">
                                                 <label class="form-label">
                                                     Почта
                                                 </label>
-                                                <input id="email5" class="form-control" type="email"
+                                                <input id="email" name="email" class="form-control" type="email"
                                                        data-error-validation-msg="Введите нормальную почту"
-                                                       placeholder="preobrajensky@clinic.ru">
+                                                       placeholder="{{user.email}}">
                                             </div>
                                             <div class="form-group mb-3">
                                                 <label class="form-label">
                                                     Пароль
                                                 </label>
-                                                <input id="email5" class="form-control" type="password"
-                                                       placeholder="dogheart">
-                                            </div>
-                                            <div class="form-group mb-3">
-                                                <label class="form-label">
-                                                    Пароль
-                                                </label>
-                                                <input id="email5" class="form-control" type="password"
-                                                       placeholder="dogheart">
+                                                <input id="passwd" name="passwd" class="form-control" type="password"
+                                                       placeholder="{{user.passwd}}">
                                             </div>
                                             <button class="bloc-button btn btn-d btn-lg w-100 primary-btn box-btn fill-mob-btn"
                                                     type="submit">

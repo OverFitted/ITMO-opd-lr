@@ -37,4 +37,17 @@ router.get('/logout/', (req, res, next) => {
     res.redirect("/")
 })
 
+router.post("/change-data", (req, res, next) => {
+    res.status(200)
+
+    User.userById(req.cookies.usr_id).then((user) => {
+        if (user) {
+            user = new User(user)
+            user.changeData(req.body).then((_) => {
+                res.redirect("/user/")
+            })
+        }
+    });
+})
+
 module.exports = router

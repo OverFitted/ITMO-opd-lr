@@ -139,4 +139,28 @@ router.get('/lab2', (req, res, next) => {
     })
 })
 
+router.get('/lab2/simple', (req, res, next) => {
+    res.status(200)
+    res.render('simple_tests', {
+        title: "Простые тесты | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
+router.get('/lab2/simple/light', (req, res, next) => {
+    res.status(200)
+    res.render('lighttest_simple', {
+        title: "Простой тест на свет | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
+router.get('/lab2/simple/sound', (req, res, next) => {
+    res.status(200)
+    res.render('soundtest_simple', {
+        title: "Простой тест на свет | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
 module.exports = router

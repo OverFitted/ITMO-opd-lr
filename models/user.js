@@ -46,22 +46,27 @@ class User {
 
     }
 
-    async getById(usr_id = 0) {
+    async changeData(body) {
         try {
+            this.usrname = body.login || this.usrname;
+            this.name = body.name || this.name;
+            this.surname = body.surname || this.surname;
+            this.passwd = body.password || this.passwd;
+            this.email = body.email || this.email;
+            this.age = body.age ? parseInt(body.age) : this.age;
+            this.is_expert = body.exper !== undefined ? body.exper === "on" : this.is_expert;
+            this.gender = body.gender ? (body.gender === "male" ? "M" : "F") : this.gender;
+
             const query = {
-                text: 'SELECT * FROM users WHERE usr_id = $1',
-                values: [usr_id],
-            }
+                text: 'UPDATE users SET usrname = $1, name = $2, surname = $3, passwd = $4, email = $5, age = $6, is_expert = $7, gender = $8 WHERE usr_id = $9',
+                values: [this.usrname, this.name, this.surname, this.passwd, this.email, this.age, this.is_expert, this.gender, this.usr_id],
+            };
 
-            const result = await CLIENT.query(query)
+            await CLIENT.query(query);
 
-            if (result.rows.length === 0) {
-                throw new Error(`No user found with usr_id ${usr_id}`)
-            }
-
-            return result.rows[0]
+            return true
         } catch (error) {
-            throw error
+            throw error;
         }
     }
 
@@ -75,7 +80,7 @@ class User {
             const result = await CLIENT.query(query)
 
             if (result.rows.length === 0) {
-                throw new Error(`No user found with usr_id ${usr_id}`)
+                return null;
             }
 
             return result.rows[0]

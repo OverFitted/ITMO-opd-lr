@@ -44,12 +44,12 @@ router.post('/login/login', (req, res, next) => {
 
     User.userByLogin(req.body.login, req.body.password).then((user) => {
         if (user){
-        expDate = new Date('December 1, 2030 00:00:00');
-        res.cookie('usr_id', user.usr_id, {
-            expires: expDate,
-            httpOnly: false,
-            secure: true,
-            overwrite: true
+            expDate = new Date('December 1, 2030 00:00:00');
+            res.cookie('usr_id', user.usr_id, {
+                expires: expDate,
+                httpOnly: false,
+                secure: true,
+                overwrite: true
         });
 
         res.redirect('/', 200, {
