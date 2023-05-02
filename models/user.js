@@ -94,7 +94,7 @@ class User {
             const result = await CLIENT.query(query)
 
             if (result.rows.length === 0) {
-                throw new Error(`No user found with usr_id ${usr_id}`)
+                return null;
             }
 
             return result.rows[0]

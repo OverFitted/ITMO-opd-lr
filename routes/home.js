@@ -44,6 +44,7 @@ router.post('/login/login', (req, res, next) => {
     res.status(200)
 
     User.userByLogin(req.body.login, req.body.password).then((user) => {
+        if (user){
         expDate = new Date('December 1, 2030 00:00:00');
         res.cookie('usr_id', user.usr_id, {
             expires: expDate,
@@ -55,7 +56,12 @@ router.post('/login/login', (req, res, next) => {
         res.redirect('/', 200, {
             title: "Без CHATGPT",
             isLoggedIn: true
-        })
+        })} else {
+            res.redirect('/login/', 200, {
+                title: "Без CHATGPT",
+                isLoggedIn: false
+            })
+        }
     });
 })
 
