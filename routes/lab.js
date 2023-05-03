@@ -218,4 +218,12 @@ router.get('/lab2/hard/sound_hard', (req, res, next) => {
     })
 })
 
+router.get('/lab2/hard/colors_hard', (req, res, next) => {
+    res.status(200)
+    res.render('lighttest_hard', {
+        title: "Сложный тест на свет | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
 module.exports = router
