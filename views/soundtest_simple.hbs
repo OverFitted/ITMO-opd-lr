@@ -83,6 +83,9 @@
         const averageResult = results.reduce((a, b) => a + b) / results.length;
         document.getElementById('averageResult').innerText = averageResult.toFixed(2);
 
+        const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+        resultsModal.show();
+
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -96,9 +99,5 @@
         } catch (error) {
             console.error('Ошибка при отправке результатов:', error);
         }
-
-        // Показать модальное окно с результатами
-        const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
-        resultsModal.show();
     }
 </script>
