@@ -29,7 +29,9 @@
             </div>
             <div class="modal-body">
                 <p>Среднее время правильной реакции: <span id="averagePositiveResult"></span> мс</p>
+                <p>Стандартное отклонение времени правильной реакции: <span id="stdPositiveResult"></span> мс</p>
                 <p>Среднее время неправильной реакции: <span id="averageNegativeResult"></span> мс</p>
+                <p>Стандартное отклонение времени неправильной реакции: <span id="stdNegativeResult"></span> мс</p>
             </div>
             <div class="modal-footer">
                 <button type="button" id="redirector" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -53,7 +55,7 @@
 
 <script>
     const test_id = 5;
-    const neededClicks = 2;
+    const neededClicks = 30;
     const startBtn = document.getElementById('startBtn');
     const expressionCard = document.getElementById('expressionCard');
     const buttonsContainer = document.getElementById('buttonsContainer');
@@ -133,15 +135,22 @@
         const averagePositiveResult = calculateAverage(positiveResults)
         const averageNegativeResult = calculateAverage(negativeResults)
 
+        const stdPositiveResult = calculateStandardDeviation(positiveResults)
+        const stdNegativeResult = calculateStandardDeviation(negativeResults)
+
         document.getElementById('averagePositiveResult').textContent = averagePositiveResult.toFixed(2);
         document.getElementById('averageNegativeResult').textContent = averageNegativeResult.toFixed(2);
+
+        document.getElementById('stdPositiveResult').textContent = stdPositiveResult.toFixed(2);
+        document.getElementById('stdNegativeResult').textContent = stdNegativeResult.toFixed(2);
+
         const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
         resultsModal.show();
 
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ averagePositiveResult, averageNegativeResult, test_id })
+            body: JSON.stringify({ averagePositiveResult, averageNegativeResult, stdPositiveResult, stdNegativeResult, test_id })
         };
 
         try {
@@ -150,7 +159,6 @@
         } catch (error) {
             console.error('Ошибка при отправке результатов:', error);
         }
-    }
 </script>
 
 <style>
