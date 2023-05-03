@@ -5,15 +5,17 @@
             <div id="squareContainer" class="d-none position-relative">
                 <div id="square" class="square"></div>
             </div>
-            <div id="colorButtons" class="d-none mt-5">
-                <div class="col">
-                    <button class="btn btn-lg btn-block btn-color" data-color="0" style="background-color: #ff0000;"></button>
-                </div>
-                <div class="col">
-                    <button class="btn btn-lg btn-block btn-color" data-color="1" style="background-color: #00ff00;"></button>
-                </div>
-                <div class="col">
-                    <button class="btn btn-lg btn-block btn-color" data-color="2" style="background-color: #0000ff;"></button>
+            <div id="colorButtons" class="d-none mt-7">
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-lg btn-block btn-color" style="background-color: #ff0000;" data-color="0">1</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-lg btn-block btn-color" style="background-color: #00ff00;" data-color="1">2</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-lg btn-block btn-color" style="background-color: #0000ff;" data-color="2">3</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,9 +58,10 @@
     });
 
     function showSquare() {
+        const randomColorIndex = Math.floor(Math.random() * colors.length);
         setTimeout(() => {
-            currentColor = colors[Math.floor(Math.random() * colors.length)];
-            square.style.backgroundColor = currentColor;
+            square.style.backgroundColor = colors[randomColorIndex];
+            startTime = new Date();
         }, Math.random() * 2000 + 500);
     }
 
