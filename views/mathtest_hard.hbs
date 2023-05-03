@@ -38,6 +38,10 @@
 
     let expression, correctAnswer;
     let correctCount = 0, totalCount = 0;
+    let positiveResults = [];
+    let negativeResults = [];
+
+    let startTime;
 
     function generateExpression() {
         const a = Math.floor(Math.random() * 10) + 1;
@@ -49,13 +53,18 @@
     }
 
     function showExpression() {
+        startTime = new Date();
         expressionCard.textContent = generateExpression();
         expressionCard.style.display = 'flex';
     }
 
     function checkAnswer(answer) {
+        const reactionTime = new Date() - startTime;
         if (answer === correctAnswer) {
             correctCount++;
+            positiveResults.push(reactionTime);
+        } else {
+            negativeResults.push(reactionTime);
         }
         totalCount++;
 
@@ -64,6 +73,8 @@
         } else {
             console.log(`Правильных ответов: ${correctCount}`);
             console.log(`Общее количество ответов: ${totalCount}`);
+            console.log(`Положительные результаты: ${positiveResults}`);
+            console.log(`Отрицательные результаты: ${negativeResults}`);
             startBtn.disabled = false;
             expressionCard.style.display = 'none';
             buttonsContainer.style.display = 'none';

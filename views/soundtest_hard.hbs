@@ -42,7 +42,8 @@
 
     let startTime;
     let clickCount = 0;
-    let results = [];
+    let positiveResults = [];
+    let negativeResults = [];
     let lastPlayedSound;
 
     function playSound(sound) {
@@ -66,7 +67,11 @@
     function checkAnswer(answer) {
         let reactionTime = new Date().getTime() - startTime;
         let correct = (lastPlayedSound === answer) ? 1 : 0;
-        results.push({ reactionTime, correct });
+        if (correct) {
+            positiveResults.push(reactionTime);
+        } else {
+            negativeResults.push(reactionTime);
+        }
 
         shortSoundButton.disabled = true;
         longSoundButton.disabled = true;
@@ -111,7 +116,7 @@
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ results })
+            body: JSON.stringify({ positiveResults, negativeResults })
         };
 
         try {
