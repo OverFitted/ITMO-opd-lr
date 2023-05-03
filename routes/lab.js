@@ -7,13 +7,21 @@ const router = Router()
 router.get('/lab1', (req, res, next) => {
     res.status(200)
 
-    CLIENT.query('select * from professions_lab1').then((profs) => {
-        CLIENT.query(`select * from users where is_expert='t'`).then(result => {
-            res.render('lab1', {
-                title: "Первая лаба | без CHATGPT",
-                experts: result.rows,
-                profs: profs.rows,
-                isLoggedIn: req.cookies.usr_id
+    top_table_query = "WITH ranked_pvk AS (SELECT profession_id, pvk_id, ROW_NUMBER() OVER (PARTITION BY profession_id ORDER BY COUNT(*) DESC) AS rank FROM expert_profession_quality_lab1 GROUP BY profession_id, pvk_id) SELECT rp.profession_id, p.name, rp.pvk_id, pv.name FROM ranked_pvk AS rp JOIN professions_lab1 AS p ON rp.profession_id = p.id JOIN pvk_lab1 AS pv ON rp.pvk_id = pv.id WHERE rp.rank <= 5 ORDER BY rp.profession_id, rp.rank;"
+
+    CLIENT.query(top_table_query).then((top_table) => {
+        CLIENT.query('select * from professions_lab1').then((profs) => {
+            CLIENT.query(`select * from users where is_expert='t'`).then((result) => {
+                for (let i = 0; i < profs.rows.length; i++){
+                    profs.rows[i]["top_table"] = top_table.rows.filter(x => x.profession_id === profs.rows[i].id)
+                }
+
+                res.render('lab1', {
+                    title: "Лаба 1 | без CHATGPT",
+                    experts: result.rows,
+                    isLoggedIn: req.cookies.usr_id,
+                    profs: profs.rows,
+                })
             })
         })
     })
@@ -104,29 +112,40 @@ router.get('/lab1/res', (req, res, next) => {
     const chosenPvksIds = req.query.chosenPvksIds.split("-")
     const selectedLanguage = req.query.selectedLanguage
 
-    CLIENT.query('select * from professions_lab1').then((profs) => {
-        CLIENT.query(`select * from pvk_lab1`).then((result) => {
-            let pvks = []
-            for (let i = 0; i < chosenPvksIds.length; i++) {
-                const cur = result.rows.find(x => x.id === parseInt(chosenPvksIds[i]));
+    top_table_query = "WITH ranked_pvk AS (SELECT profession_id, pvk_id, ROW_NUMBER() OVER (PARTITION BY profession_id ORDER BY COUNT(*) DESC) AS rank FROM expert_profession_quality_lab1 GROUP BY profession_id, pvk_id) SELECT rp.profession_id, p.name, rp.pvk_id, pv.name FROM ranked_pvk AS rp JOIN professions_lab1 AS p ON rp.profession_id = p.id JOIN pvk_lab1 AS pv ON rp.pvk_id = pv.id WHERE rp.rank <= 5 ORDER BY rp.profession_id, rp.rank;"
 
-                pvks.push({
-                    cur: cur,
-                    value: pvkValues[i]
-                })
-            }
+    CLIENT.query(top_table_query).then((top_table) => {
+        CLIENT.query('select * from professions_lab1').then((profs) => {
+            CLIENT.query(`select * from pvk_lab1`).then((result) => {
+                let pvks = []
+                for (let i = 0; i < chosenPvksIds.length; i++) {
+                    const cur = result.rows.find(x => x.id === parseInt(chosenPvksIds[i]));
 
-            if (!((!pvkValues) || (!chosenPvksIds) || (!selectedLanguage))) {
-                res.render('lab1', {
-                    title: "Лаба 1 | без CHATGPT",
-                    isLoggedIn: req.cookies.usr_id,
-                    pvks: pvks,
-                    profs: profs.rows,
-                    selectedLanguage: selectedLanguage
-                })
-            } else {
-                res.redirect("/labs/lab1")
-            }
+                    pvks.push({
+                        cur: cur,
+                        value: pvkValues[i]
+                    })
+                }
+
+                for (let i = 0; i < profs.rows.length; i++){
+                    profs.rows[i]["top_table"] = top_table.rows.filter(x => x.profession_id === profs.rows[i].id)
+                }
+
+                if (!((!pvkValues) || (!chosenPvksIds) || (!selectedLanguage))) {
+                    CLIENT.query(`select * from users where is_expert='t'`).then((result) => {
+                        res.render('lab1', {
+                            title: "Лаба 1 | без CHATGPT",
+                            isLoggedIn: req.cookies.usr_id,
+                            pvks: pvks,
+                            profs: profs.rows,
+                            selectedLanguage: selectedLanguage,
+                            experts: result.rows,
+                        })
+                    })
+                } else {
+                    res.redirect("/labs/lab1")
+                }
+            })
         })
     })
 })
@@ -147,6 +166,15 @@ router.get('/lab2/simple', (req, res, next) => {
     })
 })
 
+router.get('/lab2/hard', (req, res, next) => {
+    res.status(200)
+    res.render('hard_tests', {
+        title: "Простые тесты | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
+
 router.get('/lab2/simple/light', (req, res, next) => {
     res.status(200)
     res.render('lighttest_simple', {
@@ -155,12 +183,24 @@ router.get('/lab2/simple/light', (req, res, next) => {
     })
 })
 
+router.post('/lab2/simple/light', (req, res, next) => {
+    res.status(200)
+    results = req.body.results
+    console.log(results)
+})
+
 router.get('/lab2/simple/sound', (req, res, next) => {
     res.status(200)
     res.render('soundtest_simple', {
         title: "Простой тест на свет | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
     })
+})
+
+router.post('/lab2/simple/sound', (req, res, next) => {
+    res.status(200)
+    results = req.body.results
+    console.log(results)
 })
 
 module.exports = router

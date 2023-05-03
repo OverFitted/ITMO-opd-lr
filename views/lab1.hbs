@@ -63,7 +63,7 @@
                                     aria-labelledby="nav-11978-content-{{this.id}}"
                             >
 
-                                <div class="pb-lg-3">
+                                <div class="pb-lg-1">
                                     <div class="row">
                                         <div class="col">
                                             <p class="bento-box">
@@ -71,13 +71,21 @@
                                             </p>
                                         </div>
                                         <div class="col">
-                                            <img
-                                                    class="img-fluid bento-box img-style img-fluid-up lazyload"
-                                                    src="/img/lazyload-ph.png"
-                                                    data-src="/img/1_52551a557a5fc52551a557a639.jpg"
-                                                    alt="1675879972_shutok.ru.17690949"
-                                            />
-                                        </div>
+                                            <div class="bento-box" style="padding-top: 30px;padding-bottom: 5px;">
+                                                <label class="form-label mini-heading" style="padding-bottom: 15px;">
+                                                    Ключевые ПВК<br>
+                                                </label>
+                                                <ul class="list-unstyled">
+                                                    {{#each this.top_table}}
+                                                        <li>
+                                                            <p class="token-link">
+                                                                {{this.name}}
+                                                            </p>
+                                                        </li>
+                                                    {{/each}}
+                                                </ul>
+                                            </div>
+									    </div>
                                     </div>
                                 </div>
                                 <button

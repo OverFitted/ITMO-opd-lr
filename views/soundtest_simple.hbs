@@ -1,3 +1,104 @@
-<div class="bloc l-bloc">
-    
+<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultsModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Среднее время реакции: <span id="averageResult"></span> мс</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="redirector" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="row justify-content-center">
+    <div class="col-12 text-center">
+        <h1 class="my-5">Тест реакции на звук</h1>
+        <button id="startButton" class="btn btn-lg btn-primary" type="button">Начать тест</button>
+    </div>
+</div>
+
+<div class="text-center mt-5">
+    <button id="reactionButton" class="btn btn-lg btn-primary" type="button" disabled>Нажмите, когда услышите звук</button>
+</div>
+
+<audio id="sound" src="/sound.mp3" type="audio/mpeg" preload="auto"></audio>
+
+<script>
+    const neededClicks = 2;
+    const startButton = document.getElementById('startButton');
+    const reactionButton = document.getElementById('reactionButton');
+    const sound = document.getElementById('sound');
+    let startTime;
+    let clickCount = 0;
+    let results = [];
+    let redirector = document.getElementById('redirector');
+    reactionButton.disabled = true;
+
+    redirector.addEventListener('click', () => {
+        location.href = '../../';
+    })
+
+    function playSound() {
+        sound.currentTime = 0;
+        sound.play();
+    }
+
+    startButton.addEventListener('click', () => {
+        startButton.disabled = true;
+        showSound();
+    });
+
+    reactionButton.addEventListener('click', () => {
+        sound.pause()
+        let reactionTime = new Date().getTime() - startTime;
+        results.push(reactionTime);
+
+        reactionButton.disabled = true;
+        clickCount++;
+
+        if (clickCount === neededClicks) {
+            sendResults();
+        } else {
+            showSound();
+        }
+    });
+
+    async function showSound() {
+        const startDelay = 500;
+        const randomDelay = Math.floor(Math.random() * 2000) + 1000;
+
+        setTimeout(() => {
+            reactionButton.disabled = false;
+            playSound();
+            startTime = new Date().getTime();
+        }, randomDelay);
+    }
+
+    async function sendResults() {
+        const averageResult = results.reduce((a, b) => a + b) / results.length;
+        document.getElementById('averageResult').innerText = averageResult.toFixed(2);
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ results })
+        };
+
+        try {
+            const response = await fetch('.', requestOptions);
+            const data = await response.json();
+            console.log('Результаты отправлены:', data);
+        } catch (error) {
+            console.error('Ошибка при отправке результатов:', error);
+        }
+
+        // Показать модальное окно с результатами
+        const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+        resultsModal.show();
+    }
+</script>

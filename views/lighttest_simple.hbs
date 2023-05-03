@@ -1,3 +1,125 @@
-<div class="bloc l-bloc">
-  
+<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultsModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Среднее время реакции: <span id="averageResult"></span> мс</p>
+            </div>
+            <div class="modal-footer">
+                <button id="redirector" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<div class="d-flex flex-column min-vh-70">
+    <div class="row flex-grow-1 justify-content-center align-items-center">
+        <div class="col-auto">
+            <button id="startBtn" class="btn btn-primary">Начать тест</button>
+            <div id="squareContainer" class="d-none position-relative">
+                <div id="square" class="square"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .square {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+<script>
+    const neededClicks = 2;
+    let startBtn = document.getElementById('startBtn');
+    let squareContainer = document.getElementById('squareContainer');
+    let square = document.getElementById('square');
+    let redirector = document.getElementById('redirector');
+    let clickCount = 0;
+    let startTime;
+    let results = [];
+
+    redirector.addEventListener('click', () => {
+        location.href = '../../';
+    })
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function getRandomDelay(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function showSquare() {
+        if (clickCount < neededClicks) {
+            squareContainer.classList.add('d-none');
+            setTimeout(() => {
+                square.style.backgroundColor = getRandomColor();
+                squareContainer.classList.remove('d-none');
+                startTime = new Date().getTime();
+            }, getRandomDelay(500, 2000));
+        } else {
+            squareContainer.classList.add('d-none');
+            startBtn.disabled = false;
+        }
+    }
+
+    startBtn.addEventListener('click', () => {
+        startBtn.disabled = true;
+        startBtn.hidden = true;
+        clickCount = 0;
+        showSquare();
+    });
+
+    square.addEventListener('click', () => {
+        let reactionTime = new Date().getTime() - startTime;
+        results.push(reactionTime);
+
+        clickCount++;
+        showSquare();
+
+        if (clickCount === neededClicks) {
+            sendResults();
+        }
+    });
+
+    function calculateAverage(array) {
+        return array.reduce((a, b) => a + b) / array.length;
+    }
+
+    async function sendResults() {
+        const average = calculateAverage(results);
+        document.getElementById('averageResult').textContent = average.toFixed(2);
+        const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+        resultsModal.show();
+
+        const response = await fetch('.', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ results }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        const jsonResponse = await response.json();
+    }
+</script>
