@@ -149,17 +149,17 @@
     }
 
     async function sendResults() {
-        const averagePositiveResult = calculateAverage(positiveResults)
-        const averageNegativeResult = calculateAverage(negativeResults)
+        const averagePositiveResult = calculateAverage(positiveResults).toFixed(2)
+        const averageNegativeResult = calculateAverage(negativeResults).toFixed(2)
 
-        const stdPositiveResult = calculateStandardDeviation(positiveResults)
-        const stdNegativeResult = calculateStandardDeviation(negativeResults)
+        const stdPositiveResult = calculateStandardDeviation(positiveResults).toFixed(2)
+        const stdNegativeResult = calculateStandardDeviation(negativeResults).toFixed(2)
 
-        document.getElementById('averagePositiveResult').textContent = averagePositiveResult.toFixed(2);
-        document.getElementById('averageNegativeResult').textContent = averageNegativeResult.toFixed(2);
+        document.getElementById('averagePositiveResult').textContent = averagePositiveResult;
+        document.getElementById('averageNegativeResult').textContent = averageNegativeResult;
 
-        document.getElementById('stdPositiveResult').textContent = stdPositiveResult.toFixed(2);
-        document.getElementById('stdNegativeResult').textContent = stdNegativeResult.toFixed(2);
+        document.getElementById('stdPositiveResult').textContent = stdPositiveResult;
+        document.getElementById('stdNegativeResult').textContent = stdNegativeResult;
 
         const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
         resultsModal.show();

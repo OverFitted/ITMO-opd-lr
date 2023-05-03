@@ -523,18 +523,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN usr_id SET DEFAULT nextval('public.us
 --
 
 COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id, importance) FROM stdin;
-13	1	1	10	5
-14	2	1	10	5
-15	3	1	10	5
-16	1	1	12	5
-17	2	1	12	5
-18	1	1	13	5
-19	2	1	13	5
-20	3	1	13	5
-21	4	1	13	5
-22	2	2	13	5
-23	3	2	13	5
-24	4	2	13	5
 \.
 
 

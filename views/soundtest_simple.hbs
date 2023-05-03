@@ -48,7 +48,7 @@
 
 <script>
     const test_id = 1;
-    const neededClicks = 30;
+    const neededClicks = 5;
     const startButton = document.getElementById('startButton');
     const reactionButton = document.getElementById('reactionButton');
     const sound = document.getElementById('sound');
@@ -103,6 +103,10 @@
         }, randomDelay);
     }
 
+    function calculateAverage(array) {
+        return array.reduce((a, b) => a + b) / array.length;
+    }
+
     function calculateStandardDeviation(arr) {
         const n = arr.length;
         const mean = arr.reduce((acc, val) => acc + val, 0) / n;
@@ -112,10 +116,10 @@
     }
 
     async function sendResults() {
-        const averageResult = results.reduce((a, b) => a + b) / results.length;
-        const stdResult = calculateStandardDeviation(results)
-        document.getElementById('averageResult').innerText = averageResult.toFixed(2);
-        document.getElementById('stdResult').innerText = stdResult.toFixed(2);
+        const averageResult = calculateAverage(results).toFixed(2);
+        const stdResult = calculateStandardDeviation(results).toFixed(2)
+        document.getElementById('averageResult').innerText = averageResult;
+        document.getElementById('stdResult').innerText = stdResult;
 
         const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
         resultsModal.show();

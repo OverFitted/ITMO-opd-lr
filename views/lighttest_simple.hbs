@@ -24,6 +24,7 @@
             </div>
             <div class="modal-body">
                 <p>Среднее время реакции: <span id="averageResult"></span> мс</p>
+                <p>Стандартное отклонение времени реакции: <span id="stdResult"></span> мс</p>
             </div>
             <div class="modal-footer">
                 <button id="redirector" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -134,10 +135,10 @@
     }
 
     async function sendResults() {
-        const averageResult = calculateAverage(results);
-        const stdResult = calculateStandardDeviation(results)
-        document.getElementById('averageResult').textContent = averageResult.toFixed(2);
-        document.getElementById('stdResult').innerText = stdResult.toFixed(2);
+        const averageResult = calculateAverage(results).toFixed(2);
+        const stdResult = calculateStandardDeviation(results).toFixed(2);
+        document.getElementById('averageResult').textContent = averageResult;
+        document.getElementById('stdResult').innerText = stdResult;
 
         const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
         resultsModal.show();

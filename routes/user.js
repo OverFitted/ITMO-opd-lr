@@ -25,9 +25,11 @@ router.get('/', (req, res, next) => {
 
                         resp_res = resp_res_raw.rows;
                         for (let i = 0; i < resp_res.length; i++){
-                            if (resp_res[i].result_list.length == 1){
+                            if (resp_res[i].result_list.length === 2){
+                                resp_res[i].result_list = resp_res[i].result_list.join("; ")
                                 resp_res_simple.push(resp_res[i])
                             } else {
+                                resp_res[i].result_list = resp_res[i].result_list.join("; ")
                                 resp_res_hard.push(resp_res[i])
                             }
                         }
