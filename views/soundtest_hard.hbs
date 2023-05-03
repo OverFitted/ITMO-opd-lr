@@ -30,7 +30,9 @@
             </div>
             <div class="modal-body">
                 <p>Среднее время правильной реакции: <span id="averagePositiveResult"></span> мс</p>
+                <p>Стандартное отклонение времени правильной реакции: <span id="stdPositiveResult"></span> мс</p>
                 <p>Среднее время неправильной реакции: <span id="averageNegativeResult"></span> мс</p>
+                <p>Стандартное отклонение времени неправильной реакции: <span id="stdNegativeResult"></span> мс</p>
             </div>
             <div class="modal-footer">
                 <button type="button" id="redirector" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -56,7 +58,7 @@
 
 <script>
     const test_id = 4;
-    const neededClicks = 2;
+    const neededClicks = 5;
     const startButton = document.getElementById('startButton');
     const shortSoundButton = document.getElementById('shortSoundButton');
     const longSoundButton = document.getElementById('longSoundButton');
@@ -148,19 +150,40 @@
         return array.reduce((a, b) => a + b) / Math.max(1, array.length - 1);
     }
 
-    async function sendResults() {
-        const averagePositiveResult = calculateAverage(positiveResults)
-        const averageNegativeResult = calculateAverage(negativeResults)
+    function calculateStandardDeviation(arr) {
+        const n = arr.length;
+        const mean = arr.reduce((acc, val) => acc + val, 0) / n;
+        const variance = arr.reduce((acc, val) => acc + (val - mean) ** 2, 0) / (n - 1);
+        const stdDev = Math.sqrt(variance);
+        return stdDev;
+    }
 
-        document.getElementById('averagePositiveResult').textContent = averagePositiveResult.toFixed(2);
-        document.getElementById('averageNegativeResult').textContent = averageNegativeResult.toFixed(2);
+    async function sendResults() {
+        const averagePositiveResult = calculateAverage(positiveResults).toFixed(2)
+        const averageNegativeResult = calculateAverage(negativeResults).toFixed(2)
+
+        const stdPositiveResult = calculateStandardDeviation(positiveResults).toFixed(2)
+        const stdNegativeResult = calculateStandardDeviation(negativeResults).toFixed(2)
+
+        document.getElementById('averagePositiveResult').textContent = averagePositiveResult;
+        document.getElementById('averageNegativeResult').textContent = averageNegativeResult;
+
+        document.getElementById('stdPositiveResult').textContent = stdPositiveResult;
+        document.getElementById('stdNegativeResult').textContent = stdNegativeResult;
+
         const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
         resultsModal.show();
 
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ averagePositiveResult, averageNegativeResult, test_id })
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                averagePositiveResult,
+                averageNegativeResult,
+                stdPositiveResult,
+                stdNegativeResult,
+                test_id
+            })
         };
 
         try {

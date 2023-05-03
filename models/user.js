@@ -130,14 +130,14 @@ class User {
             var res_query = {
                 text: 'INSERT INTO results_list_lr2 (result_list) VALUES ($1) RETURNING id',
                 values: [
-                    [Math.floor(results.averageResult)]
+                    [results.averageResult, results.stdResult]
                 ],
             }
         } else {
             var res_query = {
                 text: 'INSERT INTO results_list_lr2 (result_list) VALUES ($1) RETURNING id',
                 values: [
-                    [Math.floor(results.averagePositiveResult), Math.floor(results.averageNegativeResult)]
+                    [results.averagePositiveResult, results.stdPositiveResult, results.averageNegativeResult, results.stdNegativeResult]
                 ],
             }
         }

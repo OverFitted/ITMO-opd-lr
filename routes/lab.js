@@ -218,7 +218,6 @@ router.get('/lab2/hard/colors_hard', (req, res, next) => {
 router.post('/lab2/', (req, res, next) => {
     res.status(200)
     results = req.body
-    console.log(results)
     User.userById(req.cookies.usr_id).then((user) => {
         if (user) {
             user = new User(user)

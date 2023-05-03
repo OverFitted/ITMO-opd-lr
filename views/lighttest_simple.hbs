@@ -24,6 +24,7 @@
             </div>
             <div class="modal-body">
                 <p>Среднее время реакции: <span id="averageResult"></span> мс</p>
+                <p>Стандартное отклонение времени реакции: <span id="stdResult"></span> мс</p>
             </div>
             <div class="modal-footer">
                 <button id="redirector" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -57,7 +58,7 @@
 
 <script>
     const test_id = 2;
-    const neededClicks = 2;
+    const neededClicks = 30;
     let startBtn = document.getElementById('startBtn');
     let squareContainer = document.getElementById('squareContainer');
     let square = document.getElementById('square');
@@ -125,16 +126,27 @@
         return array.reduce((a, b) => a + b) / array.length;
     }
 
+    function calculateStandardDeviation(arr) {
+        const n = arr.length;
+        const mean = arr.reduce((acc, val) => acc + val, 0) / n;
+        const variance = arr.reduce((acc, val) => acc + (val - mean) ** 2, 0) / (n - 1);
+        const stdDev = Math.sqrt(variance);
+        return stdDev;
+    }
+
     async function sendResults() {
-        const averageResult = calculateAverage(results);
-        document.getElementById('averageResult').textContent = averageResult.toFixed(2);
+        const averageResult = calculateAverage(results).toFixed(2);
+        const stdResult = calculateStandardDeviation(results).toFixed(2);
+        document.getElementById('averageResult').textContent = averageResult;
+        document.getElementById('stdResult').innerText = stdResult;
+
         const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
         resultsModal.show();
 
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ averageResult, test_id })
+            body: JSON.stringify({ averageResult, stdResult, test_id })
         };
 
         try {
