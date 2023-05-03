@@ -12,7 +12,7 @@ class User {
         this.is_expert = body.exper === "on";
         this.gender = body.gender === "male" ? "M" : "F";
 
-        if (this.usr_id in body) {
+        if ("usr_id" in body) {
             this.usr_id = body.usr_id
         } else {
             this.usr_id = this.toHash(uuid.v4())
@@ -121,6 +121,38 @@ class User {
         }
 
         await CLIENT.query(query)
+    }
+
+    sendResult(results) {
+        var data = this.toJSON()
+
+        if ("averageResult" in results) {
+            var res_query = {
+                text: 'INSERT INTO results_list_lr2 (result_list) VALUES ($1) RETURNING id',
+                values: [
+                    [Math.floor(results.averageResult)]
+                ],
+            }
+        } else {
+            var res_query = {
+                text: 'INSERT INTO results_list_lr2 (result_list) VALUES ($1) RETURNING id',
+                values: [
+                    [Math.floor(results.averagePositiveResult), Math.floor(results.averageNegativeResult)]
+                ],
+            }
+        }
+
+        CLIENT.query(res_query).then((res) => {
+            var id = res.rows[0].id
+
+            const query = {
+                text: 'INSERT INTO lr2_to_resp (respondent_id, result_id_lr2, test_id) VALUES ($1, $2, $3)',
+                values: [data.usr_id, id, results.test_id],
+            }
+            CLIENT.query(query).then((result) => {
+                console.log(result)
+            })
+        })
     }
 }
 

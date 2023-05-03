@@ -1,3 +1,20 @@
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descriptionModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Тебе будет предоставлена возможность пройти тест на оценку скорости реакции на источник звука. Твоя задача - в течении двух минут как можно быстрее нажимать на пробел при включении источника звука. Помни, что он может активироваться на различное время с различным периодом. После завершения теста клавиша "Далее" станет активной.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -29,6 +46,7 @@
 <audio id="sound" src="/sound.mp3" type="audio/mpeg" preload="auto"></audio>
 
 <script>
+    const test_id = 1;
     const neededClicks = 2;
     const startButton = document.getElementById('startButton');
     const reactionButton = document.getElementById('reactionButton');
@@ -38,6 +56,11 @@
     let results = [];
     let redirector = document.getElementById('redirector');
     reactionButton.disabled = true;
+
+    $(document).ready(() => {
+        const descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal'));
+        descriptionModal.show();
+    })
 
     redirector.addEventListener('click', () => {
         location.href = '../../';
@@ -89,13 +112,12 @@
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ results })
+            body: JSON.stringify({ results, averageResult, test_id })
         };
 
         try {
-            const response = await fetch('.', requestOptions);
-            const data = await response.json();
-            console.log('Результаты отправлены:', data);
+            const response = await fetch('/labs/lab2/', requestOptions);
+            console.log('Результаты отправлены:', response);
         } catch (error) {
             console.error('Ошибка при отправке результатов:', error);
         }

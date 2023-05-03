@@ -1,3 +1,20 @@
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descriptionModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Тебе будет предоставлена возможность пройти тест на оценку скорости реакции на источник света. Твоя задача - в течении двух минут как можно быстрее нажимать на пробел при появлении красного источника света. Помни, что он может загораться на различное время с различным периодом. После завершения теста клавиша "Далее" станет активной.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -39,6 +56,7 @@
 </style>
 
 <script>
+    const test_id = 2;
     const neededClicks = 2;
     let startBtn = document.getElementById('startBtn');
     let squareContainer = document.getElementById('squareContainer');
@@ -47,6 +65,11 @@
     let clickCount = 0;
     let startTime;
     let results = [];
+
+    $(document).ready(() => {
+        const descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal'));
+        descriptionModal.show();
+    })
 
     redirector.addEventListener('click', () => {
         location.href = '../../';
@@ -103,21 +126,22 @@
     }
 
     async function sendResults() {
-        const average = calculateAverage(results);
-        document.getElementById('averageResult').textContent = average.toFixed(2);
+        const averageResult = calculateAverage(results);
+        document.getElementById('averageResult').textContent = averageResult.toFixed(2);
         const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
         resultsModal.show();
 
-        const response = await fetch('.', {
+        const requestOptions = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ results }),
-        });
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ averageResult, test_id })
+        };
 
-        if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
+        try {
+            const response = await fetch('/labs/lab2/', requestOptions);
+            console.log('Результаты отправлены:', response);
+        } catch (error) {
+            console.error('Ошибка при отправке результатов:', error);
         }
 
         const jsonResponse = await response.json();

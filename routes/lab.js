@@ -1,3 +1,4 @@
+const User = require('../models/user');
 const {
     Router
 } = require('express')
@@ -174,24 +175,12 @@ router.get('/lab2/simple/light', (req, res, next) => {
     })
 })
 
-router.post('/lab2/simple/light', (req, res, next) => {
-    res.status(200)
-    results = req.body.results
-    console.log(results)
-})
-
 router.get('/lab2/simple/sound', (req, res, next) => {
     res.status(200)
     res.render('soundtest_simple', {
         title: "Простой тест на звук | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
     })
-})
-
-router.post('/lab2/simple/sound', (req, res, next) => {
-    res.status(200)
-    results = req.body.results
-    console.log(results)
 })
 
 router.get('/lab2/hard', (req, res, next) => {
@@ -224,6 +213,18 @@ router.get('/lab2/hard/colors_hard', (req, res, next) => {
         title: "Сложный тест на свет | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
     })
+})
+
+router.post('/lab2/', (req, res, next) => {
+    res.status(200)
+    results = req.body
+    console.log(results)
+    User.userById(req.cookies.usr_id).then((user) => {
+        if (user) {
+            user = new User(user)
+            user.sendResult(results)
+        }
+    });
 })
 
 module.exports = router

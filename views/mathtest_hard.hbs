@@ -1,3 +1,25 @@
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descriptionModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Тебе будет предоставлена возможность пройти тест на оценку навыков сложения в уме на основе зрения. Тебе в
+течение 2 минут будут подаваться различные карточки, состоящие из 2 случайных числе. Твоя задача — провести
+сложение этих чисел в уме и оценить четность полученного значения, после чего необходимо нажать клавиши 1 или
+2, что соответствует нечетному и четному числам. Конкретного сигнала о завершении подачи звукового набора не
+будет. Интервал между сигналами одинаковый. Вот пример: карточка, состоящая из чисел 1 и 4 соответствует числу
+5, которое не является четным — нужно нажать цифру 1 на клавиатуре.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -6,7 +28,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Среднее время реакции: <span id="averageResult"></span> мс</p>
+                <p>Среднее время правильной реакции: <span id="averagePositiveResult"></span> мс</p>
+                <p>Среднее время неправильной реакции: <span id="averageNegativeResult"></span> мс</p>
             </div>
             <div class="modal-footer">
                 <button type="button" id="redirector" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -29,6 +52,7 @@
 </div>
 
 <script>
+    const test_id = 5;
     const neededClicks = 2;
     const startBtn = document.getElementById('startBtn');
     const expressionCard = document.getElementById('expressionCard');
@@ -38,10 +62,19 @@
 
     let expression, correctAnswer;
     let correctCount = 0, totalCount = 0;
-    let positiveResults = [];
-    let negativeResults = [];
+    let positiveResults = [0];
+    let negativeResults = [0];
 
     let startTime;
+
+    $(document).ready(() => {
+        const descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal'));
+        descriptionModal.show();
+    })
+
+    redirector.addEventListener('click', () => {
+        location.href = '../../';
+    })
 
     function generateExpression() {
         const a = Math.floor(Math.random() * 10) + 1;
@@ -71,13 +104,7 @@
         if (totalCount < neededClicks) {
             showExpression();
         } else {
-            console.log(`Правильных ответов: ${correctCount}`);
-            console.log(`Общее количество ответов: ${totalCount}`);
-            console.log(`Положительные результаты: ${positiveResults}`);
-            console.log(`Отрицательные результаты: ${negativeResults}`);
-            startBtn.disabled = false;
-            expressionCard.style.display = 'none';
-            buttonsContainer.style.display = 'none';
+            sendResults()
         }
     }
 
@@ -97,6 +124,33 @@
     oddBtn.addEventListener('click', () => {
         checkAnswer(false);
     });
+
+    function calculateAverage(array) {
+        return array.reduce((a, b) => a + b) / Math.max(1, array.length - 1);
+    }
+
+    async function sendResults() {
+        const averagePositiveResult = calculateAverage(positiveResults)
+        const averageNegativeResult = calculateAverage(negativeResults)
+
+        document.getElementById('averagePositiveResult').textContent = averagePositiveResult.toFixed(2);
+        document.getElementById('averageNegativeResult').textContent = averageNegativeResult.toFixed(2);
+        const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+        resultsModal.show();
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ averagePositiveResult, averageNegativeResult, test_id })
+        };
+
+        try {
+            const response = await fetch('/labs/lab2/', requestOptions);
+            console.log('Результаты отправлены:', response);
+        } catch (error) {
+            console.error('Ошибка при отправке результатов:', error);
+        }
+    }
 </script>
 
 <style>

@@ -59,44 +59,6 @@ ALTER SEQUENCE public.expert_profession_quality_id_seq OWNED BY public.expert_pr
 
 
 --
--- Name: lr2_results; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.lr2_results (
-    try_id integer NOT NULL,
-    easy_light_res integer,
-    easy_sound_res integer,
-    hard_colors_res integer,
-    hard_sound_sum_res integer,
-    hard_vis_sum_res integer
-);
-
-
-ALTER TABLE public.lr2_results OWNER TO postgres;
-
---
--- Name: lr2_results_try_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.lr2_results_try_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.lr2_results_try_id_seq OWNER TO postgres;
-
---
--- Name: lr2_results_try_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.lr2_results_try_id_seq OWNED BY public.lr2_results.try_id;
-
-
---
 -- Name: lr2_to_resp; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -105,11 +67,18 @@ CREATE TABLE public.lr2_to_resp (
     respondent_id integer,
     expert_id integer,
     result_id_lr2 integer,
-    params_id_lr2 integer
+    test_id integer
 );
 
 
 ALTER TABLE public.lr2_to_resp OWNER TO postgres;
+
+--
+-- Name: COLUMN lr2_to_resp.test_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.lr2_to_resp.test_id IS 'num of the test';
+
 
 --
 -- Name: lr2_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -131,41 +100,6 @@ ALTER TABLE public.lr2_to_resp_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.lr2_to_resp_id_seq OWNED BY public.lr2_to_resp.id;
-
-
---
--- Name: lr3_results; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.lr3_results (
-    try integer NOT NULL,
-    easy_moving_reac_res integer,
-    hard_moving_react_res integer
-);
-
-
-ALTER TABLE public.lr3_results OWNER TO postgres;
-
---
--- Name: lr3_results_try_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.lr3_results_try_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.lr3_results_try_seq OWNER TO postgres;
-
---
--- Name: lr3_results_try_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.lr3_results_try_seq OWNED BY public.lr3_results.try;
 
 
 --
@@ -455,6 +389,18 @@ ALTER SEQUENCE public.results_list_lr3_id_seq OWNED BY public.results_list_lr3.i
 
 
 --
+-- Name: test_name_lr2; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.test_name_lr2 (
+    test_id integer,
+    test_name text
+);
+
+
+ALTER TABLE public.test_name_lr2 OWNER TO postgres;
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -503,24 +449,10 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1 ALTER COLUMN id SET DEFAU
 
 
 --
--- Name: lr2_results try_id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.lr2_results ALTER COLUMN try_id SET DEFAULT nextval('public.lr2_results_try_id_seq'::regclass);
-
-
---
 -- Name: lr2_to_resp id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr2_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr2_to_resp_id_seq'::regclass);
-
-
---
--- Name: lr3_results try; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.lr3_results ALTER COLUMN try SET DEFAULT nextval('public.lr3_results_try_seq'::regclass);
 
 
 --
@@ -591,14 +523,18 @@ ALTER TABLE ONLY public.users ALTER COLUMN usr_id SET DEFAULT nextval('public.us
 --
 
 COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id, importance) FROM stdin;
-\.
-
-
---
--- Data for Name: lr2_results; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.lr2_results (try_id, easy_light_res, easy_sound_res, hard_colors_res, hard_sound_sum_res, hard_vis_sum_res) FROM stdin;
+13	1	1	10	5
+14	2	1	10	5
+15	3	1	10	5
+16	1	1	12	5
+17	2	1	12	5
+18	1	1	13	5
+19	2	1	13	5
+20	3	1	13	5
+21	4	1	13	5
+22	2	2	13	5
+23	3	2	13	5
+24	4	2	13	5
 \.
 
 
@@ -606,15 +542,8 @@ COPY public.lr2_results (try_id, easy_light_res, easy_sound_res, hard_colors_res
 -- Data for Name: lr2_to_resp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, params_id_lr2) FROM stdin;
-\.
-
-
---
--- Data for Name: lr3_results; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.lr3_results (try, easy_moving_reac_res, hard_moving_react_res) FROM stdin;
+COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id) FROM stdin;
+1	1	1	6	1
 \.
 
 
@@ -844,6 +773,15 @@ COPY public.pvk_lab1 (id, name, description) FROM stdin;
 --
 
 COPY public.results_list_lr2 (id, result_list) FROM stdin;
+1	{500}
+2	{340}
+3	{650}
+4	{570}
+5	{520}
+6	{3,400,10,300}
+7	{3,560,12,210}
+8	{4,670,5,670}
+9	{5,340,8,900}
 \.
 
 
@@ -856,10 +794,31 @@ COPY public.results_list_lr3 (id, result_list) FROM stdin;
 
 
 --
+-- Data for Name: test_name_lr2; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.test_name_lr2 (test_id, test_name) FROM stdin;
+1	Простой, свет
+2	Простой, звук
+3	Разные цвета
+4	Сложный, звук, сложение
+5	Сложный, визауально, сложение
+\.
+
+
+--
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert, gender) FROM stdin;
+1	Boris	Kozak	Overfitter	1234	fakeMail@mail.ru	99	t	M
+2	Boris	Kozar	Overfitter	1234	fakeMail0@mail.ru	99	t	F
+3	Grigorii	Raevskii	postgres	1234	fakeMail1@mail.ru	98	t	M
+4	Alexander	Pevzner	CalmHarmony	1234	fakeMail2@mail.ru	97	t	M
+5	TestName1	TestSurname1	testlogin1	1234	fakeMail3@mail.ru	97	f	F
+6	TestName2	TestSurname2	testlogin2	1234	fakeMail4@mail.ru	96	f	M
+7	TestName3	TestSurname3	testlogin3	1234	fakeMail5@mail.ru	95	f	M
+8	TestName4	TestSurname4	testlogin4	1234	fakeMail6@mail.ru	94	f	F
 \.
 
 
@@ -867,28 +826,14 @@ COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert
 -- Name: expert_profession_quality_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 6, true);
-
-
---
--- Name: lr2_results_try_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.lr2_results_try_id_seq', 1, false);
+SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 24, true);
 
 
 --
 -- Name: lr2_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 1, false);
-
-
---
--- Name: lr3_results_try_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.lr3_results_try_seq', 1, false);
+SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 1, true);
 
 
 --
@@ -937,7 +882,7 @@ SELECT pg_catalog.setval('public.pvk_id_seq', 179, true);
 -- Name: results_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 1, false);
+SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 9, true);
 
 
 --
@@ -951,7 +896,7 @@ SELECT pg_catalog.setval('public.results_list_lr3_id_seq', 1, false);
 -- Name: users_usr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_usr_id_seq', 1, false);
+SELECT pg_catalog.setval('public.users_usr_id_seq', 15, true);
 
 
 --
@@ -963,27 +908,11 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
--- Name: lr2_results lr2_results_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.lr2_results
-    ADD CONSTRAINT lr2_results_pkey PRIMARY KEY (try_id);
-
-
---
 -- Name: lr2_to_resp lr2_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr2_to_resp
     ADD CONSTRAINT lr2_to_resp_pkey PRIMARY KEY (id);
-
-
---
--- Name: lr3_results lr3_results_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.lr3_results
-    ADD CONSTRAINT lr3_results_pkey PRIMARY KEY (try);
 
 
 --
@@ -1051,11 +980,26 @@ ALTER TABLE ONLY public.results_list_lr3
 
 
 --
+-- Name: test_name_lr2 unique_id; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.test_name_lr2
+    ADD CONSTRAINT unique_id UNIQUE (test_id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (usr_id);
+
+
+--
+-- Name: fki_fk_id_to_name; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fk_id_to_name ON public.test_name_lr2 USING btree (test_id);
 
 
 --
@@ -1080,13 +1024,6 @@ CREATE INDEX fki_fkey_expert_id ON public.expert_profession_quality_lab1 USING b
 
 
 --
--- Name: fki_fkey_params_list; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX fki_fkey_params_list ON public.lr2_to_resp USING btree (params_id_lr2);
-
-
---
 -- Name: fki_fkey_params_list_lr3; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1098,6 +1035,13 @@ CREATE INDEX fki_fkey_params_list_lr3 ON public.lr3_to_resp USING btree (params_
 --
 
 CREATE INDEX fki_fkey_resp ON public.lr2_to_resp USING btree (respondent_id);
+
+
+--
+-- Name: fki_fkey_result_list_lr3; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_fkey_result_list_lr3 ON public.lr3_to_resp USING btree (result_list_id_lr3);
 
 
 --
@@ -1145,6 +1089,14 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
+-- Name: lr2_to_resp fk_test_id_to_name; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lr2_to_resp
+    ADD CONSTRAINT fk_test_id_to_name FOREIGN KEY (test_id) REFERENCES public.test_name_lr2(test_id) NOT VALID;
+
+
+--
 -- Name: lr2_to_resp fkey_exp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1166,14 +1118,6 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1
     ADD CONSTRAINT fkey_expert_id FOREIGN KEY (expert_id) REFERENCES public.users(usr_id) NOT VALID;
-
-
---
--- Name: lr2_to_resp fkey_params_list; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.lr2_to_resp
-    ADD CONSTRAINT fkey_params_list FOREIGN KEY (params_id_lr2) REFERENCES public.params_list_lr2(id) NOT VALID;
 
 
 --
@@ -1205,7 +1149,7 @@ ALTER TABLE ONLY public.lr3_to_resp
 --
 
 ALTER TABLE ONLY public.lr3_to_resp
-    ADD CONSTRAINT fkey_result_list_lr3 FOREIGN KEY (result_list_id_lr3) REFERENCES public.lr3_results(try) NOT VALID;
+    ADD CONSTRAINT fkey_result_list_lr3 FOREIGN KEY (result_list_id_lr3) REFERENCES public.results_list_lr3(id) NOT VALID;
 
 
 --
@@ -1219,4 +1163,3 @@ ALTER TABLE ONLY public.lr2_to_resp
 --
 -- PostgreSQL database dump complete
 --
-
