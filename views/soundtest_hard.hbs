@@ -1,0 +1,127 @@
+<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultsModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Среднее время реакции: <span id="averageResult"></span> мс</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="redirector" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="min-vh-70 d-flex align-items-center">
+    <div class="row w-100 justify-content-center">
+        <div class="col-12 text-center">
+            <button id="startButton" class="btn btn-lg btn-primary" type="button">Начать тест</button>
+        </div>
+        <div class="text-center mt-5">
+            <button id="shortSoundButton" class="btn btn-lg btn-primary" type="button" disabled>Четное</button>
+            <button id="longSoundButton" class="btn btn-lg btn-primary ms-3" type="button" disabled>Нечетное</button>
+        </div>
+    </div>
+</div>
+
+<audio id="shortSound" src="/short.mp3" type="audio/mpeg" preload="auto"></audio>
+<audio id="longSound" src="/long.mp3" type="audio/mpeg" preload="auto"></audio>
+
+<script>
+    const startButton = document.getElementById('startButton');
+    const shortSoundButton = document.getElementById('shortSoundButton');
+    const longSoundButton = document.getElementById('longSoundButton');
+    const shortSound = document.getElementById('shortSound');
+    const longSound = document.getElementById('longSound');
+
+    shortSoundButton.disabled = true;
+    longSoundButton.disabled = true;
+
+    let startTime;
+    let clickCount = 0;
+    let results = [];
+    let lastPlayedSound;
+
+    function playSound(sound) {
+        sound.currentTime = 0;
+        sound.play();
+    }
+
+    startButton.addEventListener('click', () => {
+        startButton.disabled = true;
+        playRandomSound();
+    });
+
+    shortSoundButton.addEventListener('click', () => {
+        checkAnswer('short');
+    });
+
+    longSoundButton.addEventListener('click', () => {
+        checkAnswer('long');
+    });
+
+    function checkAnswer(answer) {
+        let reactionTime = new Date().getTime() - startTime;
+        let correct = (lastPlayedSound === answer) ? 1 : 0;
+        results.push({ reactionTime, correct });
+
+        shortSoundButton.disabled = true;
+        longSoundButton.disabled = true;
+        clickCount++;
+
+        if (clickCount === 30) {
+            sendResults();
+        } else {
+            playRandomSound();
+        }
+    }
+
+    function playShortSoundTwice() {
+        shortSound.play();
+        setTimeout(() => {
+            shortSound.currentTime = 0;
+            shortSound.play();
+        }, 500);
+    }
+
+    function playRandomSound() {
+        const randomDelay = Math.floor(Math.random() * 2000) + 1000;
+
+        setTimeout(() => {
+            if (Math.random() > 0.5) {
+                playShortSoundTwice();
+                lastPlayedSound = 'short';
+            } else {
+                playSound(longSound);
+                lastPlayedSound = 'long';
+            }
+            startTime = new Date().getTime();
+            shortSoundButton.disabled = false;
+            longSoundButton.disabled = false;
+        }, randomDelay);
+    }
+
+    async function sendResults() {
+        const correctAnswers = results.filter(result => result.correct === 1).length;
+        const averageReactionTime = results.reduce((a, b) => a + b.reactionTime, 0) / results.length;
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ results })
+        };
+
+        try {
+            const response = await fetch('/api/results', requestOptions);
+            const data = await response.json();
+            console.log('Результаты отправлены:', data);
+        } catch (error) {
+            console.error('Ошибка при отправке результатов:', error);
+        }
+
+        alert(`Количество правильных ответов: ${correctAnswers}\nСреднее время реакции: ${averageReactionTime.toFixed(2)} мс`);
+    }
+</script>

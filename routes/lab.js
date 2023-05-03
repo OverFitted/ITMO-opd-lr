@@ -166,15 +166,6 @@ router.get('/lab2/simple', (req, res, next) => {
     })
 })
 
-router.get('/lab2/hard', (req, res, next) => {
-    res.status(200)
-    res.render('hard_tests', {
-        title: "Простые тесты | без CHATGPT",
-        isLoggedIn: req.cookies.usr_id,
-    })
-})
-
-
 router.get('/lab2/simple/light', (req, res, next) => {
     res.status(200)
     res.render('lighttest_simple', {
@@ -192,7 +183,7 @@ router.post('/lab2/simple/light', (req, res, next) => {
 router.get('/lab2/simple/sound', (req, res, next) => {
     res.status(200)
     res.render('soundtest_simple', {
-        title: "Простой тест на свет | без CHATGPT",
+        title: "Простой тест на звук | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
     })
 })
@@ -201,6 +192,30 @@ router.post('/lab2/simple/sound', (req, res, next) => {
     res.status(200)
     results = req.body.results
     console.log(results)
+})
+
+router.get('/lab2/hard', (req, res, next) => {
+    res.status(200)
+    res.render('hard_tests', {
+        title: "Сложные тесты | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
+router.get('/lab2/hard/maths_hard', (req, res, next) => {
+    res.status(200)
+    res.render('mathtest_hard', {
+        title: "Сложный математический тест | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
+router.get('/lab2/hard/sound_hard', (req, res, next) => {
+    res.status(200)
+    res.render('soundtest_hard', {
+        title: "Сложный тест на звук | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
 })
 
 module.exports = router

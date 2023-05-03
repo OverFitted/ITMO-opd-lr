@@ -1,0 +1,103 @@
+<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultsModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Среднее время реакции: <span id="averageResult"></span> мс</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="redirector" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column min-vh-70">
+    <div class="row flex-grow-1 justify-content-center align-items-center">
+        <div class="col-auto text-center">
+            <div id="expressionCard" class="expression-card"></div>
+            <div id="buttonsContainer" class="d-none d-flex justify-content-center">
+                <button id="evenBtn" class="btn btn-primary me-2">Четное</button>
+                <button id="oddBtn" class="btn btn-primary">Нечетное</button>
+            </div>
+            <button id="startBtn" class="btn btn-primary mt-3">Начать тест</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const neededClicks = 2;
+    const startBtn = document.getElementById('startBtn');
+    const expressionCard = document.getElementById('expressionCard');
+    const buttonsContainer = document.getElementById('buttonsContainer');
+    const evenBtn = document.getElementById('evenBtn');
+    const oddBtn = document.getElementById('oddBtn');
+
+    let expression, correctAnswer;
+    let correctCount = 0, totalCount = 0;
+
+    function generateExpression() {
+        const a = Math.floor(Math.random() * 10) + 1;
+        const b = Math.floor(Math.random() * 10) + 1;
+        const operator = Math.random() < 0.5 ? '+' : '-';
+        const result = operator === '+' ? a + b : a - b;
+        correctAnswer = result % 2 === 0;
+        return `${a} ${operator} ${b}`;
+    }
+
+    function showExpression() {
+        expressionCard.textContent = generateExpression();
+        expressionCard.style.display = 'flex';
+    }
+
+    function checkAnswer(answer) {
+        if (answer === correctAnswer) {
+            correctCount++;
+        }
+        totalCount++;
+
+        if (totalCount < neededClicks) {
+            showExpression();
+        } else {
+            console.log(`Правильных ответов: ${correctCount}`);
+            console.log(`Общее количество ответов: ${totalCount}`);
+            startBtn.disabled = false;
+            expressionCard.style.display = 'none';
+            buttonsContainer.style.display = 'none';
+        }
+    }
+
+    startBtn.addEventListener('click', () => {
+        startBtn.disabled = true;
+        showExpression();
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.classList.remove('d-none');
+        correctCount = 0;
+        totalCount = 0;
+    });
+
+    evenBtn.addEventListener('click', () => {
+        checkAnswer(true);
+    });
+
+    oddBtn.addEventListener('click', () => {
+        checkAnswer(false);
+    });
+</script>
+
+<style>
+    .expression-card {
+        width: 300px;
+        height: 100px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #000;
+        border-radius: 5px;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+</style>
