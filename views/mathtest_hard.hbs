@@ -1,0 +1,168 @@
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descriptionModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Тебе будет предоставлена возможность пройти тест на оценку навыков сложения в уме на основе зрения. Тебе в
+течение 2 минут будут подаваться различные карточки, состоящие из 2 случайных числе. Твоя задача — провести
+сложение этих чисел в уме и оценить четность полученного значения, после чего необходимо нажать клавиши 1 или
+2, что соответствует нечетному и четному числам. Конкретного сигнала о завершении подачи звукового набора не
+будет. Интервал между сигналами одинаковый. Вот пример: карточка, состоящая из чисел 1 и 4 соответствует числу
+5, которое не является четным — нужно нажать цифру 1 на клавиатуре.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultsModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Среднее время правильной реакции: <span id="averagePositiveResult"></span> мс</p>
+                <p>Среднее время неправильной реакции: <span id="averageNegativeResult"></span> мс</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="redirector" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column min-vh-70">
+    <div class="row flex-grow-1 justify-content-center align-items-center">
+        <div class="col-auto text-center">
+            <div id="expressionCard" class="expression-card"></div>
+            <div id="buttonsContainer" class="d-none d-flex justify-content-center">
+                <button id="evenBtn" class="btn btn-primary me-2">Четное</button>
+                <button id="oddBtn" class="btn btn-primary">Нечетное</button>
+            </div>
+            <button id="startBtn" class="btn btn-primary mt-3">Начать тест</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const test_id = 5;
+    const neededClicks = 2;
+    const startBtn = document.getElementById('startBtn');
+    const expressionCard = document.getElementById('expressionCard');
+    const buttonsContainer = document.getElementById('buttonsContainer');
+    const evenBtn = document.getElementById('evenBtn');
+    const oddBtn = document.getElementById('oddBtn');
+
+    let expression, correctAnswer;
+    let correctCount = 0, totalCount = 0;
+    let positiveResults = [0];
+    let negativeResults = [0];
+
+    let startTime;
+
+    $(document).ready(() => {
+        const descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal'));
+        descriptionModal.show();
+    })
+
+    redirector.addEventListener('click', () => {
+        location.href = '../../';
+    })
+
+    function generateExpression() {
+        const a = Math.floor(Math.random() * 10) + 1;
+        const b = Math.floor(Math.random() * 10) + 1;
+        const operator = Math.random() < 0.5 ? '+' : '-';
+        const result = operator === '+' ? a + b : a - b;
+        correctAnswer = result % 2 === 0;
+        return `${a} ${operator} ${b}`;
+    }
+
+    function showExpression() {
+        startTime = new Date();
+        expressionCard.textContent = generateExpression();
+        expressionCard.style.display = 'flex';
+    }
+
+    function checkAnswer(answer) {
+        const reactionTime = new Date() - startTime;
+        if (answer === correctAnswer) {
+            correctCount++;
+            positiveResults.push(reactionTime);
+        } else {
+            negativeResults.push(reactionTime);
+        }
+        totalCount++;
+
+        if (totalCount < neededClicks) {
+            showExpression();
+        } else {
+            sendResults()
+        }
+    }
+
+    startBtn.addEventListener('click', () => {
+        startBtn.disabled = true;
+        showExpression();
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.classList.remove('d-none');
+        correctCount = 0;
+        totalCount = 0;
+    });
+
+    evenBtn.addEventListener('click', () => {
+        checkAnswer(true);
+    });
+
+    oddBtn.addEventListener('click', () => {
+        checkAnswer(false);
+    });
+
+    function calculateAverage(array) {
+        return array.reduce((a, b) => a + b) / Math.max(1, array.length - 1);
+    }
+
+    async function sendResults() {
+        const averagePositiveResult = calculateAverage(positiveResults)
+        const averageNegativeResult = calculateAverage(negativeResults)
+
+        document.getElementById('averagePositiveResult').textContent = averagePositiveResult.toFixed(2);
+        document.getElementById('averageNegativeResult').textContent = averageNegativeResult.toFixed(2);
+        const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+        resultsModal.show();
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ averagePositiveResult, averageNegativeResult, test_id })
+        };
+
+        try {
+            const response = await fetch('/labs/lab2/', requestOptions);
+            console.log('Результаты отправлены:', response);
+        } catch (error) {
+            console.error('Ошибка при отправке результатов:', error);
+        }
+    }
+</script>
+
+<style>
+    .expression-card {
+        width: 300px;
+        height: 100px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #000;
+        border-radius: 5px;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+</style>

@@ -1,0 +1,177 @@
+<div id="overlay" class="overlay">
+    <div class="slider-card">
+        {{#each pvks}}
+            <div class="blocs-grid-container grid-bloc-8-style">
+                <div class="text-lg-center">
+                    <p class="text-lg-start bento-box active-token">
+                        {{this.cur.name}}
+                    </p>
+                </div>
+                <div class="text-lg-center">
+                    <p class="bento-box active-token">
+                        {{this.value}}
+                    </p>
+                </div>
+            </div>
+        {{/each}}
+        <div class="col-md-12 text-center">
+            <button data="{{this.id}}" type="button" class="btn btn-primary">
+                ОК
+            </button>
+        </div>
+    </div>
+</div>
+<div class="bloc l-bloc" id="bloc-5">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col-sm-8 text-start">
+                <div class="text-lg-center">
+                    <h3 class="mb-4 section-heading primary-text">
+                        Первая лабораторная
+                        <br/>
+                    </h3>
+                </div>
+                <h5 class="mb-4 text-lg-start">
+                    Определение видов программистов и ИТ, ПВК для определенного вида деятельности
+                </h5>
+                <form method="POST" action="/labs/lab1">
+                    <input
+                            type="hidden"
+                            name="selectedLanguage"
+                            id="selectedLanguage"
+                            value="C1"
+                    />
+                    <ul class="nav nav-tabs" id="nav-11978-tab" role="tablist">
+                        {{#each profs}}
+                            <li class="nav-item">
+                                <a class="a-btn clickable nav-link mini-heading token-link {{#if @first}}active{{/if}}" id="nav-11978-tab-{{this.id}}"
+                                   data-bs-toggle="tab"
+                                   href="#" role="tab"
+                                   data="{{this.id}}"
+                                   aria-controls="nav-11978-content-{{this.id}}"
+                                   aria-selected={{#if @first}}"true"{{else}}"false"{{/if}}
+                                   data-bs-target="#nav-11978-content-{{this.id}}">{{this.name}}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                    <div class="tab-content">
+                        {{#each profs}}
+                            <div
+                                    class="tab-pane fade-tab-bs {{#if @first}}show active{{else}}hide{{/if}}"
+                                    id="nav-11978-content-{{this.id}}"
+                                    role="tabpanel"
+                                    aria-labelledby="nav-11978-content-{{this.id}}"
+                            >
+
+                                <div class="pb-lg-1">
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="bento-box">
+                                                {{this.description}}
+                                            </p>
+                                        </div>
+                                        <div class="col">
+                                            <div class="bento-box" style="padding-top: 30px;padding-bottom: 5px;">
+                                                <label class="form-label mini-heading" style="padding-bottom: 15px;">
+                                                    Ключевые ПВК<br>
+                                                </label>
+                                                <ul class="list-unstyled">
+                                                    {{#each this.top_table}}
+                                                        <li>
+                                                            <p class="token-link">
+                                                                {{this.name}}
+                                                            </p>
+                                                        </li>
+                                                    {{/each}}
+                                                </ul>
+                                            </div>
+									    </div>
+                                    </div>
+                                </div>
+                                <button
+                                        type="submit"
+                                        class="btn btn-d btn-lg btn-rd mb-lg-3 w-100 box-btn fill-mob-btn primary-btn"
+                                >
+                                    Определить ПВК
+                                    <br/>
+                                </button>
+                            </div>
+                        {{/each}}
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-4 text-start">
+                <div>
+                    <h3 class="mb-4 primary-text box-heading">
+                        Список ПВК
+                    </h3>
+                    <p class="token-link">
+                        Адекватная самооценка
+                    </p>
+                    <p class="token-link">
+                        Дисциплинированность
+                    </p>
+                    <p class="token-link">
+                        Реакция
+                    </p>
+                    <p class="token-link">
+                        Креативность
+                    </p>
+                    <p class="token-link">
+                        Пунктуальность
+                    </p>
+                    <p class="token-link">
+                        Лидерство
+                    </p>
+                    <p class="token-link">
+                        Целеустремленность
+                    </p>
+                    <p class="token-link">
+                        ...
+                    </p>
+                </div>
+                <div>
+                    <div>
+                        <h3 class="mb-4 primary-text box-heading">
+                            Список экспертов
+                        </h3>
+                        {{#each experts}}
+                            <p class="token-link mb-lg-3">
+                                {{this.surname}}
+                                {{this.name}}
+                            </p>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.clickable').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const selectedLanguage = e.target.getAttribute("data");
+            document.getElementById('selectedLanguage').value = selectedLanguage;
+        });
+    });
+</script>
+{{#if pvks}}
+    <style>
+        .active-token {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .blocs-grid-container {
+            row-gap: .2rem;
+        }
+    </style>
+    <script>
+        $(".btn-primary").click((e) => {
+            $('#overlay').hide()
+        });
+
+        $("#overlay").show()
+    </script>
+{{/if}}

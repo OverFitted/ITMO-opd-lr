@@ -1,0 +1,163 @@
+<div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descriptionModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Тебе будет предоставлена возможность пройти тест на оценку скорости реакции на источники света различного
+цвета. Твоя задача - в течении двух минут как можно быстрее нажимать на нужную клавишу от 1 до 3. 1 соответствует
+красному цвету, 2 - зеленому, 3 - желтому. Помни, что каждый цвет может загораться на различное время с различным
+периодом. После завершения теста клавиша "Далее"станет активной.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resultsModal" tabindex="-1" role="dialog" aria-labelledby="resultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultsModalLabel">Средний результат</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Среднее время правильной реакции: <span id="averagePositiveResult"></span> мс</p>
+                <p>Среднее время неправильной реакции: <span id="averageNegativeResult"></span> мс</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="redirector" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column min-vh-70">
+    <div class="row flex-grow-1 justify-content-center align-items-center">
+        <div class="col-auto">
+            <button id="startBtn" class="btn btn-primary">Начать тест</button>
+            <div id="squareContainer" class="d-none position-relative">
+                <div id="square" class="square"></div>
+            </div>
+            <div id="colorButtons" class="d-none mt-7">
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-lg btn-block btn-color" style="background-color: #ff0000;" data-color="0">1</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-lg btn-block btn-color" style="background-color: #00ff00;" data-color="1">2</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-lg btn-block btn-color" style="background-color: #0000ff;" data-color="2">3</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .square {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .btn-color {
+        margin: 5px;
+    }
+</style>
+
+<script>
+    const neededClicks = 2;
+    const test_id = 3;
+    const startBtn = document.getElementById('startBtn');
+    const squareContainer = document.getElementById('squareContainer');
+    const square = document.getElementById('square');
+    const colorButtons = document.getElementById('colorButtons');
+    const btnColors = document.querySelectorAll('.btn-color');
+
+    const colors = ['#ff0000', '#00ff00', '#0000ff'];
+    let currentColor;
+    let positiveResults = [0];
+    let negativeResults = [0];
+    let clickCount = 0;
+
+    $(document).ready(() => {
+        const descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal'));
+        descriptionModal.show();
+    })
+
+    redirector.addEventListener('click', () => {
+        location.href = '../../';
+    })
+
+    startBtn.addEventListener('click', () => {
+        startBtn.classList.add('d-none');
+        squareContainer.classList.remove('d-none');
+        colorButtons.classList.remove('d-none');
+        showSquare();
+    });
+
+    function showSquare() {
+        const randomColorIndex = Math.floor(Math.random() * colors.length);
+        setTimeout(() => {
+            currentColor = colors[randomColorIndex]
+            square.style.backgroundColor = currentColor;
+            startTime = new Date();
+        }, Math.random() * 2000 + 500);
+    }
+
+    btnColors.forEach((btnColor) => {
+        btnColor.addEventListener('click', (event) => {
+            const userColor = colors[parseInt(event.target.dataset.color, 10)];
+            const reactionTime = new Date().getTime() - startTime;
+            if (userColor === currentColor) {
+                positiveResults.push(reactionTime);
+            } else {
+                negativeResults.push(reactionTime)
+            }
+            clickCount++;
+            if (clickCount === neededClicks) {
+                sendResults();
+            } else {
+                square.style.backgroundColor = '';
+                showSquare();
+            }
+        });
+    });
+
+    function calculateAverage(array) {
+        return array.reduce((a, b) => a + b) / Math.max(1, array.length - 1);
+    }
+
+    async function sendResults() {
+        const averagePositiveResult = calculateAverage(positiveResults)
+        const averageNegativeResult = calculateAverage(negativeResults)
+
+        document.getElementById('averagePositiveResult').textContent = averagePositiveResult.toFixed(2);
+        document.getElementById('averageNegativeResult').textContent = averageNegativeResult.toFixed(2);
+        const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+        resultsModal.show();
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ averagePositiveResult, averageNegativeResult, test_id })
+        };
+
+        try {
+            const response = await fetch('/labs/lab2/', requestOptions);
+            console.log('Результаты отправлены:', response);
+        } catch (error) {
+            console.error('Ошибка при отправке результатов:', error);
+        }
+    }
+</script>
