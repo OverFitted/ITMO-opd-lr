@@ -584,6 +584,10 @@ url("img/graphic-2.webp") 2x);
 .p-bloc-8-style{
 	width:100%;
 }
+.grid-bloc-12-style{
+	grid-template-columns:1fr 1fr 1fr 1fr;
+	grid-template-rows:auto auto auto;
+}
 
 /* = Colour
 -------------------------------------------------------------- */
