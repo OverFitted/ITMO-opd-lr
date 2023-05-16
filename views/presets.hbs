@@ -1,0 +1,101 @@
+<div class="bloc l-bloc" id="bloc-12">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col-sm-8 text-start col-lg-8">
+                <div class="text-lg-center container-div-style">
+                    <h3 class="mb-4 section-heading primary-text">
+                        Список пресетов
+                    </h3>
+
+                    <div class="container">
+                        {{#each presets}}
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h3>Номер лабы: {{this.lab_num}}</h3>
+                            </div>
+                            {{#each this.presets}}
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{preset_name}}</h5>
+                                        <p class="card-text">Номер теста: {{test_num}}</p>
+                                        <p class="card-text">Время на тест: {{runtime}}</p>
+                                        <p class="card-text">Показывать время в статистике: {{show_time}}</p>
+                                        <p class="card-text">Показывать статистику теста: {{show_stats}}</p>
+                                        <p class="card-text">Начальная скорость: {{speed_koef}}</p>
+                                        <p class="card-text">Коэффициент ускорения: {{acceleration_koef}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 text-start offset-lg-0">
+                <div class="card mb-lg-3">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPresetModal">
+                        Добавить пресет
+                    </button>
+
+                    <div class="modal fade" id="addPresetModal" tabindex="-1" aria-labelledby="addPresetModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addPresetModalLabel">Добавить пресет</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="add-preset" method="POST">
+                                        <div class="mb-3">
+                                            <label for="preset_name" class="form-label">Название пресета</label>
+                                            <input type="text" class="form-control" id="preset_name" name="preset_name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lab_num" class="form-label">Номер лабы</label>
+                                            <input type="number" class="form-control" id="lab_num" name="lab_num" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="test_num" class="form-label">Номер теста</label>
+                                            <input type="number" class="form-control" id="test_num" name="test_num" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="runtime" class="form-label">Время на тест (секунд)</label>
+                                            <input type="number" class="form-control" id="runtime" name="runtime" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="show_time" class="form-label">Показывать время в статистике</label>
+                                            <select class="form-select" id="show_time" name="show_time" required>
+                                                <option selected>Выберите...</option>
+                                                <option value="true">Да</option>
+                                                <option value="false">Нет</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="show_stats" class="form-label">Показывать статистику теста</label>
+                                            <select class="form-select" id="show_stats" name="show_stats" required>
+                                                <option selected>Выберите...</option>
+                                                <option value="true">Да</option>
+                                                <option value="false">Нет</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="speed_koef" class="form-label">Начальная скорость (стандартная - 0.02)</label>
+                                            <input type="number" step="0.01" class="form-control" id="speed_koef" name="speed_koef" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="acceleration_koef" class="form-label">Коэффициент ускорения (стандартный - 0.01)</label>
+                                            <input type="number" step="0.01" class="form-control" id="acceleration_koef" name="acceleration_koef" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Добавить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,17 +8,19 @@
                             Простые реакции на движущийся объект
                         </h3>
 
-                        <div class="row justify-content-center">
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика</h5>
-                                    <p id="clicks" class="card-text">Кликов: 0</p>
-                                    <p id="misses" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                        {{#if preset.show_stats}}
+                            <div class="row justify-content-center">
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика</h5>
+                                        <p id="clicks" class="card-text">Кликов: 0</p>
+                                        <p id="misses" class="card-text">Промахов: 0</p>
+                                        <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                        <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {{/if}}
 
                         <div class="row justify-content-center align-items-center">
                             <div class="col-12 d-flex justify-content-center align-items-center mb-3">
@@ -51,11 +53,14 @@
     let gameRunning = false;
     let reactionTimes = [];
     let spacePressed = false;
-    let presetTime = 60;
+    let presetTime = {{preset.runtime}};
     let clicks = 0;
     let hits = 0;
     let misses = 0;
-    let hitThreshold = 0.1;
+    let hitThreshold = 0.25;
+    let acceleration = {{preset.acceleration_koef}};
+    let speed = {{preset.speed_koef}};
+    let maxspeed = .3
 
     function drawCircle() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -93,7 +98,7 @@
             if (!gameRunning) {
                 clearInterval(gameInterval);
             } else {
-                angle += 0.03;
+                angle += speed;
                 if (angle > 2 * Math.PI) {
                     angle -= 2 * Math.PI;
                 }
@@ -112,6 +117,8 @@
 
             if (Date.now() - startTime >= presetTime * 1000) {
                 gameRunning = false;
+                postResults();
+                clearInterval(gameInterval);
             }
         }, 10);
     }
@@ -155,9 +162,39 @@
             } else {
                 hits++;
                 targetAngle = Math.random() * 2 * Math.PI;
+
+                speed += acceleration;
+                speed = Math.min(speed, maxspeed)
             }
             updateStats();
         }
     });
 
+    function postResults() {
+        let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+
+        let sd = Math.sqrt(reactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1));
+
+        let results = {
+            averageResult: avgTime,
+            stdResult: sd,
+            test_id: 1
+        };
+
+        fetch('../', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error: ' + response.statusText);
+            }
+        }).then(data => {
+            console.log(data);
+        }).catch(error => console.error('Error:', error));
+    }
 </script>

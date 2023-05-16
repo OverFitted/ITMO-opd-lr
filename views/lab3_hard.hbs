@@ -8,35 +8,37 @@
                             Сложные реакции на движущийся объект
                         </h3>
 
-                        <div class="row justify-content-center">
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика по 1</h5>
-                                    <p id="clicks1" class="card-text">Кликов: 0</p>
-                                    <p id="misses1" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime1" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev1" class="card-text">Стандартное отклонение: 0</p>
+                        {{#if preset.show_stats}}
+                            <div class="row justify-content-center">
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика по 1</h5>
+                                        <p id="clicks1" class="card-text">Кликов: 0</p>
+                                        <p id="misses1" class="card-text">Промахов: 0</p>
+                                        <p id="avgTime1" class="card-text">Среднее время реакции: 0</p>
+                                        <p id="stdDev1" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
+                                </div>
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика по 2</h5>
+                                        <p id="clicks2" class="card-text">Кликов: 0</p>
+                                        <p id="misses2" class="card-text">Промахов: 0</p>
+                                        <p id="avgTime2" class="card-text">Среднее время реакции: 0</p>
+                                        <p id="stdDev2" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
+                                </div>
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика по 3</h5>
+                                        <p id="clicks3" class="card-text">Кликов: 0</p>
+                                        <p id="misses3" class="card-text">Промахов: 0</p>
+                                        <p id="avgTime3" class="card-text">Среднее время реакции: 0</p>
+                                        <p id="stdDev3" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика по 2</h5>
-                                    <p id="clicks2" class="card-text">Кликов: 0</p>
-                                    <p id="misses2" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime2" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev2" class="card-text">Стандартное отклонение: 0</p>
-                                </div>
-                            </div>
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика по 3</h5>
-                                    <p id="clicks3" class="card-text">Кликов: 0</p>
-                                    <p id="misses3" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime3" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev3" class="card-text">Стандартное отклонение: 0</p>
-                                </div>
-                            </div>
-                        </div>
+                        {{/if}}
 
                         <div class="row justify-content-center align-items-center">
                             <div class="col-12 d-flex justify-content-center align-items-center mb-3">
@@ -60,46 +62,49 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
+    let gameRunning = false;
+    let presetTime = {{preset.runtime}}
+    let speed = {{preset.acceleration_koef}};
+    let acceleration = {{preset.speed_koef}};
+    let maxspeed = .3
+
     let circles = [{
         centerX: canvas.width / 4,
         centerY: canvas.height / 2,
         radius: 100,
         angle: 0,
         targetAngle: Math.PI,
-        speed: 0.02,
+        speed: speed / 2,
         hits: 0,
         misses: 0,
         clicks: 0,
         reactionTimes: [],
-        hitThreshold: 0.1,
+        hitThreshold: 0.25,
     }, {
         centerX: canvas.width / 2,
         centerY: canvas.height / 2,
         radius: 100,
         angle: 0,
         targetAngle: Math.PI * 1.5,
-        speed: 0.03,
+        speed: speed,
         hits: 0,
         misses: 0,
         clicks: 0,
         reactionTimes: [],
-        hitThreshold: 0.1,
+        hitThreshold: 0.25,
     }, {
         centerX: 3 * canvas.width / 4,
         centerY: canvas.height / 2,
         radius: 100,
         angle: 0,
         targetAngle: Math.PI * 2,
-        speed: 0.04,
+        speed: speed * 2,
         hits: 0,
         misses: 0,
         clicks: 0,
         reactionTimes: [],
-        hitThreshold: 0.1,
+        hitThreshold: 0.25,
     }];
-
-    let gameRunning = false;
-    let presetTime = 60;
 
     function drawCircle(circle) {
         let x = circle.centerX + circle.radius * Math.cos(circle.angle);
@@ -180,7 +185,6 @@
         }
     });
 
-
     document.addEventListener('keydown', function (event) {
         const circleKey = event.key;
         if (circleKey >= '1' && circleKey <= '3') {
@@ -192,9 +196,38 @@
             } else {
                 circle.hits++;
                 circle.targetAngle = Math.random() * 2 * Math.PI;
+
+                circle.speed += acceleration;
+                circle.speed = Math.min(circle.speed, maxspeed)
             }
             updateStats();
         }
     });
 
+    function postResults() {
+        let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+        let sd = Math.sqrt(reactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1));
+
+        let results = {
+            averageResult: avgTime,
+            stdResult: sd,
+            test_id: 2
+        };
+
+        fetch('../', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error: ' + response.statusText);
+            }
+        }).then(data => {
+            console.log(data);
+        }).catch(error => console.error('Error:', error));
+    }
 </script>

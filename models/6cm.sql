@@ -16,6 +16,15 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: schema_name; Type: SCHEMA; Schema: -; Owner: graevsky
+--
+
+CREATE SCHEMA schema_name;
+
+
+ALTER SCHEMA schema_name OWNER TO graevsky;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -109,9 +118,8 @@ ALTER SEQUENCE public.lr2_to_resp_id_seq OWNED BY public.lr2_to_resp.id;
 CREATE TABLE public.lr3_to_resp (
     id integer NOT NULL,
     respondent_id integer,
-    expert_id integer,
     result_list_id_lr3 integer,
-    params_list_id_lr3 integer
+    preset_id integer
 );
 
 
@@ -140,22 +148,24 @@ ALTER SEQUENCE public.lr3_to_resp_id_seq OWNED BY public.lr3_to_resp.id;
 
 
 --
--- Name: params_list_lr2; Type: TABLE; Schema: public; Owner: master
+-- Name: lr4_to_resp; Type: TABLE; Schema: public; Owner: master
 --
 
-CREATE TABLE public.params_list_lr2 (
+CREATE TABLE public.lr4_to_resp (
     id integer NOT NULL,
-    params_list float[]
+    respondent_id integer,
+    result_list_id_lr4 integer,
+    preset_id integer
 );
 
 
-ALTER TABLE public.params_list_lr2 OWNER TO master;
+ALTER TABLE public.lr4_to_resp OWNER TO master;
 
 --
--- Name: params_list_lr2_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
 --
 
-CREATE SEQUENCE public.params_list_lr2_id_seq
+CREATE SEQUENCE public.lr4_to_resp_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -164,32 +174,33 @@ CREATE SEQUENCE public.params_list_lr2_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.params_list_lr2_id_seq OWNER TO master;
+ALTER TABLE public.lr4_to_resp_id_seq OWNER TO master;
 
 --
--- Name: params_list_lr2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
 --
 
-ALTER SEQUENCE public.params_list_lr2_id_seq OWNED BY public.params_list_lr2.id;
+ALTER SEQUENCE public.lr4_to_resp_id_seq OWNED BY public.lr4_to_resp.id;
 
 
 --
--- Name: params_list_lr3; Type: TABLE; Schema: public; Owner: master
+-- Name: preset_to_resp; Type: TABLE; Schema: public; Owner: master
 --
 
-CREATE TABLE public.params_list_lr3 (
+CREATE TABLE public.preset_to_resp (
     id integer NOT NULL,
-    params_list float[]
+    user_id integer,
+    preset_id integer
 );
 
 
-ALTER TABLE public.params_list_lr3 OWNER TO master;
+ALTER TABLE public.preset_to_resp OWNER TO master;
 
 --
--- Name: params_list_lr3_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
 --
 
-CREATE SEQUENCE public.params_list_lr3_id_seq
+CREATE SEQUENCE public.preset_to_resp_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -198,13 +209,13 @@ CREATE SEQUENCE public.params_list_lr3_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.params_list_lr3_id_seq OWNER TO master;
+ALTER TABLE public.preset_to_resp_id_seq OWNER TO master;
 
 --
--- Name: params_list_lr3_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
 --
 
-ALTER SEQUENCE public.params_list_lr3_id_seq OWNED BY public.params_list_lr3.id;
+ALTER SEQUENCE public.preset_to_resp_id_seq OWNED BY public.preset_to_resp.id;
 
 
 --
@@ -213,16 +224,9 @@ ALTER SEQUENCE public.params_list_lr3_id_seq OWNED BY public.params_list_lr3.id;
 
 CREATE TABLE public.presets (
     preset_id integer NOT NULL,
-    lab_name text,
-    test_in_lab_name text,
-    name text,
-    description text,
-    avail_time_sec integer,
-    show_time boolean,
-    res_in_1min_and_full_test boolean,
-    show_progress boolean,
-    obj_acc_factor integer,
-    obj_acc_time integer
+    lab_id integer,
+    test_in_lab_id integer,
+    params json
 );
 
 
@@ -321,12 +325,46 @@ ALTER SEQUENCE public.pvk_id_seq OWNED BY public.pvk_lab1.id;
 
 
 --
+-- Name: result_list_lr4; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.result_list_lr4 (
+    id integer NOT NULL,
+    result_list double precision[]
+);
+
+
+ALTER TABLE public.result_list_lr4 OWNER TO master;
+
+--
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.result_list_lr4_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.result_list_lr4_id_seq OWNER TO master;
+
+--
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.result_list_lr4_id_seq OWNED BY public.result_list_lr4.id;
+
+
+--
 -- Name: results_list_lr2; Type: TABLE; Schema: public; Owner: master
 --
 
 CREATE TABLE public.results_list_lr2 (
     id integer NOT NULL,
-    result_list float[]
+    result_list double precision[]
 );
 
 
@@ -360,7 +398,7 @@ ALTER SEQUENCE public.results_list_lr2_id_seq OWNED BY public.results_list_lr2.i
 
 CREATE TABLE public.results_list_lr3 (
     id integer NOT NULL,
-    result_list float[]
+    result_list double precision[]
 );
 
 
@@ -463,17 +501,17 @@ ALTER TABLE ONLY public.lr3_to_resp ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- Name: params_list_lr2 id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: lr4_to_resp id; Type: DEFAULT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.params_list_lr2 ALTER COLUMN id SET DEFAULT nextval('public.params_list_lr2_id_seq'::regclass);
+ALTER TABLE ONLY public.lr4_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr4_to_resp_id_seq'::regclass);
 
 
 --
--- Name: params_list_lr3 id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: preset_to_resp id; Type: DEFAULT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.params_list_lr3 ALTER COLUMN id SET DEFAULT nextval('public.params_list_lr3_id_seq'::regclass);
+ALTER TABLE ONLY public.preset_to_resp ALTER COLUMN id SET DEFAULT nextval('public.preset_to_resp_id_seq'::regclass);
 
 
 --
@@ -495,6 +533,13 @@ ALTER TABLE ONLY public.professions_lab1 ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.pvk_lab1 ALTER COLUMN id SET DEFAULT nextval('public.pvk_id_seq'::regclass);
+
+
+--
+-- Name: result_list_lr4 id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.result_list_lr4 ALTER COLUMN id SET DEFAULT nextval('public.result_list_lr4_id_seq'::regclass);
 
 
 --
@@ -532,6 +577,13 @@ COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id
 
 COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id) FROM stdin;
 1	1	1	6	1
+2	1232473507	\N	10	1
+3	1232473507	\N	11	1
+4	1232473507	\N	12	2
+5	1232473507	\N	13	4
+6	1232473507	\N	14	5
+7	1232473507	\N	15	5
+8	1232473507	\N	16	3
 \.
 
 
@@ -539,23 +591,23 @@ COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id) F
 -- Data for Name: lr3_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.lr3_to_resp (id, respondent_id, expert_id, result_list_id_lr3, params_list_id_lr3) FROM stdin;
+COPY public.lr3_to_resp (id, respondent_id, result_list_id_lr3, preset_id) FROM stdin;
 \.
 
 
 --
--- Data for Name: params_list_lr2; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: lr4_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.params_list_lr2 (id, params_list) FROM stdin;
+COPY public.lr4_to_resp (id, respondent_id, result_list_id_lr4, preset_id) FROM stdin;
 \.
 
 
 --
--- Data for Name: params_list_lr3; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: preset_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.params_list_lr3 (id, params_list) FROM stdin;
+COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
 \.
 
 
@@ -563,7 +615,7 @@ COPY public.params_list_lr3 (id, params_list) FROM stdin;
 -- Data for Name: presets; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.presets (preset_id, lab_name, test_in_lab_name, name, description, avail_time_sec, show_time, res_in_1min_and_full_test, show_progress, obj_acc_factor, obj_acc_time) FROM stdin;
+COPY public.presets (preset_id, lab_id, test_in_lab_id, params, preset_name) FROM stdin;
 \.
 
 
@@ -583,70 +635,70 @@ COPY public.professions_lab1 (id, name, description) FROM stdin;
 --
 
 COPY public.pvk_lab1 (id, name, description) FROM stdin;
-9	Адекватная самооценка
-8	Стремление к профессиональному совершенству
-71	Логичность
+9	Адекватная самооценка	
+8	Стремление к профессиональному совершенству	
+71	Логичность	
 5	Защита Родины	Готовность к защите Родины с оружием в руках
-6	Военно-профессиональная направленность
-7	Прямые внутренние мотивы военно-профессиональной деятельности
-10	Самостоятельность
-11	Пунктуальность, педантичность
-12	Дисциплинированность
-13	Аккуратность в работе
-14	Организованность, самодисциплина
-15	Старательность, исполнительность
-16	Ответственность
-17	Трудолюбие
-18	Инициативность
-19	Самокритичность
-20	Оптимизм, доминирование положительных эмоций
-21	Самообладание, эмоциональная уравновешенность, выдержка
-22	Самоконтроль, способность к самонаблюдению
-23	Предусмотрительность
+6	Военно-профессиональная направленность	
+7	Прямые внутренние мотивы военно-профессиональной деятельности	
+10	Самостоятельность	
+11	Пунктуальность, педантичность	
+12	Дисциплинированность	
+13	Аккуратность в работе	
+14	Организованность, самодисциплина	
+15	Старательность, исполнительность	
+16	Ответственность	
+17	Трудолюбие	
+18	Инициативность	
+19	Самокритичность	
+20	Оптимизм, доминирование положительных эмоций	
+21	Самообладание, эмоциональная уравновешенность, выдержка	
+22	Самоконтроль, способность к самонаблюдению	
+23	Предусмотрительность	
 24	Фрустрационная толерантность	Отсутствие агрессивности или депрессивности в ситуациях неудач
-25	Самомобилизующийся тип реакции на препятствия
+25	Самомобилизующийся тип реакции на препятствия	
 26	Интернальность	Погруженность в себя, самодостаточность, необщительность
 27	Экстернальность	Ориентация на взаимодействие с людьми, общительность
 28	Интрапунитивность	Ориентация на собственные силы, уверенность в себе, чувство самоэффективности
 29	Экстрапунитивность	Ориентация на помощь других людей, надежда на благоприятные обстоятельства, неуверенность в себе
-30	Способность планировать свою деятельность во времени
-31	Способность организовывать свою деятельность в условиях большого потока информации
-32	Способность брать на себя ответственность за принимаемые решения и действия
-33	Способность принимать решение в нестандартных ситуациях
-34	Способность рационально действовать в экстремальных ситуациях
-35	Способность эффективно действовать в условиях дефицита времени
-36	Способность переносить неприятные ощущения
-37	Способность аргументировано отстаивать свое мнение
-38	Способность к переключениям с одной деятельности на другую
-39	Способность преодолевать страх
-40	Решительность
-41	Сильная воля
-42	Смелость
-43	Чувство долга
-44	Честность
-45	Порядочность
-46	Товарищество
-47	Зрительная оценка размеров предметов
-48	Зрительное восприятие расстояний между предметами
-49	Глазомер: линейный, угловой, объемный
+30	Способность планировать свою деятельность во времени	
+31	Способность организовывать свою деятельность в условиях большого потока информации	
+32	Способность брать на себя ответственность за принимаемые решения и действия	
+33	Способность принимать решение в нестандартных ситуациях	
+34	Способность рационально действовать в экстремальных ситуациях	
+35	Способность эффективно действовать в условиях дефицита времени	
+36	Способность переносить неприятные ощущения	
+37	Способность аргументировано отстаивать свое мнение	
+38	Способность к переключениям с одной деятельности на другую	
+39	Способность преодолевать страх	
+40	Решительность	
+41	Сильная воля	
+42	Смелость	
+43	Чувство долга	
+44	Честность	
+45	Порядочность	
+46	Товарищество	
+47	Зрительная оценка размеров предметов	
+48	Зрительное восприятие расстояний между предметами	
+49	Глазомер: линейный, угловой, объемный	
 50	Глазомер динамический	Способность оценивать направление и скорость движения предмета
-51	Способность к различению фигуры на малоконтрастном фоне
-52	Способность различать и опознавать замаскированные объекты
-53	Способность к восприятию пространственного соотношения предметов
-54	Точность и оценка направления на источник звука
-55	Способность узнавать и различать ритмы
-56	Речевой слух
-57	Различение отрезков времени
-58	Способность к распознаванию небольших отклонений параметров технологических процессов по визуальным признакам
-59	Способность к распознаванию небольших отклонений параметров технологических процессов по акустическим признакам
-60	Способность к распознаванию небольших отклонений параметров технологических процессов по кинестетическим признакам
-61	Способность к зрительным представлениям
-62	Способность к пространственному воображению
-63	Способность к образному представлению предметов, процессов и явлений
+51	Способность к различению фигуры на малоконтрастном фоне	
+52	Способность различать и опознавать замаскированные объекты	
+53	Способность к восприятию пространственного соотношения предметов	
+54	Точность и оценка направления на источник звука	
+55	Способность узнавать и различать ритмы	
+56	Речевой слух	
+57	Различение отрезков времени	
+58	Способность к распознаванию небольших отклонений параметров технологических процессов по визуальным признакам	
+59	Способность к распознаванию небольших отклонений параметров технологических процессов по акустическим признакам	
+60	Способность к распознаванию небольших отклонений параметров технологических процессов по кинестетическим признакам	
+61	Способность к зрительным представлениям	
+62	Способность к пространственному воображению	
+63	Способность к образному представлению предметов, процессов и явлений	
 64	Представление явлений	Способность наглядно представлять себе новое явление, ранее не встречающееся в опыте, или старое, но в новых условиях
-65	Способность к переводу образа в словесное описание
-66	Способность к воссозданию образа по словесному описанию
-67	Функциональные свойства мышления
+65	Способность к переводу образа в словесное описание	
+66	Способность к воссозданию образа по словесному описанию	
+67	Функциональные свойства мышления	
 68	Аналитичность	Способность выделять отдельные элементы действительности, способность к классификации
 69	Синтетичность	Способность к обобщениям, установлению связей, закономерностей, формирование понятий
 70	Транссонантность	Способность к актуализации и вовлечению в процесс мышления информации, хранящейся в памяти, ассоциативность мышления
@@ -657,102 +709,110 @@ COPY public.pvk_lab1 (id, name, description) FROM stdin;
 76	Абстрактность	Объектные свойства мышления:абстрктаные образы и понятия
 77	Вербальность	Объектные свойства мышления:устная и письменная речь
 78	Калькулятивность	Объектные свойства мышления:цифровой материал
-79	Зрительная долговременная память на лица
-80	Зрительная долговременная память на образы предметного мира
-81	Зрительная долговременная память на условные обозначения
-82	Зрительная долговременная память на цифры, даты
-83	Зрительная долговременная память на слова и фразы
-84	Зрительная долговременная память на семантику текста
-85	Зрительная оперативная память на лица
-86	Зрительная оперативная память на образы предметного мира
-87	Зрительная оперативная память на условные обозначения
-88	Зрительная оперативная память на цифры, даты
-89	Зрительная оперативная память на слова и фразы
-90	Зрительная оперативная память на семантику текста
-91	Слуховая долговременная память на голоса
-92	Слуховая долговременная память на цифры
-93	Слуховая долговременная память на условные сигналы
-94	Слуховая долговременная память на мелодии
-95	Слуховая долговременная память на семантику сообщений
-96	Слуховая оперативная память на цифры
-97	Слуховая оперативная память на семантику сообщений
-98	Кинестетическая (моторная) память на простые движения
-99	Кинестетическая (моторная) память на сложные движения
-100	Кинестетическая (моторная) память на положение и перемещение тела в пространстве
-101	Тактильная память
-102	Обонятельная память
-103	Вкусовая память
-104	Энергичность, витальность (активность)
-105	Умственная работоспособность
-106	Физическая работоспособность (выносливость)
-107	Нервно-эмоциональная устойчивость, выносливость по отношению к эмоциональным нагрузкам
-108	Острота зрения
-109	Адаптация зрения к темноте, свету
-110	Контрастная чувствительность монохроматического зрения
-111	Цветовая дифференциальная чувствительность
-112	Устойчивость зрительной чувствительности во времени
-113	Острота слуха
-114	Контрастная чувствительность слуха
+79	Зрительная долговременная память на лица	
+80	Зрительная долговременная память на образы предметного мира	
+81	Зрительная долговременная память на условные обозначения	
+82	Зрительная долговременная память на цифры, даты	
+83	Зрительная долговременная память на слова и фразы	
+84	Зрительная долговременная память на семантику текста	
+85	Зрительная оперативная память на лица	
+86	Зрительная оперативная память на образы предметного мира	
+87	Зрительная оперативная память на условные обозначения	
+88	Зрительная оперативная память на цифры, даты	
+89	Зрительная оперативная память на слова и фразы	
+90	Зрительная оперативная память на семантику текста	
+91	Слуховая долговременная память на голоса	
+92	Слуховая долговременная память на цифры	
+93	Слуховая долговременная память на условные сигналы	
+94	Слуховая долговременная память на мелодии	
+95	Слуховая долговременная память на семантику сообщений	
+96	Слуховая оперативная память на цифры	
+97	Слуховая оперативная память на семантику сообщений	
+98	Кинестетическая (моторная) память на простые движения	
+99	Кинестетическая (моторная) память на сложные движения	
+100	Кинестетическая (моторная) память на положение и перемещение тела в пространстве	
+101	Тактильная память	
+102	Обонятельная память	
+103	Вкусовая память	
+104	Энергичность, витальность (активность)	
+105	Умственная работоспособность	
+106	Физическая работоспособность (выносливость)	
+107	Нервно-эмоциональная устойчивость, выносливость по отношению к эмоциональным нагрузкам	
+108	Острота зрения	
+109	Адаптация зрения к темноте, свету	
+110	Контрастная чувствительность монохроматического зрения	
+111	Цветовая дифференциальная чувствительность	
+112	Устойчивость зрительной чувствительности во времени	
+113	Острота слуха	
+114	Контрастная чувствительность слуха	
 115	Слуховая дифференциальная чувствительность	Способность различать: тембр, длительность, высоту, силу звука, ритм, фоновые или разнообразные шумы
-116	Переносимость длительно действующего звукового раздражителя
-117	Чувствительность (осязание) пальцев
-118	Вибрационная чувствительность
-119	Мышечно-суставная чувствительность усилий или сопротивления
-120	Ощущение равновесия
-121	Ощущение ускорения
-122	Обонятельная чувствительность
-123	Способность узнавать и различать вкусовые ощущения
+116	Переносимость длительно действующего звукового раздражителя	
+117	Чувствительность (осязание) пальцев	
+118	Вибрационная чувствительность	
+119	Мышечно-суставная чувствительность усилий или сопротивления	
+120	Ощущение равновесия	
+121	Ощущение ускорения	
+122	Обонятельная чувствительность	
+123	Способность узнавать и различать вкусовые ощущения	
 124	Объем внимания	Количество объектов, на которые может быть направлено внимание при их одновременном восприятии
-125	Концентрированность внимания
-126	Устойчивость внимания во времени
+125	Концентрированность внимания	
+126	Устойчивость внимания во времени	
 127	Переключаемость внимания	Способность быстрого переключения внимания с одного объекта на другой или с одной деятельности на другую
-128	Способность к распределению внимания между несколькими объектами или видами деятельности
-129	Помехоустойчивость внимания
-130	Способность подмечать изменения в окружающей обстановке, не сосредотачивая сознательно на них внимание
-131	Умение подмечать незначительные (малозаметные) изменения в исследуемом объекте, в показаниях приборов
-132	Способность реагировать на неожиданный зрительный сигнал посредством определённых движений
-133	Способность реагировать на неожиданный слуховой сигнал посредством определённых движений
-134	Согласованность движений с процессами восприятия (сложноорганизованная деятельность)
-135	Способность к сенсомоторному слежению за движущимся объектом
-136	Способность к выполнению мелких точных движений
-137	Способность к выполнению сложных двигательных действий (актов)
-138	Способность к выполнению плавных соразмерных движений
-139	Координация движений ведущей руки.
-140	Координация движений обеих рук.
-141	Координация движений рук и ног.
-142	Координация работы кистей рук и пальцев.
-143	Твердость руки, устойчивость кистей рук (низкий тремор)
-144	Умение быстро записывать
-145	Красивый почерк
-146	Физическая сила.
-147	Способность к быстрой выработке сенсомоторных навыков
-148	Способность к быстрой перестройке сенсомоторных навыков
-149	Пластичность и выразительность движений
-150	Отсутствие дефектов речи, хорошая дикция.
-151	Способность речевого аппарата к интенсивной и длительной работе.
-152	Способность к изменению тембра.
-153	Способность к изменению силы звучания.
-154	Переносимость динамических физических нагрузок
-155	Переносимость статических физических нагрузок
-156	Быстрый переход из состояния покоя к интенсивной работе
-157	Сохранение работоспособности при недостатке сна
-158	Сохранение работоспособности при развивающемся утомлении
-159	Сохранение бдительности в условиях однообразной деятельности (монотонии)
-160	Сохранение бдительности в режиме ожидания
-161	Сохранение работоспособности в некомфортных температурных условиях
-162	Сохранение работоспособности в условиях знакопеременных перегрузок (в том числе укачивания)
-163	Сохранение работоспособности в условиях воздействия вибрации
-164	Сохранение работоспособности в условиях воздействия разнонаправленных перегрузок
-165	Сохранение работоспособности в условиях гипо(гипер) барометрических колебаний
-166	Сохранение работоспособности в условиях пониженного парциального давления кислорода
-167	Сохранение работоспособности в условиях пониженного парциального давления углекислого газа
+128	Способность к распределению внимания между несколькими объектами или видами деятельности	
+129	Помехоустойчивость внимания	
+130	Способность подмечать изменения в окружающей обстановке, не сосредотачивая сознательно на них внимание	
+131	Умение подмечать незначительные (малозаметные) изменения в исследуемом объекте, в показаниях приборов	
+132	Способность реагировать на неожиданный зрительный сигнал посредством определённых движений	
+133	Способность реагировать на неожиданный слуховой сигнал посредством определённых движений	
+134	Согласованность движений с процессами восприятия (сложноорганизованная деятельность)	
+135	Способность к сенсомоторному слежению за движущимся объектом	
+136	Способность к выполнению мелких точных движений	
+137	Способность к выполнению сложных двигательных действий (актов)	
+138	Способность к выполнению плавных соразмерных движений	
+139	Координация движений ведущей руки.	
+140	Координация движений обеих рук.	
+141	Координация движений рук и ног.	
+142	Координация работы кистей рук и пальцев.	
+143	Твердость руки, устойчивость кистей рук (низкий тремор)	
+144	Умение быстро записывать	
+145	Красивый почерк	
+146	Физическая сила.	
+147	Способность к быстрой выработке сенсомоторных навыков	
+148	Способность к быстрой перестройке сенсомоторных навыков	
+149	Пластичность и выразительность движений	
+150	Отсутствие дефектов речи, хорошая дикция.	
+151	Способность речевого аппарата к интенсивной и длительной работе.	
+152	Способность к изменению тембра.	
+153	Способность к изменению силы звучания.	
+154	Переносимость динамических физических нагрузок	
+155	Переносимость статических физических нагрузок	
+156	Быстрый переход из состояния покоя к интенсивной работе	
+157	Сохранение работоспособности при недостатке сна	
+158	Сохранение работоспособности при развивающемся утомлении	
+159	Сохранение бдительности в условиях однообразной деятельности (монотонии)	
+160	Сохранение бдительности в режиме ожидания	
+161	Сохранение работоспособности в некомфортных температурных условиях	
+162	Сохранение работоспособности в условиях знакопеременных перегрузок (в том числе укачивания)	
+163	Сохранение работоспособности в условиях воздействия вибрации	
+164	Сохранение работоспособности в условиях воздействия разнонаправленных перегрузок	
+165	Сохранение работоспособности в условиях гипо(гипер) барометрических колебаний	
+166	Сохранение работоспособности в условиях пониженного парциального давления кислорода	
+167	Сохранение работоспособности в условиях пониженного парциального давления углекислого газа	
 168	Работоспособность с недостатком потребностей	Сохранение работоспособности в условиях ограничения возможностей удовлетворения базовых жизненных потребностей (голод, жажда, отдых, сексуальная потребность)
-169	Сохранение работоспособности в разных природно-климатических условиях
-170	Способность переадаптироваться к новым средовым условиям
+169	Сохранение работоспособности в разных природно-климатических условиях	
+170	Способность переадаптироваться к новым средовым условиям	
 171	Характеристика тела	Антропометрические характеристики (в соответствии с требованиями профессии)
-172	Особенности телосложения (в соответствии с требованиями профессии)
-173	Хорошее общее физическое развитие – выносливость, координированность, сила, быстрота
-174	Физическая подготовленность к воздействию неблагоприятных факторов профессиональной деятельности.
+172	Особенности телосложения (в соответствии с требованиями профессии)	
+173	Хорошее общее физическое развитие – выносливость, координированность, сила, быстрота	
+174	Физическая подготовленность к воздействию неблагоприятных факторов профессиональной деятельности.	
+\.
+
+
+--
+-- Data for Name: result_list_lr4; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.result_list_lr4 (id, result_list) FROM stdin;
 \.
 
 
@@ -770,6 +830,13 @@ COPY public.results_list_lr2 (id, result_list) FROM stdin;
 7	{3,560,12,210}
 8	{4,670,5,670}
 9	{5,340,8,900}
+10	{922.8,967.11}
+11	{375.8,62.37}
+12	{501.43,438.16}
+13	{2109.75,2499.67,769,543.77}
+14	{2296.6,1230.19,0,NaN}
+15	{1850.25,887.16,1883,1331.48}
+16	{1145.76,740.31,979,692.26}
 \.
 
 
@@ -807,6 +874,7 @@ COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert
 6	TestName2	TestSurname2	testlogin2	1234	fakeMail4@mail.ru	96	f	M
 7	TestName3	TestSurname3	testlogin3	1234	fakeMail5@mail.ru	95	f	M
 8	TestName4	TestSurname4	testlogin4	1234	fakeMail6@mail.ru	94	f	F
+1232473507	testuser	testuser	testuser	1234	1234@mail.ru	12	t	M
 \.
 
 
@@ -821,7 +889,7 @@ SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 24, true);
 -- Name: lr2_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 1, true);
+SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 8, true);
 
 
 --
@@ -832,17 +900,17 @@ SELECT pg_catalog.setval('public.lr3_to_resp_id_seq', 1, false);
 
 
 --
--- Name: params_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.params_list_lr2_id_seq', 1, false);
+SELECT pg_catalog.setval('public.lr4_to_resp_id_seq', 1, false);
 
 
 --
--- Name: params_list_lr3_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.params_list_lr3_id_seq', 1, false);
+SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 1, false);
 
 
 --
@@ -867,10 +935,17 @@ SELECT pg_catalog.setval('public.pvk_id_seq', 179, true);
 
 
 --
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.result_list_lr4_id_seq', 1, false);
+
+
+--
 -- Name: results_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 9, true);
+SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 16, true);
 
 
 --
@@ -912,19 +987,19 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 
 --
--- Name: params_list_lr2 params_list_lr2_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: lr4_to_resp lr4_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.params_list_lr2
-    ADD CONSTRAINT params_list_lr2_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT lr4_to_resp_pkey PRIMARY KEY (id);
 
 
 --
--- Name: params_list_lr3 params_list_lr3_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: preset_to_resp preset_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.params_list_lr3
-    ADD CONSTRAINT params_list_lr3_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.preset_to_resp
+    ADD CONSTRAINT preset_to_resp_pkey PRIMARY KEY (id);
 
 
 --
@@ -949,6 +1024,14 @@ ALTER TABLE ONLY public.professions_lab1
 
 ALTER TABLE ONLY public.pvk_lab1
     ADD CONSTRAINT pvk_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: result_list_lr4 result_list_lr4_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.result_list_lr4
+    ADD CONSTRAINT result_list_lr4_pkey PRIMARY KEY (id);
 
 
 --
@@ -1015,7 +1098,7 @@ CREATE INDEX fki_fkey_expert_id ON public.expert_profession_quality_lab1 USING b
 -- Name: fki_fkey_params_list_lr3; Type: INDEX; Schema: public; Owner: master
 --
 
-CREATE INDEX fki_fkey_params_list_lr3 ON public.lr3_to_resp USING btree (params_list_id_lr3);
+CREATE INDEX fki_fkey_params_list_lr3 ON public.lr3_to_resp USING btree (preset_id);
 
 
 --
@@ -1077,6 +1160,38 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
+-- Name: preset_to_resp fk_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.preset_to_resp
+    ADD CONSTRAINT fk_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id);
+
+
+--
+-- Name: lr4_to_resp fk_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT fk_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id);
+
+
+--
+-- Name: lr3_to_resp fk_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr3_to_resp
+    ADD CONSTRAINT fk_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id);
+
+
+--
+-- Name: preset_to_resp fk_resp_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.preset_to_resp
+    ADD CONSTRAINT fk_resp_id FOREIGN KEY (user_id) REFERENCES public.users(usr_id);
+
+
+--
 -- Name: lr2_to_resp fk_test_id_to_name; Type: FK CONSTRAINT; Schema: public; Owner: master
 --
 
@@ -1093,27 +1208,11 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 
 --
--- Name: lr3_to_resp fkey_exp; Type: FK CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.lr3_to_resp
-    ADD CONSTRAINT fkey_exp FOREIGN KEY (expert_id) REFERENCES public.users(usr_id) NOT VALID;
-
-
---
 -- Name: expert_profession_quality_lab1 fkey_expert_id; Type: FK CONSTRAINT; Schema: public; Owner: graevsky
 --
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1
     ADD CONSTRAINT fkey_expert_id FOREIGN KEY (expert_id) REFERENCES public.users(usr_id) NOT VALID;
-
-
---
--- Name: lr3_to_resp fkey_params_list_lr3; Type: FK CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.lr3_to_resp
-    ADD CONSTRAINT fkey_params_list_lr3 FOREIGN KEY (params_list_id_lr3) REFERENCES public.params_list_lr3(id) NOT VALID;
 
 
 --
@@ -1149,6 +1248,36 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 
 --
--- PostgreSQL database dump complete
+-- Name: lr4_to_resp lr4_to_resp_respondent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: master
 --
 
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT lr4_to_resp_respondent_id_fkey FOREIGN KEY (respondent_id) REFERENCES public.users(usr_id);
+
+
+--
+-- Name: lr4_to_resp lr4_to_resp_result_list_id_lr4_fkey; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT lr4_to_resp_result_list_id_lr4_fkey FOREIGN KEY (result_list_id_lr4) REFERENCES public.result_list_lr4(id);
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: master
+--
+
+GRANT ALL ON SCHEMA public TO graevsky;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: SCHEMA schema_name; Type: ACL; Schema: -; Owner: graevsky
+--
+
+GRANT ALL ON SCHEMA schema_name TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--

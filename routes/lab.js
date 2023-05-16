@@ -13,7 +13,7 @@ router.get('/lab1', (req, res, next) => {
     CLIENT.query(top_table_query).then((top_table) => {
         CLIENT.query('select * from professions_lab1').then((profs) => {
             CLIENT.query(`select * from users where is_expert='t'`).then((result) => {
-                for (let i = 0; i < profs.rows.length; i++){
+                for (let i = 0; i < profs.rows.length; i++) {
                     profs.rows[i]["top_table"] = top_table.rows.filter(x => x.profession_id === profs.rows[i].id)
                 }
 
@@ -128,7 +128,7 @@ router.get('/lab1/res', (req, res, next) => {
                     })
                 }
 
-                for (let i = 0; i < profs.rows.length; i++){
+                for (let i = 0; i < profs.rows.length; i++) {
                     profs.rows[i]["top_table"] = top_table.rows.filter(x => x.profession_id === profs.rows[i].id)
                 }
 
@@ -221,34 +221,89 @@ router.post('/lab2/', (req, res, next) => {
     User.userById(req.cookies.usr_id).then((user) => {
         if (user) {
             user = new User(user)
-            user.sendResult(results)
+            user.sendResultSecond(results)
         }
     });
 })
 
-router.get('/lab3', (req, res, next) => {
+router.get('/lab3', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+        `, [req.cookies.usr_id]);
+
+    const presets = result.rows.map(row => ({
+        lab_num: row.lab_id,
+        presets: {
+            test_num: row.test_in_lab_id,
+            ...row.params,
+        },
+        test_num: row.params.test_num
+    }));
+
     res.status(200)
     res.render('lab3', {
         title: "Лаба 3 | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
+        presets: presets
     })
 })
 
-router.get('/lab3/lab3_simple', (req, res, next) => {
+router.get('/lab3/lab3_simple', async (req, res, next) => {
+    try {
+        const result = await CLIENT.query(`
+            SELECT preset_to_resp.*, presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1 AND presets.test_in_lab_id = 1
+            ORDER BY preset_to_resp.id DESC
+            LIMIT 1
+        `, [req.cookies.usr_id]);
+
+        res.status(200).render('lab3_simple', {
+            title: "Простые тесты | без CHATGPT",
+            isLoggedIn: req.cookies.usr_id,
+            preset: result.rows[0].params
+        })
+    } catch (err) {
+        console.error('Error querying database:', err);
+        res.status(500).send('Server error');
+    }
+})
+
+router.get('/lab3/lab3_hard', async (req, res, next) => {
+    try {
+        const result = await CLIENT.query(`
+            SELECT preset_to_resp.*, presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1 AND presets.test_in_lab_id = 2
+            ORDER BY preset_to_resp.id DESC
+            LIMIT 1
+        `, [req.cookies.usr_id]);
+
+        res.status(200).render('lab3_hard', {
+            title: "Простые тесты | без CHATGPT",
+            isLoggedIn: req.cookies.usr_id,
+            preset: result.rows[0].params
+        })
+    } catch (err) {
+        console.error('Error querying database:', err);
+        res.status(500).send('Server error');
+    }
+})
+
+router.post('/lab3/', (req, res, next) => {
     res.status(200)
-    res.render('lab3_simple', {
-        title: "Простые тесты | без CHATGPT",
-        isLoggedIn: req.cookies.usr_id,
-    })
+    results = req.body
+    User.userById(req.cookies.usr_id).then((user) => {
+        if (user) {
+            user = new User(user)
+            user.sendResultThird(results)
+        }
+    });
 })
-
-router.get('/lab3/lab3_hard', (req, res, next) => {
-    res.status(200)
-    res.render('lab3_hard', {
-        title: "Сложные тесты | без CHATGPT",
-        isLoggedIn: req.cookies.usr_id,
-    })
-})
-
 
 module.exports = router

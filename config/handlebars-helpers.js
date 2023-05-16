@@ -127,5 +127,14 @@ module.exports = {
     },
     cl: function (str) {
         return console.log(str);
+    },
+    ifinpres: function (arg, array, options) {
+        for (let index = 0; index < array.length; index++) {
+            const element = array[index];
+            if (element.test_num == arg){
+                return options.fn(this);
+            }
+        }
+        return options.inverse(this);
     }
 }

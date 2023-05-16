@@ -123,7 +123,7 @@ class User {
         await CLIENT.query(query)
     }
 
-    sendResult(results) {
+    sendResultSecond(results) {
         var data = this.toJSON()
 
         if ("averageResult" in results) {
@@ -147,6 +147,29 @@ class User {
 
             const query = {
                 text: 'INSERT INTO lr2_to_resp (respondent_id, result_id_lr2, test_id) VALUES ($1, $2, $3)',
+                values: [data.usr_id, id, results.test_id],
+            }
+            CLIENT.query(query).then((result) => {
+                console.log(result)
+            })
+        })
+    }
+
+    sendResultThirt(results) {
+        var data = this.toJSON()
+
+        var res_query = {
+            text: 'INSERT INTO results_list_lr2 (result_list) VALUES ($1) RETURNING id',
+            values: [
+                [results.averageResult, results.stdResult, results.missedPercent]
+            ],
+        }
+
+        CLIENT.query(res_query).then((res) => {
+            var id = res.rows[0].id
+
+            const query = {
+                text: 'INSERT INTO lr3_to_resp (respondent_id, result_list_id_lr3, test_id) VALUES ($1, $2, $3)',
                 values: [data.usr_id, id, results.test_id],
             }
             CLIENT.query(query).then((result) => {
