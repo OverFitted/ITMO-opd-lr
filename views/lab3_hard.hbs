@@ -1,0 +1,200 @@
+<div class="bloc l-bloc" id="bloc-15">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="mb-4 section-heading primary-text">
+                            Сложные реакции на движущийся объект
+                        </h3>
+
+                        <div class="row justify-content-center">
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика по 1</h5>
+                                    <p id="clicks1" class="card-text">Кликов: 0</p>
+                                    <p id="misses1" class="card-text">Промахов: 0</p>
+                                    <p id="avgTime1" class="card-text">Среднее время реакции: 0</p>
+                                    <p id="stdDev1" class="card-text">Стандартное отклонение: 0</p>
+                                </div>
+                            </div>
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика по 2</h5>
+                                    <p id="clicks2" class="card-text">Кликов: 0</p>
+                                    <p id="misses2" class="card-text">Промахов: 0</p>
+                                    <p id="avgTime2" class="card-text">Среднее время реакции: 0</p>
+                                    <p id="stdDev2" class="card-text">Стандартное отклонение: 0</p>
+                                </div>
+                            </div>
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика по 3</h5>
+                                    <p id="clicks3" class="card-text">Кликов: 0</p>
+                                    <p id="misses3" class="card-text">Промахов: 0</p>
+                                    <p id="avgTime3" class="card-text">Среднее время реакции: 0</p>
+                                    <p id="stdDev3" class="card-text">Стандартное отклонение: 0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+                                <div id="buttonContainer">
+                                    <button id="startButton" class="btn btn-primary">Начать игру</button>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                            </div>
+                        </div>
+                        <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let circles = [{
+        centerX: canvas.width / 4,
+        centerY: canvas.height / 2,
+        radius: 100,
+        angle: 0,
+        targetAngle: Math.PI,
+        speed: 0.02,
+        hits: 0,
+        misses: 0,
+        clicks: 0,
+        reactionTimes: [],
+        hitThreshold: 0.1,
+    }, {
+        centerX: canvas.width / 2,
+        centerY: canvas.height / 2,
+        radius: 100,
+        angle: 0,
+        targetAngle: Math.PI * 1.5,
+        speed: 0.03,
+        hits: 0,
+        misses: 0,
+        clicks: 0,
+        reactionTimes: [],
+        hitThreshold: 0.1,
+    }, {
+        centerX: 3 * canvas.width / 4,
+        centerY: canvas.height / 2,
+        radius: 100,
+        angle: 0,
+        targetAngle: Math.PI * 2,
+        speed: 0.04,
+        hits: 0,
+        misses: 0,
+        clicks: 0,
+        reactionTimes: [],
+        hitThreshold: 0.1,
+    }];
+
+    let gameRunning = false;
+    let presetTime = 60;
+
+    function drawCircle(circle) {
+        let x = circle.centerX + circle.radius * Math.cos(circle.angle);
+        let y = circle.centerY + circle.radius * Math.sin(circle.angle);
+        let targetX = circle.centerX + circle.radius * Math.cos(circle.targetAngle);
+        let targetY = circle.centerY + circle.radius * Math.sin(circle.targetAngle);
+
+        ctx.beginPath();
+        ctx.arc(circle.centerX, circle.centerY, circle.radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = 'blue';
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(x, y, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = 'black';
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function startGame() {
+        gameRunning = true;
+        let startTime = Date.now();
+
+        let gameInterval = setInterval(() => {
+            if (!gameRunning) {
+                clearInterval(gameInterval);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                circles.forEach(circle => {
+                    circle.angle += circle.speed;
+                    if (circle.angle > 2 * Math.PI) {
+                        circle.angle -= 2 * Math.PI;
+                    }
+                    drawCircle(circle);
+                });
+            }
+
+            if (Date.now() - startTime >= presetTime * 1000) {
+                gameRunning = false;
+            }
+        }, 10);
+    }
+
+    function updateStats() {
+        circles.forEach((circle, index) => {
+            document.getElementById('clicks' + (index + 1)).textContent = `Кликов: ${circle.clicks}`;
+            document.getElementById('misses' + (index + 1)).textContent = `Промахов: ${circle.misses}`;
+
+            let sum = 0;
+            circle.reactionTimes.forEach((time) => {
+                sum += time;
+            });
+
+            let avgTime = sum / circle.reactionTimes.length;
+
+            let sd = 0;
+            circle.reactionTimes.forEach((time) => {
+                sd += Math.pow(time - avgTime, 2);
+            });
+            sd = Math.sqrt(sd / (circle.reactionTimes.length - 1));
+
+            document.getElementById('avgTime' + (index + 1)).textContent = `Среднее время реакции: ${avgTime.toFixed(2)}`;
+            document.getElementById('stdDev' + (index + 1)).textContent = `Стандартное отклонение: ${sd.toFixed(2)}`;
+        });
+    }
+
+    document.getElementById('startButton').addEventListener('click', function () {
+        if (!gameRunning) {
+            startGame();
+            document.getElementById('buttonContainer').style.display = 'none';
+        }
+    });
+
+
+    document.addEventListener('keydown', function (event) {
+        const circleKey = event.key;
+        if (circleKey >= '1' && circleKey <= '3') {
+            let circleIndex = parseInt(circleKey) - 1;
+            let circle = circles[circleIndex];
+            circle.clicks++;
+            if (Math.abs(circle.angle - circle.targetAngle) > circle.hitThreshold) {
+                circle.misses++;
+            } else {
+                circle.hits++;
+                circle.targetAngle = Math.random() * 2 * Math.PI;
+            }
+            updateStats();
+        }
+    });
+
+</script>

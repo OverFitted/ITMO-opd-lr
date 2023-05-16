@@ -154,7 +154,7 @@ router.get('/lab1/res', (req, res, next) => {
 router.get('/lab2', (req, res, next) => {
     res.status(200)
     res.render('lab2', {
-        title: "Пока что плейсхолдер | без CHATGPT",
+        title: "Лаба 2 | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
     })
 })
@@ -225,5 +225,30 @@ router.post('/lab2/', (req, res, next) => {
         }
     });
 })
+
+router.get('/lab3', (req, res, next) => {
+    res.status(200)
+    res.render('lab3', {
+        title: "Лаба 3 | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
+router.get('/lab3/lab3_simple', (req, res, next) => {
+    res.status(200)
+    res.render('lab3_simple', {
+        title: "Простые тесты | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
+router.get('/lab3/lab3_hard', (req, res, next) => {
+    res.status(200)
+    res.render('lab3_hard', {
+        title: "Сложные тесты | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+    })
+})
+
 
 module.exports = router
