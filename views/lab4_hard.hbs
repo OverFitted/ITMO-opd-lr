@@ -1,0 +1,192 @@
+<div class="bloc l-bloc" id="bloc-15">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="mb-4 section-heading primary-text">
+                            Слежение с преследованием
+                        </h3>
+
+                        {{#if preset.show_stats}}
+                        <div class="row justify-content-center">
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика</h5>
+                                    <p id="clicks" class="card-text">Кликов: 0</p>
+                                    <p id="misses" class="card-text">Промахов: 0</p>
+                                    <p id="hitPercent" class="card-text">Процент попаданий: 0%</p>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+                                <div id="buttonContainer">
+                                    <button id="startButton" class="btn btn-primary">Начать игру</button>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                            </div>
+                        </div>
+                        <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let rectWidth = 50;
+    let rectHeight = 50;
+    let rectX = canvas.width / 2;
+    let rectY = canvas.height / 2;
+    let targetX = Math.random() * (canvas.width - rectWidth);
+    let targetY = canvas.height / 2;
+    let gameRunning = false;
+    let reactionTimes = [];
+    let presetTime = {{ preset.runtime }};
+    let attempts = 0;
+    let hits = 0;
+    let misses = 0;
+    let acceleration = {{ preset.acceleration_koef }} * 10;
+    let speed = {{ preset.speed_koef }} * 300;
+    let maxspeed = 15;
+    let direction = 1;
+    let targetHp = 100;
+    let targetDirection = 1;
+    let targetSpeed = speed * .85;
+
+    function drawRect() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.beginPath();
+        ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, rectY, canvas.width, rectHeight);
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.rect(rectX, rectY, rectWidth, rectHeight);
+        ctx.fillStyle = 'black';
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.rect(targetX, targetY, rectWidth, rectHeight);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function checkCollision() {
+        if (Math.abs(rectX - targetX) < rectWidth) {
+            hits++;
+            targetHp -= 1;
+
+            if (targetHp <= 0) {
+                targetX = Math.random() * (canvas.width - rectWidth);
+                targetHp = 100;
+
+                speed += acceleration;
+                speed = Math.min(speed, maxspeed)
+            }
+        }
+    }
+
+    function startGame() {
+        gameRunning = true;
+        let startTime = Date.now();
+
+        let gameInterval = setInterval(() => {
+            if (!gameRunning) {
+                clearInterval(gameInterval);
+            } else {
+                rectX += speed * direction;
+                attempts++;
+                if (rectX + rectWidth > canvas.width || rectX < 0) {
+                    direction = -direction;
+                }
+
+                targetX += targetSpeed * targetDirection;
+
+                if (targetX + rectWidth > canvas.width && targetDirection > 0) {
+                    targetDirection = -1;
+                } else if (targetX < 0 && targetDirection < 0) {
+                    targetDirection = 1;
+                }
+
+                if (Math.random() < 0.01) {
+                    targetDirection = -targetDirection;
+                }
+
+                let reactionTime = Math.abs(rectX - targetX);
+                reactionTimes.push(reactionTime);
+
+                drawRect();
+                checkCollision();
+                updateStats();
+            }
+
+            if (Date.now() - startTime >= presetTime * 1000) {
+                gameRunning = false;
+                postResults();
+                clearInterval(gameInterval);
+            }
+        }, 10);
+    }
+
+    document.getElementById('startButton').addEventListener('click', function () {
+        if (!gameRunning) {
+            startGame();
+            document.getElementById('buttonContainer').style.display = 'none';
+        }
+    });
+
+    window.addEventListener('keydown', function (event) {
+        if (event.code == 'ArrowRight') {
+            direction = 1;
+        } else if (event.code == 'ArrowLeft') {
+            direction = -1;
+        }
+    });
+
+    function updateStats() {
+        let hitPercent = (hits / attempts) * 100;
+
+        document.getElementById('clicks').textContent = `Попаданий: ${hits}`;
+        document.getElementById('misses').textContent = `Промахов: ${attempts - hits}`;
+        document.getElementById('hitPercent').textContent = `Процент попаданий: ${hitPercent.toFixed(2)}%`;
+    }
+
+    function postResults() {
+        let results = {
+            hits: hits,
+            misses: attempts - hits,
+            hitPercent: hitPercent,
+            test_id: 2
+        };
+
+        fetch('../', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error: ' + response.statusText);
+            }
+        }).then(data => {
+            console.log(data);
+        }).catch(error => console.error('Error:', error));
+    }
+</script>

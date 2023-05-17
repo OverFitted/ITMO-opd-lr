@@ -185,7 +185,7 @@
         }
     });
 
-    document.addEventListener('keydown', function (event) {
+    window.addEventListener('keydown', function (event) {
         const circleKey = event.key;
         if (circleKey >= '1' && circleKey <= '3') {
             let circleIndex = parseInt(circleKey) - 1;

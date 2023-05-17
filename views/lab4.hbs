@@ -1,0 +1,34 @@
+<div class="bloc l-bloc" id="bloc-5">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col-sm-12 text-start">
+                <div class="text-lg-center">
+                    <h3 class="mb-4 section-heading primary-text">
+                        Четвертая лабораторная<br>
+                    </h3>
+                </div>
+                <h5 class="mb-4 text-lg-center">
+                    Простая и сложная оценка реакции на движущийся объект
+                </h5>
+                <div>
+                    <div class="row">
+                        {{#ifinpres 1 presets}}
+                        <div class="col">
+                            <div class="text-lg-center">
+                                <a href="/labs/lab4/lab4_simple/" class="btn btn-d box-btn fill-mob-btn primary-btn btn-xl btn-rd float-lg-none">Аналоговое слежение<br></a>
+                            </div>
+                        </div>
+                        {{/ifinpres}}
+                        {{#ifinpres 2 presets}}
+                        <div class="col">
+                            <div class="text-lg-center">
+                                <a href="/labs/lab4/lab4_hard/" class="btn btn-d w-100 box-btn fill-mob-btn primary-btn btn-xl btn-rd">Слежение с преследованием<br></a>
+                            </div>
+                        </div>
+                        {{/ifinpres}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

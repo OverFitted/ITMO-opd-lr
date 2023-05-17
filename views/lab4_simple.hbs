@@ -1,0 +1,198 @@
+<div class="bloc l-bloc" id="bloc-15">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="mb-4 section-heading primary-text">
+                            Аналоговое слежение
+                        </h3>
+
+                        {{#if preset.show_stats}}
+                        <div class="row justify-content-center">
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика</h5>
+                                    <p id="clicks" class="card-text">Кликов: 0</p>
+                                    <p id="misses" class="card-text">Промахов: 0</p>
+                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+                                <div id="buttonContainer">
+                                    <button id="startButton" class="btn btn-primary">Начать игру</button>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                            </div>
+                        </div>
+                        <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let rectWidth = 50;
+    let rectHeight = 50;
+    let rectX = canvas.width / 2;
+    let rectY = canvas.height / 2;
+    let targetX = Math.random() * (canvas.width - rectWidth);
+    let targetY = canvas.height / 2;
+    let gameRunning = false;
+    let reactionTimes = [];
+    let spacePressed = false;
+    let presetTime = {{ preset.runtime }};
+    let clicks = 0;
+    let hits = 0;
+    let misses = 0;
+    let hitThreshold = 75;
+    let acceleration = {{ preset.acceleration_koef }} * 100;
+    let speed = {{ preset.speed_koef }} * 300;
+    let maxspeed = 35;
+
+    function drawRect() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.beginPath();
+        ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, rectY, canvas.width, rectHeight);
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.rect(rectX, rectY, rectWidth, rectHeight);
+        ctx.fillStyle = 'black';
+        ctx.fill();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.rect(targetX, targetY, rectWidth, rectHeight);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function startGame() {
+        gameRunning = true;
+        let startTime = Date.now();
+
+        let gameInterval = setInterval(() => {
+            if (!gameRunning) {
+                clearInterval(gameInterval);
+            } else {
+                rectX += speed;
+                if (rectX + rectWidth > canvas.width || rectX < 0) {
+                    speed = -speed;
+                    maxspeed = -maxspeed;
+                    acceleration = -acceleration;
+                }
+
+                if (spacePressed) {
+                    spacePressed = false;
+                    let reactionTime = Math.abs(rectX - targetX);
+                    reactionTimes.push(reactionTime);
+                }
+
+                drawRect();
+            }
+
+            if (Date.now() - startTime >= presetTime * 1000) {
+                gameRunning = false;
+                postResults();
+                clearInterval(gameInterval);
+            }
+        }, 10);
+    }
+
+    document.getElementById('startButton').addEventListener('click', function () {
+        if (!gameRunning) {
+            startGame();
+            document.getElementById('buttonContainer').style.display = 'none';
+        }
+    });
+
+    window.addEventListener('keydown', function (event) {
+        if (gameRunning) {
+            if (event.code == 'Space') {
+                spacePressed = true;
+                clicks++;
+                if (Math.abs(rectX - targetX) > hitThreshold) {
+                    misses++;
+                } else {
+                    hits++;
+                    targetX = Math.random() * (canvas.width - rectWidth);
+
+                    speed += acceleration;
+                    if (maxspeed > 0)
+                        speed = Math.min(speed, maxspeed)
+                    else
+                        speed = Math.max(speed, maxspeed)
+                }
+                updateStats();
+            }
+        }
+    });
+
+    function updateStats() {
+        document.getElementById('clicks').textContent = `Кликов: ${clicks}`;
+        document.getElementById('misses').textContent = `Промахов: ${misses}`;
+
+        let sum = 0;
+        reactionTimes.forEach((time) => {
+            sum += time;
+        });
+
+        let avgTime = sum / reactionTimes.length;
+
+        let sd = 0;
+        reactionTimes.forEach((time) => {
+            sd += Math.pow(time - avgTime, 2);
+        });
+
+        sd = Math.sqrt(sd / (reactionTimes.length - 1));
+
+        document.getElementById('avgTime').textContent = `Среднее время реакции: ${avgTime.toFixed(2)}`;
+        document.getElementById('stdDev').textContent = `Стандартное отклонение: ${sd.toFixed(2)}`;
+    }
+
+    function postResults() {
+        let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+        let sd = Math.sqrt(reactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1));
+
+        let results = {
+            clicks: clicks,
+            misses: misses,
+            avgTime: avgTime,
+            stdDev: sd,
+            test_id: 1
+        };
+
+        fetch('../', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error: ' + response.statusText);
+            }
+        }).then(data => {
+            console.log(data);
+        }).catch(error => console.error('Error:', error));
+    }
+</script>

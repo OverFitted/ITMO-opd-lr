@@ -232,6 +232,7 @@ router.get('/lab3', async (req, res, next) => {
             FROM preset_to_resp
             JOIN presets ON preset_to_resp.preset_id = presets.preset_id
             WHERE preset_to_resp.user_id = $1
+            AND presets.lab_id = 3
         `, [req.cookies.usr_id]);
 
     const presets = result.rows.map(row => ({
@@ -254,12 +255,14 @@ router.get('/lab3', async (req, res, next) => {
 router.get('/lab3/lab3_simple', async (req, res, next) => {
     try {
         const result = await CLIENT.query(`
-            SELECT preset_to_resp.*, presets.*
-            FROM preset_to_resp
-            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
-            WHERE preset_to_resp.user_id = $1 AND presets.test_in_lab_id = 1
-            ORDER BY preset_to_resp.id DESC
-            LIMIT 1
+        SELECT preset_to_resp.*, presets.*
+        FROM preset_to_resp
+        JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+        WHERE preset_to_resp.user_id = $1
+        AND presets.test_in_lab_id = 1
+        AND presets.lab_id = 3
+        ORDER BY preset_to_resp.id DESC
+        LIMIT 1
         `, [req.cookies.usr_id]);
 
         res.status(200).render('lab3_simple', {
@@ -276,16 +279,18 @@ router.get('/lab3/lab3_simple', async (req, res, next) => {
 router.get('/lab3/lab3_hard', async (req, res, next) => {
     try {
         const result = await CLIENT.query(`
-            SELECT preset_to_resp.*, presets.*
-            FROM preset_to_resp
-            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
-            WHERE preset_to_resp.user_id = $1 AND presets.test_in_lab_id = 2
-            ORDER BY preset_to_resp.id DESC
-            LIMIT 1
+        SELECT preset_to_resp.*, presets.*
+        FROM preset_to_resp
+        JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+        WHERE preset_to_resp.user_id = $1
+        AND presets.test_in_lab_id = 2
+        AND presets.lab_id = 3
+        ORDER BY preset_to_resp.id DESC
+        LIMIT 1
         `, [req.cookies.usr_id]);
 
         res.status(200).render('lab3_hard', {
-            title: "Простые тесты | без CHATGPT",
+            title: "Сложные тесты | без CHATGPT",
             isLoggedIn: req.cookies.usr_id,
             preset: result.rows[0].params
         })
@@ -302,6 +307,91 @@ router.post('/lab3/', (req, res, next) => {
         if (user) {
             user = new User(user)
             user.sendResultThird(results)
+        }
+    });
+})
+
+router.get('/lab4', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.lab_id = 4
+        `, [req.cookies.usr_id]);
+
+    const presets = result.rows.map(row => ({
+        lab_num: row.lab_id,
+        presets: {
+            test_num: row.test_in_lab_id,
+            ...row.params,
+        },
+        test_num: row.params.test_num
+    }));
+
+    res.status(200)
+    res.render('lab4', {
+        title: "Лаба 4 | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+        presets: presets
+    })
+})
+
+router.get('/lab4/lab4_simple', async (req, res, next) => {
+    try {
+        const result = await CLIENT.query(`
+            SELECT preset_to_resp.*, presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.test_in_lab_id = 1
+            AND presets.lab_id = 4
+            ORDER BY preset_to_resp.id DESC
+            LIMIT 1
+        `, [req.cookies.usr_id]);
+
+        res.status(200).render('lab4_simple', {
+            title: "Аналоговое слежение | без CHATGPT",
+            isLoggedIn: req.cookies.usr_id,
+            preset: result.rows[0].params
+        })
+    } catch (err) {
+        console.error('Error querying database:', err);
+        res.status(500).send('Server error');
+    }
+})
+
+router.get('/lab4/lab4_hard', async (req, res, next) => {
+    try {
+        const result = await CLIENT.query(`
+        SELECT preset_to_resp.*, presets.*
+        FROM preset_to_resp
+        JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+        WHERE preset_to_resp.user_id = $1
+        AND presets.test_in_lab_id = 2
+        AND presets.lab_id = 4
+        ORDER BY preset_to_resp.id DESC
+        LIMIT 1
+        `, [req.cookies.usr_id]);
+
+        res.status(200).render('lab4_hard', {
+            title: "Слежение с преследованием | без CHATGPT",
+            isLoggedIn: req.cookies.usr_id,
+            preset: result.rows[0].params
+        })
+    } catch (err) {
+        console.error('Error querying database:', err);
+        res.status(500).send('Server error');
+    }
+})
+
+router.post('/lab4/', (req, res, next) => {
+    res.status(200)
+    results = req.body
+    User.userById(req.cookies.usr_id).then((user) => {
+        if (user) {
+            user = new User(user)
+            user.sendResultFourth(results)
         }
     });
 })
