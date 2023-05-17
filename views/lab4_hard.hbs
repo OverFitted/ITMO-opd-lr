@@ -166,6 +166,7 @@
     }
 
     function postResults() {
+        let hitPercent = (hits / attempts) * 100;
         let results = {
             hits: hits,
             misses: attempts - hits,

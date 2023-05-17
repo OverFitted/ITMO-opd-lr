@@ -181,18 +181,27 @@ class User {
     sendResultFourth(results) {
         var data = this.toJSON()
 
-        var res_query = {
-            text: 'INSERT INTO results_list_lr4 (result_list) VALUES ($1) RETURNING id',
-            values: [
-                [results.averageResult, results.stdResult]
-            ],
+        if (results.test_id === 2) {
+            var res_query = {
+                text: 'INSERT INTO result_list_lr4 (result_list) VALUES ($1) RETURNING id',
+                values: [
+                    [results.hits, results.misses, results.hitPercent]
+                ],
+            }
+        } else {
+            var res_query = {
+                text: 'INSERT INTO result_list_lr4 (result_list) VALUES ($1) RETURNING id',
+                values: [
+                    [results.clicks, results.misses, results.avgTime, results.stdDev]
+                ],
+            }
         }
 
         CLIENT.query(res_query).then((res) => {
             var id = res.rows[0].id
 
             const query = {
-                text: 'INSERT INTO lr4_to_resp (respondent_id, result_list_id_lr4, preset_id) VALUES ($1, $2, $4)',
+                text: 'INSERT INTO lr4_to_resp (respondent_id, result_list_id_lr4, preset_id) VALUES ($1, $2, $3)',
                 values: [data.usr_id, id, results.preset_id],
             }
             CLIENT.query(query).then((result) => {

@@ -80,6 +80,7 @@
         clicks: 0,
         reactionTimes: [],
         hitThreshold: maxspeed,
+        targetSetTime: Date.now(),
     }, {
         centerX: canvas.width / 2,
         centerY: canvas.height / 2,
@@ -92,6 +93,7 @@
         clicks: 0,
         reactionTimes: [],
         hitThreshold: maxspeed,
+        targetSetTime: Date.now(),
     }, {
         centerX: 3 * canvas.width / 4,
         centerY: canvas.height / 2,
@@ -104,6 +106,7 @@
         clicks: 0,
         reactionTimes: [],
         hitThreshold: maxspeed,
+        targetSetTime: Date.now(),
     }];
 
     function drawCircle(circle) {
@@ -151,14 +154,17 @@
 
             if (Date.now() - startTime >= presetTime * 1000) {
                 gameRunning = false;
+                postResults();
             }
         }, 10);
     }
 
     function updateStats() {
         circles.forEach((circle, index) => {
+            {{#if preset.show_stats}}
             document.getElementById('clicks' + (index + 1)).textContent = `Кликов: ${circle.clicks}`;
             document.getElementById('misses' + (index + 1)).textContent = `Промахов: ${circle.misses}`;
+            {{/if}}
 
             let sum = 0;
             circle.reactionTimes.forEach((time) => {
@@ -173,8 +179,10 @@
             });
             sd = Math.sqrt(sd / (circle.reactionTimes.length - 1));
 
+            {{#if preset.show_stats}}
             document.getElementById('avgTime' + (index + 1)).textContent = `Среднее время реакции: ${avgTime.toFixed(2)}`;
             document.getElementById('stdDev' + (index + 1)).textContent = `Стандартное отклонение: ${sd.toFixed(2)}`;
+            {{/if}}
         });
     }
 
@@ -190,12 +198,15 @@
         if (circleKey >= '1' && circleKey <= '3') {
             let circleIndex = parseInt(circleKey) - 1;
             let circle = circles[circleIndex];
+            let reactionTime = Date.now() - circle.targetSetTime;
+            circle.reactionTimes.push(reactionTime);
             circle.clicks++;
             if (Math.abs(circle.angle - circle.targetAngle) > circle.hitThreshold) {
                 circle.misses++;
             } else {
                 circle.hits++;
                 circle.targetAngle = Math.random() * 2 * Math.PI;
+                circle.targetSetTime = Date.now();
 
                 circle.speed += acceleration;
                 circle.speed = Math.min(circle.speed, maxspeed)

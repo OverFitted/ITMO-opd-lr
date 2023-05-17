@@ -224,9 +224,10 @@ ALTER SEQUENCE public.preset_to_resp_id_seq OWNED BY public.preset_to_resp.id;
 
 CREATE TABLE public.presets (
     preset_id integer NOT NULL,
-    lab_id integer,
-    test_in_lab_id integer,
-    params json
+    lab_id integer NOT NULL,
+    test_in_lab_id integer NOT NULL,
+    params json,
+    preset_name text
 );
 
 
@@ -425,6 +426,19 @@ ALTER TABLE public.results_list_lr3_id_seq OWNER TO master;
 
 ALTER SEQUENCE public.results_list_lr3_id_seq OWNED BY public.results_list_lr3.id;
 
+
+--
+-- Name: test_name; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.test_name (
+    lab_id integer NOT NULL,
+    test_id integer NOT NULL,
+    test_name text
+);
+
+
+ALTER TABLE public.test_name OWNER TO master;
 
 --
 -- Name: test_name_lr2; Type: TABLE; Schema: public; Owner: master
@@ -849,6 +863,18 @@ COPY public.results_list_lr3 (id, result_list) FROM stdin;
 
 
 --
+-- Data for Name: test_name; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.test_name (lab_id, test_id, test_name) FROM stdin;
+3	1	Простое движение
+3	2	Сложное движение
+4	1	Аналоговое слежение
+4	2	Слежение с преследованием
+\.
+
+
+--
 -- Data for Name: test_name_lr2; Type: TABLE DATA; Schema: public; Owner: master
 --
 
@@ -875,6 +901,7 @@ COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert
 7	TestName3	TestSurname3	testlogin3	1234	fakeMail5@mail.ru	95	f	M
 8	TestName4	TestSurname4	testlogin4	1234	fakeMail6@mail.ru	94	f	F
 1232473507	testuser	testuser	testuser	1234	1234@mail.ru	12	t	M
+1902235510	aboba	aboba	aboba	aboba	aboba@mail.ru	12	t	M
 \.
 
 
@@ -995,6 +1022,14 @@ ALTER TABLE ONLY public.lr4_to_resp
 
 
 --
+-- Name: test_name pk_test_and_lab_id; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.test_name
+    ADD CONSTRAINT pk_test_and_lab_id PRIMARY KEY (lab_id, test_id);
+
+
+--
 -- Name: preset_to_resp preset_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
 --
 
@@ -1051,6 +1086,14 @@ ALTER TABLE ONLY public.results_list_lr3
 
 
 --
+-- Name: presets uniq_lab_i_test; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.presets
+    ADD CONSTRAINT uniq_lab_i_test UNIQUE (lab_id, test_in_lab_id);
+
+
+--
 -- Name: test_name_lr2 unique_id; Type: CONSTRAINT; Schema: public; Owner: master
 --
 
@@ -1071,6 +1114,13 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE INDEX fki_fk_id_to_name ON public.test_name_lr2 USING btree (test_id);
+
+
+--
+-- Name: fki_fk_lab_id; Type: INDEX; Schema: public; Owner: master
+--
+
+CREATE INDEX fki_fk_lab_id ON public.test_name USING btree (lab_id);
 
 
 --
@@ -1095,10 +1145,24 @@ CREATE INDEX fki_fkey_expert_id ON public.expert_profession_quality_lab1 USING b
 
 
 --
+-- Name: fki_fkey_lab_id_test_name; Type: INDEX; Schema: public; Owner: master
+--
+
+CREATE INDEX fki_fkey_lab_id_test_name ON public.presets USING btree (lab_id);
+
+
+--
 -- Name: fki_fkey_params_list_lr3; Type: INDEX; Schema: public; Owner: master
 --
 
 CREATE INDEX fki_fkey_params_list_lr3 ON public.lr3_to_resp USING btree (preset_id);
+
+
+--
+-- Name: fki_fkey_preset_id; Type: INDEX; Schema: public; Owner: master
+--
+
+CREATE INDEX fki_fkey_preset_id ON public.lr4_to_resp USING btree (preset_id);
 
 
 --
@@ -1160,30 +1224,6 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
--- Name: preset_to_resp fk_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.preset_to_resp
-    ADD CONSTRAINT fk_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id);
-
-
---
--- Name: lr4_to_resp fk_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.lr4_to_resp
-    ADD CONSTRAINT fk_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id);
-
-
---
--- Name: lr3_to_resp fk_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.lr3_to_resp
-    ADD CONSTRAINT fk_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id);
-
-
---
 -- Name: preset_to_resp fk_resp_id; Type: FK CONSTRAINT; Schema: public; Owner: master
 --
 
@@ -1213,6 +1253,22 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1
     ADD CONSTRAINT fkey_expert_id FOREIGN KEY (expert_id) REFERENCES public.users(usr_id) NOT VALID;
+
+
+--
+-- Name: lr4_to_resp fkey_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT fkey_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id) NOT VALID;
+
+
+--
+-- Name: lr3_to_resp fkey_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr3_to_resp
+    ADD CONSTRAINT fkey_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id) NOT VALID;
 
 
 --
