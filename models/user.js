@@ -155,13 +155,13 @@ class User {
         })
     }
 
-    sendResultThirt(results) {
+    sendResultThird(results) {
         var data = this.toJSON()
 
         var res_query = {
-            text: 'INSERT INTO results_list_lr2 (result_list) VALUES ($1) RETURNING id',
+            text: 'INSERT INTO results_list_lr3 (result_list) VALUES ($1) RETURNING id',
             values: [
-                [results.averageResult, results.stdResult, results.missedPercent]
+                [results.averageResult, results.stdResult]
             ],
         }
 
@@ -169,8 +169,31 @@ class User {
             var id = res.rows[0].id
 
             const query = {
-                text: 'INSERT INTO lr3_to_resp (respondent_id, result_list_id_lr3, test_id) VALUES ($1, $2, $3)',
-                values: [data.usr_id, id, results.test_id],
+                text: 'INSERT INTO lr3_to_resp (respondent_id, result_list_id_lr3, preset_id) VALUES ($1, $2, $3)',
+                values: [data.usr_id, id, results.preset_id],
+            }
+            CLIENT.query(query).then((result) => {
+                console.log(result)
+            })
+        })
+    }
+
+    sendResultFourth(results) {
+        var data = this.toJSON()
+
+        var res_query = {
+            text: 'INSERT INTO results_list_lr4 (result_list) VALUES ($1) RETURNING id',
+            values: [
+                [results.averageResult, results.stdResult]
+            ],
+        }
+
+        CLIENT.query(res_query).then((res) => {
+            var id = res.rows[0].id
+
+            const query = {
+                text: 'INSERT INTO lr4_to_resp (respondent_id, result_list_id_lr4, preset_id) VALUES ($1, $2, $4)',
+                values: [data.usr_id, id, results.preset_id],
             }
             CLIENT.query(query).then((result) => {
                 console.log(result)

@@ -169,8 +169,9 @@
         let results = {
             hits: hits,
             misses: attempts - hits,
-            hitPercent: hitPercent,
-            test_id: 2
+            hitPercent: hitPercent.toFixed(2),
+            test_id: 2,
+            preset_id: {{preset_id}}
         };
 
         fetch('../', {

@@ -79,7 +79,7 @@
         misses: 0,
         clicks: 0,
         reactionTimes: [],
-        hitThreshold: 0.25,
+        hitThreshold: maxspeed,
     }, {
         centerX: canvas.width / 2,
         centerY: canvas.height / 2,
@@ -91,7 +91,7 @@
         misses: 0,
         clicks: 0,
         reactionTimes: [],
-        hitThreshold: 0.25,
+        hitThreshold: maxspeed,
     }, {
         centerX: 3 * canvas.width / 4,
         centerY: canvas.height / 2,
@@ -103,7 +103,7 @@
         misses: 0,
         clicks: 0,
         reactionTimes: [],
-        hitThreshold: 0.25,
+        hitThreshold: maxspeed,
     }];
 
     function drawCircle(circle) {
@@ -205,13 +205,18 @@
     });
 
     function postResults() {
-        let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
-        let sd = Math.sqrt(reactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1));
+        let allReactionTimes = [];
+        circles.forEach(circle => {
+            allReactionTimes = allReactionTimes.concat(circle.reactionTimes);
+        });
+        let avgTime = allReactionTimes.reduce((a, b) => a + b, 0) / allReactionTimes.length;
+        let sd = Math.sqrt(allReactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (allReactionTimes.length - 1));
 
         let results = {
-            averageResult: avgTime,
-            stdResult: sd,
-            test_id: 2
+            averageResult: avgTime.toFixed(2),
+            stdResult: sd.toFixed(2),
+            test_id: 2,
+            preset_id: {{preset_id}}
         };
 
         fetch('../', {

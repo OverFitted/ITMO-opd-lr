@@ -107,49 +107,58 @@ router.post('/pvk2', (req, res, next) => {
     res.redirect(`/labs/lab1/res?chosenPvksIds=${chosenPvksIds.join("-")}&selectedLanguage=${selectedLanguage}&pvkValues=${pvkValues.join("-")}`)
 })
 
-router.get('/lab1/res', (req, res, next) => {
-    res.status(200)
-    const pvkValues = req.query.pvkValues.split("-")
-    const chosenPvksIds = req.query.chosenPvksIds.split("-")
-    const selectedLanguage = req.query.selectedLanguage
+router.get('/lab1/res', async (req, res, next) => {
+    try {
+        const { pvkValues, chosenPvksIds, selectedLanguage } = req.query;
+        if (!pvkValues || !chosenPvksIds || !selectedLanguage) {
+            return res.redirect("/labs/lab1");
+        }
 
-    top_table_query = "WITH ranked_pvk AS (SELECT profession_id, pvk_id, ROW_NUMBER() OVER (PARTITION BY profession_id ORDER BY COUNT(*) DESC) AS rank FROM expert_profession_quality_lab1 GROUP BY profession_id, pvk_id) SELECT rp.profession_id, p.name, rp.pvk_id, pv.name FROM ranked_pvk AS rp JOIN professions_lab1 AS p ON rp.profession_id = p.id JOIN pvk_lab1 AS pv ON rp.pvk_id = pv.id WHERE rp.rank <= 5 ORDER BY rp.profession_id, rp.rank;"
+        const pvkValueArray = pvkValues.split("-");
+        const chosenPvksIdArray = chosenPvksIds.split("-");
 
-    CLIENT.query(top_table_query).then((top_table) => {
-        CLIENT.query('select * from professions_lab1').then((profs) => {
-            CLIENT.query(`select * from pvk_lab1`).then((result) => {
-                let pvks = []
-                for (let i = 0; i < chosenPvksIds.length; i++) {
-                    const cur = result.rows.find(x => x.id === parseInt(chosenPvksIds[i]));
+        const topTableQuery = `
+            WITH ranked_pvk AS (
+                SELECT profession_id, pvk_id, ROW_NUMBER() OVER (PARTITION BY profession_id ORDER BY COUNT(*) DESC) AS rank 
+                FROM expert_profession_quality_lab1
+                GROUP BY profession_id, pvk_id
+            )
+            SELECT rp.profession_id, p.name, rp.pvk_id, pv.name
+            FROM ranked_pvk AS rp
+            JOIN professions_lab1 AS p ON rp.profession_id = p.id
+            JOIN pvk_lab1 AS pv ON rp.pvk_id = pv.id
+            WHERE rp.rank <= 5
+            ORDER BY rp.profession_id, rp.rank;
+        `;
 
-                    pvks.push({
-                        cur: cur,
-                        value: pvkValues[i]
-                    })
-                }
+        const [topTable, profs, result, experts] = await Promise.all([
+            CLIENT.query(topTableQuery),
+            CLIENT.query('SELECT * FROM professions_lab1'),
+            CLIENT.query('SELECT * FROM pvk_lab1'),
+            CLIENT.query(`SELECT * FROM users WHERE is_expert='t'`)
+        ]);
 
-                for (let i = 0; i < profs.rows.length; i++) {
-                    profs.rows[i]["top_table"] = top_table.rows.filter(x => x.profession_id === profs.rows[i].id)
-                }
+        const pvks = chosenPvksIdArray.map((id, i) => {
+            const cur = result.rows.find(x => x.id === parseInt(id));
+            return { cur, value: pvkValueArray[i] };
+        });
 
-                if (!((!pvkValues) || (!chosenPvksIds) || (!selectedLanguage))) {
-                    CLIENT.query(`select * from users where is_expert='t'`).then((result) => {
-                        res.render('lab1', {
-                            title: "Лаба 1 | без CHATGPT",
-                            isLoggedIn: req.cookies.usr_id,
-                            pvks: pvks,
-                            profs: profs.rows,
-                            selectedLanguage: selectedLanguage,
-                            experts: result.rows,
-                        })
-                    })
-                } else {
-                    res.redirect("/labs/lab1")
-                }
-            })
-        })
-    })
-})
+        profs.rows.forEach(prof => {
+            prof.top_table = topTable.rows.filter(x => x.profession_id === prof.id);
+        });
+
+        res.render('lab1', {
+            title: "Лаба 1 | без CHATGPT",
+            isLoggedIn: req.cookies.usr_id,
+            pvks,
+            profs: profs.rows,
+            selectedLanguage,
+            experts: experts.rows,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 router.get('/lab2', (req, res, next) => {
     res.status(200)
@@ -268,7 +277,8 @@ router.get('/lab3/lab3_simple', async (req, res, next) => {
         res.status(200).render('lab3_simple', {
             title: "Простые тесты | без CHATGPT",
             isLoggedIn: req.cookies.usr_id,
-            preset: result.rows[0].params
+            preset: result.rows[0].params,
+            preset_id: result.rows[0].preset_id
         })
     } catch (err) {
         console.error('Error querying database:', err);
@@ -292,7 +302,8 @@ router.get('/lab3/lab3_hard', async (req, res, next) => {
         res.status(200).render('lab3_hard', {
             title: "Сложные тесты | без CHATGPT",
             isLoggedIn: req.cookies.usr_id,
-            preset: result.rows[0].params
+            preset: result.rows[0].params,
+            preset_id: result.rows[0].preset_id
         })
     } catch (err) {
         console.error('Error querying database:', err);
@@ -353,7 +364,8 @@ router.get('/lab4/lab4_simple', async (req, res, next) => {
         res.status(200).render('lab4_simple', {
             title: "Аналоговое слежение | без CHATGPT",
             isLoggedIn: req.cookies.usr_id,
-            preset: result.rows[0].params
+            preset: result.rows[0].params,
+            preset_id: result.rows[0].preset_id
         })
     } catch (err) {
         console.error('Error querying database:', err);
@@ -377,7 +389,8 @@ router.get('/lab4/lab4_hard', async (req, res, next) => {
         res.status(200).render('lab4_hard', {
             title: "Слежение с преследованием | без CHATGPT",
             isLoggedIn: req.cookies.usr_id,
-            preset: result.rows[0].params
+            preset: result.rows[0].params,
+            preset_id: result.rows[0].preset_id
         })
     } catch (err) {
         console.error('Error querying database:', err);

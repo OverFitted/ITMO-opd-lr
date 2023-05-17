@@ -174,9 +174,10 @@
         let results = {
             clicks: clicks,
             misses: misses,
-            avgTime: avgTime,
-            stdDev: sd,
-            test_id: 1
+            avgTime: avgTime.toFixed(2),
+            stdDev: sd.toFixed(2),
+            test_id: 1,
+            preset_id: {{preset_id}}
         };
 
         fetch('../', {
