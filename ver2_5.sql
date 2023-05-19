@@ -16,6 +16,15 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: schema_name; Type: SCHEMA; Schema: -; Owner: graevsky
+--
+
+CREATE SCHEMA schema_name;
+
+
+ALTER SCHEMA schema_name OWNER TO graevsky;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -109,9 +118,8 @@ ALTER SEQUENCE public.lr2_to_resp_id_seq OWNED BY public.lr2_to_resp.id;
 CREATE TABLE public.lr3_to_resp (
     id integer NOT NULL,
     respondent_id integer,
-    expert_id integer,
     result_list_id_lr3 integer,
-    params_list_id_lr3 integer
+    preset_id integer
 );
 
 
@@ -140,22 +148,24 @@ ALTER SEQUENCE public.lr3_to_resp_id_seq OWNED BY public.lr3_to_resp.id;
 
 
 --
--- Name: params_list_lr2; Type: TABLE; Schema: public; Owner: master
+-- Name: lr4_to_resp; Type: TABLE; Schema: public; Owner: master
 --
 
-CREATE TABLE public.params_list_lr2 (
+CREATE TABLE public.lr4_to_resp (
     id integer NOT NULL,
-    params_list float[]
+    respondent_id integer,
+    result_list_id_lr4 integer,
+    preset_id integer
 );
 
 
-ALTER TABLE public.params_list_lr2 OWNER TO master;
+ALTER TABLE public.lr4_to_resp OWNER TO master;
 
 --
--- Name: params_list_lr2_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
 --
 
-CREATE SEQUENCE public.params_list_lr2_id_seq
+CREATE SEQUENCE public.lr4_to_resp_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -164,32 +174,34 @@ CREATE SEQUENCE public.params_list_lr2_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.params_list_lr2_id_seq OWNER TO master;
+ALTER TABLE public.lr4_to_resp_id_seq OWNER TO master;
 
 --
--- Name: params_list_lr2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
 --
 
-ALTER SEQUENCE public.params_list_lr2_id_seq OWNED BY public.params_list_lr2.id;
+ALTER SEQUENCE public.lr4_to_resp_id_seq OWNED BY public.lr4_to_resp.id;
 
 
 --
--- Name: params_list_lr3; Type: TABLE; Schema: public; Owner: master
+-- Name: lr5_to_resp; Type: TABLE; Schema: public; Owner: master
 --
 
-CREATE TABLE public.params_list_lr3 (
+CREATE TABLE public.lr5_to_resp (
     id integer NOT NULL,
-    params_list float[]
+    respondent_id integer,
+    result_list_id_lr5 integer,
+    preset_id integer
 );
 
 
-ALTER TABLE public.params_list_lr3 OWNER TO master;
+ALTER TABLE public.lr5_to_resp OWNER TO master;
 
 --
--- Name: params_list_lr3_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
 --
 
-CREATE SEQUENCE public.params_list_lr3_id_seq
+CREATE SEQUENCE public.lr5_to_resp_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -198,13 +210,48 @@ CREATE SEQUENCE public.params_list_lr3_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.params_list_lr3_id_seq OWNER TO master;
+ALTER TABLE public.lr5_to_resp_id_seq OWNER TO master;
 
 --
--- Name: params_list_lr3_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
 --
 
-ALTER SEQUENCE public.params_list_lr3_id_seq OWNED BY public.params_list_lr3.id;
+ALTER SEQUENCE public.lr5_to_resp_id_seq OWNED BY public.lr5_to_resp.id;
+
+
+--
+-- Name: preset_to_resp; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.preset_to_resp (
+    id integer NOT NULL,
+    user_id integer,
+    preset_id integer
+);
+
+
+ALTER TABLE public.preset_to_resp OWNER TO master;
+
+--
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.preset_to_resp_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.preset_to_resp_id_seq OWNER TO master;
+
+--
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.preset_to_resp_id_seq OWNED BY public.preset_to_resp.id;
 
 
 --
@@ -213,16 +260,10 @@ ALTER SEQUENCE public.params_list_lr3_id_seq OWNED BY public.params_list_lr3.id;
 
 CREATE TABLE public.presets (
     preset_id integer NOT NULL,
-    lab_name text,
-    test_in_lab_name text,
-    name text,
-    description text,
-    avail_time_sec integer,
-    show_time boolean,
-    res_in_1min_and_full_test boolean,
-    show_progress boolean,
-    obj_acc_factor integer,
-    obj_acc_time integer
+    lab_id integer NOT NULL,
+    test_in_lab_id integer NOT NULL,
+    params json,
+    preset_name text
 );
 
 
@@ -321,12 +362,46 @@ ALTER SEQUENCE public.pvk_id_seq OWNED BY public.pvk_lab1.id;
 
 
 --
+-- Name: results_list_lr4; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.results_list_lr4 (
+    id integer NOT NULL,
+    result_list double precision[]
+);
+
+
+ALTER TABLE public.results_list_lr4 OWNER TO master;
+
+--
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.result_list_lr4_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.result_list_lr4_id_seq OWNER TO master;
+
+--
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.result_list_lr4_id_seq OWNED BY public.results_list_lr4.id;
+
+
+--
 -- Name: results_list_lr2; Type: TABLE; Schema: public; Owner: master
 --
 
 CREATE TABLE public.results_list_lr2 (
     id integer NOT NULL,
-    result_list float[]
+    result_list double precision[]
 );
 
 
@@ -360,7 +435,7 @@ ALTER SEQUENCE public.results_list_lr2_id_seq OWNED BY public.results_list_lr2.i
 
 CREATE TABLE public.results_list_lr3 (
     id integer NOT NULL,
-    result_list float[]
+    result_list double precision[]
 );
 
 
@@ -387,6 +462,53 @@ ALTER TABLE public.results_list_lr3_id_seq OWNER TO master;
 
 ALTER SEQUENCE public.results_list_lr3_id_seq OWNED BY public.results_list_lr3.id;
 
+
+--
+-- Name: results_list_lr5; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.results_list_lr5 (
+    id integer NOT NULL,
+    result_list double precision[]
+);
+
+
+ALTER TABLE public.results_list_lr5 OWNER TO master;
+
+--
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.results_list_lr5_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.results_list_lr5_id_seq OWNER TO master;
+
+--
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.results_list_lr5_id_seq OWNED BY public.results_list_lr5.id;
+
+
+--
+-- Name: test_name; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.test_name (
+    lab_id integer NOT NULL,
+    test_id integer NOT NULL,
+    test_name text
+);
+
+
+ALTER TABLE public.test_name OWNER TO master;
 
 --
 -- Name: test_name_lr2; Type: TABLE; Schema: public; Owner: master
@@ -463,17 +585,24 @@ ALTER TABLE ONLY public.lr3_to_resp ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- Name: params_list_lr2 id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: lr4_to_resp id; Type: DEFAULT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.params_list_lr2 ALTER COLUMN id SET DEFAULT nextval('public.params_list_lr2_id_seq'::regclass);
+ALTER TABLE ONLY public.lr4_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr4_to_resp_id_seq'::regclass);
 
 
 --
--- Name: params_list_lr3 id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: lr5_to_resp id; Type: DEFAULT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.params_list_lr3 ALTER COLUMN id SET DEFAULT nextval('public.params_list_lr3_id_seq'::regclass);
+ALTER TABLE ONLY public.lr5_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr5_to_resp_id_seq'::regclass);
+
+
+--
+-- Name: preset_to_resp id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.preset_to_resp ALTER COLUMN id SET DEFAULT nextval('public.preset_to_resp_id_seq'::regclass);
 
 
 --
@@ -512,6 +641,20 @@ ALTER TABLE ONLY public.results_list_lr3 ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: results_list_lr4 id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.results_list_lr4 ALTER COLUMN id SET DEFAULT nextval('public.result_list_lr4_id_seq'::regclass);
+
+
+--
+-- Name: results_list_lr5 id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.results_list_lr5 ALTER COLUMN id SET DEFAULT nextval('public.results_list_lr5_id_seq'::regclass);
+
+
+--
 -- Name: users usr_id; Type: DEFAULT; Schema: public; Owner: master
 --
 
@@ -532,6 +675,13 @@ COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id
 
 COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id) FROM stdin;
 1	1	1	6	1
+2	1232473507	\N	10	1
+3	1232473507	\N	11	1
+4	1232473507	\N	12	2
+5	1232473507	\N	13	4
+6	1232473507	\N	14	5
+7	1232473507	\N	15	5
+8	1232473507	\N	16	3
 \.
 
 
@@ -539,23 +689,31 @@ COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id) F
 -- Data for Name: lr3_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.lr3_to_resp (id, respondent_id, expert_id, result_list_id_lr3, params_list_id_lr3) FROM stdin;
+COPY public.lr3_to_resp (id, respondent_id, result_list_id_lr3, preset_id) FROM stdin;
 \.
 
 
 --
--- Data for Name: params_list_lr2; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: lr4_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.params_list_lr2 (id, params_list) FROM stdin;
+COPY public.lr4_to_resp (id, respondent_id, result_list_id_lr4, preset_id) FROM stdin;
 \.
 
 
 --
--- Data for Name: params_list_lr3; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: lr5_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.params_list_lr3 (id, params_list) FROM stdin;
+COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: preset_to_resp; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
 \.
 
 
@@ -563,7 +721,7 @@ COPY public.params_list_lr3 (id, params_list) FROM stdin;
 -- Data for Name: presets; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.presets (preset_id, lab_name, test_in_lab_name, name, description, avail_time_sec, show_time, res_in_1min_and_full_test, show_progress, obj_acc_factor, obj_acc_time) FROM stdin;
+COPY public.presets (preset_id, lab_id, test_in_lab_id, params, preset_name) FROM stdin;
 \.
 
 
@@ -770,6 +928,13 @@ COPY public.results_list_lr2 (id, result_list) FROM stdin;
 7	{3,560,12,210}
 8	{4,670,5,670}
 9	{5,340,8,900}
+10	{922.8,967.11}
+11	{375.8,62.37}
+12	{501.43,438.16}
+13	{2109.75,2499.67,769,543.77}
+14	{2296.6,1230.19,0,NaN}
+15	{1850.25,887.16,1883,1331.48}
+16	{1145.76,740.31,979,692.26}
 \.
 
 
@@ -778,6 +943,34 @@ COPY public.results_list_lr2 (id, result_list) FROM stdin;
 --
 
 COPY public.results_list_lr3 (id, result_list) FROM stdin;
+\.
+
+
+--
+-- Data for Name: results_list_lr4; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.results_list_lr4 (id, result_list) FROM stdin;
+\.
+
+
+--
+-- Data for Name: results_list_lr5; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.results_list_lr5 (id, result_list) FROM stdin;
+\.
+
+
+--
+-- Data for Name: test_name; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.test_name (lab_id, test_id, test_name) FROM stdin;
+3	1	Простое движение
+3	2	Сложное движение
+4	1	Аналоговое слежение
+4	2	Слежение с преследованием
 \.
 
 
@@ -807,6 +1000,8 @@ COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert
 6	TestName2	TestSurname2	testlogin2	1234	fakeMail4@mail.ru	96	f	M
 7	TestName3	TestSurname3	testlogin3	1234	fakeMail5@mail.ru	95	f	M
 8	TestName4	TestSurname4	testlogin4	1234	fakeMail6@mail.ru	94	f	F
+1232473507	testuser	testuser	testuser	1234	1234@mail.ru	12	t	M
+1902235510	aboba	aboba	aboba	aboba	aboba@mail.ru	12	t	M
 \.
 
 
@@ -821,7 +1016,7 @@ SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 24, true);
 -- Name: lr2_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 1, true);
+SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 8, true);
 
 
 --
@@ -832,17 +1027,24 @@ SELECT pg_catalog.setval('public.lr3_to_resp_id_seq', 1, false);
 
 
 --
--- Name: params_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.params_list_lr2_id_seq', 1, false);
+SELECT pg_catalog.setval('public.lr4_to_resp_id_seq', 1, false);
 
 
 --
--- Name: params_list_lr3_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.params_list_lr3_id_seq', 1, false);
+SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 1, false);
+
+
+--
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 1, false);
 
 
 --
@@ -867,10 +1069,17 @@ SELECT pg_catalog.setval('public.pvk_id_seq', 179, true);
 
 
 --
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.result_list_lr4_id_seq', 1, false);
+
+
+--
 -- Name: results_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 9, true);
+SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 16, true);
 
 
 --
@@ -878,6 +1087,13 @@ SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 9, true);
 --
 
 SELECT pg_catalog.setval('public.results_list_lr3_id_seq', 1, false);
+
+
+--
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.results_list_lr5_id_seq', 1, false);
 
 
 --
@@ -912,19 +1128,35 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 
 --
--- Name: params_list_lr2 params_list_lr2_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: lr4_to_resp lr4_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.params_list_lr2
-    ADD CONSTRAINT params_list_lr2_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT lr4_to_resp_pkey PRIMARY KEY (id);
 
 
 --
--- Name: params_list_lr3 params_list_lr3_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: lr5_to_resp lr5_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.params_list_lr3
-    ADD CONSTRAINT params_list_lr3_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.lr5_to_resp
+    ADD CONSTRAINT lr5_to_resp_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: test_name pk_test_and_lab_id; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.test_name
+    ADD CONSTRAINT pk_test_and_lab_id PRIMARY KEY (lab_id, test_id);
+
+
+--
+-- Name: preset_to_resp preset_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.preset_to_resp
+    ADD CONSTRAINT preset_to_resp_pkey PRIMARY KEY (id);
 
 
 --
@@ -952,6 +1184,14 @@ ALTER TABLE ONLY public.pvk_lab1
 
 
 --
+-- Name: results_list_lr4 result_list_lr4_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.results_list_lr4
+    ADD CONSTRAINT result_list_lr4_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: results_list_lr2 results_list_lr2_pkey; Type: CONSTRAINT; Schema: public; Owner: master
 --
 
@@ -965,6 +1205,22 @@ ALTER TABLE ONLY public.results_list_lr2
 
 ALTER TABLE ONLY public.results_list_lr3
     ADD CONSTRAINT results_list_lr3_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: results_list_lr5 results_list_lr5_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.results_list_lr5
+    ADD CONSTRAINT results_list_lr5_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: presets uniq_lab_i_test; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.presets
+    ADD CONSTRAINT uniq_lab_i_test UNIQUE (lab_id, test_in_lab_id);
 
 
 --
@@ -991,6 +1247,13 @@ CREATE INDEX fki_fk_id_to_name ON public.test_name_lr2 USING btree (test_id);
 
 
 --
+-- Name: fki_fk_lab_id; Type: INDEX; Schema: public; Owner: master
+--
+
+CREATE INDEX fki_fk_lab_id ON public.test_name USING btree (lab_id);
+
+
+--
 -- Name: fki_fkey_exp; Type: INDEX; Schema: public; Owner: master
 --
 
@@ -1012,10 +1275,24 @@ CREATE INDEX fki_fkey_expert_id ON public.expert_profession_quality_lab1 USING b
 
 
 --
+-- Name: fki_fkey_lab_id_test_name; Type: INDEX; Schema: public; Owner: master
+--
+
+CREATE INDEX fki_fkey_lab_id_test_name ON public.presets USING btree (lab_id);
+
+
+--
 -- Name: fki_fkey_params_list_lr3; Type: INDEX; Schema: public; Owner: master
 --
 
-CREATE INDEX fki_fkey_params_list_lr3 ON public.lr3_to_resp USING btree (params_list_id_lr3);
+CREATE INDEX fki_fkey_params_list_lr3 ON public.lr3_to_resp USING btree (preset_id);
+
+
+--
+-- Name: fki_fkey_preset_id; Type: INDEX; Schema: public; Owner: master
+--
+
+CREATE INDEX fki_fkey_preset_id ON public.lr4_to_resp USING btree (preset_id);
 
 
 --
@@ -1077,6 +1354,38 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
+-- Name: lr5_to_resp fk_prest_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr5_to_resp
+    ADD CONSTRAINT fk_prest_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id);
+
+
+--
+-- Name: preset_to_resp fk_resp_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.preset_to_resp
+    ADD CONSTRAINT fk_resp_id FOREIGN KEY (user_id) REFERENCES public.users(usr_id);
+
+
+--
+-- Name: lr5_to_resp fk_respondent_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr5_to_resp
+    ADD CONSTRAINT fk_respondent_id FOREIGN KEY (respondent_id) REFERENCES public.users(usr_id);
+
+
+--
+-- Name: lr5_to_resp fk_result_list; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr5_to_resp
+    ADD CONSTRAINT fk_result_list FOREIGN KEY (result_list_id_lr5) REFERENCES public.results_list_lr5(id);
+
+
+--
 -- Name: lr2_to_resp fk_test_id_to_name; Type: FK CONSTRAINT; Schema: public; Owner: master
 --
 
@@ -1093,14 +1402,6 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 
 --
--- Name: lr3_to_resp fkey_exp; Type: FK CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.lr3_to_resp
-    ADD CONSTRAINT fkey_exp FOREIGN KEY (expert_id) REFERENCES public.users(usr_id) NOT VALID;
-
-
---
 -- Name: expert_profession_quality_lab1 fkey_expert_id; Type: FK CONSTRAINT; Schema: public; Owner: graevsky
 --
 
@@ -1109,11 +1410,19 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
--- Name: lr3_to_resp fkey_params_list_lr3; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr4_to_resp fkey_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT fkey_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id) NOT VALID;
+
+
+--
+-- Name: lr3_to_resp fkey_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
 --
 
 ALTER TABLE ONLY public.lr3_to_resp
-    ADD CONSTRAINT fkey_params_list_lr3 FOREIGN KEY (params_list_id_lr3) REFERENCES public.params_list_lr3(id) NOT VALID;
+    ADD CONSTRAINT fkey_preset_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id) NOT VALID;
 
 
 --
@@ -1146,6 +1455,37 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 ALTER TABLE ONLY public.lr2_to_resp
     ADD CONSTRAINT fkey_results FOREIGN KEY (result_id_lr2) REFERENCES public.results_list_lr2(id) NOT VALID;
+
+
+--
+-- Name: lr4_to_resp lr4_to_resp_respondent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT lr4_to_resp_respondent_id_fkey FOREIGN KEY (respondent_id) REFERENCES public.users(usr_id);
+
+
+--
+-- Name: lr4_to_resp lr4_to_resp_result_list_id_lr4_fkey; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr4_to_resp
+    ADD CONSTRAINT lr4_to_resp_result_list_id_lr4_fkey FOREIGN KEY (result_list_id_lr4) REFERENCES public.results_list_lr4(id);
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: master
+--
+
+GRANT ALL ON SCHEMA public TO graevsky;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: SCHEMA schema_name; Type: ACL; Schema: -; Owner: graevsky
+--
+
+GRANT ALL ON SCHEMA schema_name TO PUBLIC;
 
 
 --
