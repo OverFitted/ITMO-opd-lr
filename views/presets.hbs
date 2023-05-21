@@ -20,7 +20,11 @@
                                         <h5 class="card-title">{{preset_name}}</h5>
                                         <p class="card-text">Номер теста: {{test_num}}</p>
                                         {{#each params}}
-                                        <p class="card-text">{{this.label}}: {{this.value}}</p>
+                                            {{#ifneq this.label "test_num"}}
+                                                {{#ifneq this.label "Название пресета"}}
+                                                    <p class="card-text">{{this.label}}: {{this.value}}</p>
+                                                {{/ifneq}}
+                                            {{/ifneq}}
                                         {{/each}}
                                     </div>
                                 </div>
