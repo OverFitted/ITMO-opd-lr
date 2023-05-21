@@ -19,11 +19,9 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{preset_name}}</h5>
                                         <p class="card-text">Номер теста: {{test_num}}</p>
-                                        <p class="card-text">Время на тест: {{runtime}}</p>
-                                        <p class="card-text">Показывать время в статистике: {{show_time}}</p>
-                                        <p class="card-text">Показывать статистику теста: {{show_stats}}</p>
-                                        <p class="card-text">Начальная скорость: {{speed_koef}}</p>
-                                        <p class="card-text">Коэффициент ускорения: {{acceleration_koef}}</p>
+                                        {{#each params}}
+                                        <p class="card-text">{{this.label}}: {{this.value}}</p>
+                                        {{/each}}
                                     </div>
                                 </div>
                             </div>
@@ -34,63 +32,58 @@
                 </div>
             </div>
             <div class="col-sm-4 text-start offset-lg-0">
-                <div class="card mb-lg-3">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPresetModal">
-                        Добавить пресет
-                    </button>
+                <div class="card">
+                    <label for="lab_select" class="form-label">Выберите лабораторную</label>
+                    <select id="lab_select" class="form-select">
+                        {{#each config}}
+                            <option value="{{this.lab_num}}">Лабораторная {{this.lab_num}}</option>
+                        {{/each}}
+                    </select>
+                </div>
 
-                    <div class="modal fade" id="addPresetModal" tabindex="-1" aria-labelledby="addPresetModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="addPresetModalLabel">Добавить пресет</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="add-preset" method="POST">
-                                        <div class="mb-3">
-                                            <label for="preset_name" class="form-label">Название пресета</label>
-                                            <input type="text" class="form-control" id="preset_name" name="preset_name" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="lab_num" class="form-label">Номер лабы</label>
-                                            <input type="number" class="form-control" id="lab_num" name="lab_num" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="test_num" class="form-label">Номер теста</label>
-                                            <input type="number" class="form-control" id="test_num" name="test_num" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="runtime" class="form-label">Время на тест (секунд)</label>
-                                            <input type="number" class="form-control" id="runtime" name="runtime" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="show_time" class="form-label">Показывать время в статистике</label>
-                                            <select class="form-select" id="show_time" name="show_time" required>
-                                                <option selected>Выберите...</option>
-                                                <option value="true">Да</option>
-                                                <option value="false">Нет</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="show_stats" class="form-label">Показывать статистику теста</label>
-                                            <select class="form-select" id="show_stats" name="show_stats" required>
-                                                <option selected>Выберите...</option>
-                                                <option value="true">Да</option>
-                                                <option value="false">Нет</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="speed_koef" class="form-label">Начальная скорость (стандартная - 0.02)</label>
-                                            <input type="number" step="0.01" class="form-control" id="speed_koef" name="speed_koef" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="acceleration_koef" class="form-label">Коэффициент ускорения (стандартный - 0.01)</label>
-                                            <input type="number" step="0.01" class="form-control" id="acceleration_koef" name="acceleration_koef" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Добавить</button>
-                                    </form>
-                                </div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPresetModal" data-lab-num="1">
+                    Добавить пресет
+                </button>
+
+                <div class="modal fade" id="addPresetModal" tabindex="-1" aria-labelledby="addPresetModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addPresetModalLabel">Добавить пресет</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="add-preset" method="POST">
+                                    {{#each config}}
+                                        {{#if (eq this.lab_num ../lab_num)}}
+                                            {{#each this.params}}
+                                                <div class="mb-3">
+                                                    <label for="{{this.name}}" class="form-label">{{this.label}}</label>
+                                                    {{#eq this.type "string"}}
+                                                        <input type="text" class="form-control" id="{{this.name}}" name="{{this.name}}">
+                                                    {{/eq}}
+                                                    {{#eq this.type "int"}}
+                                                        <input type="number" class="form-control" id="{{this.name}}" name="{{this.name}}">
+                                                    {{/eq}}
+                                                    {{#eq this.type "bool"}}
+                                                        <select class="form-select" id="{{this.name}}" name="{{this.name}}">
+                                                            <option value="true">Да</option>
+                                                            <option value="false">Нет</option>
+                                                        </select>
+                                                    {{/eq}}
+                                                    {{#eq this.type "options"}}
+                                                        <select class="form-select" id="{{this.name}}" name="{{this.name}}">
+                                                            {{#each this.options}}
+                                                                <option value="{{this}}">{{this}}</option>
+                                                            {{/each}}
+                                                        </select>
+                                                    {{/eq}}
+                                                </div>
+                                            {{/each}}
+                                        {{/if}}
+                                    {{/each}}
+                                    <button type="submit" class="btn btn-primary">Добавить</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -99,3 +92,59 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        let labNum = 3;
+        $('#lab_select').change(function () {
+            labNum = $(this).val();
+            $('button[data-bs-target="#addPresetModal"]').data('lab-num', labNum);
+        });
+
+        $('#addPresetModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+
+            // Make AJAX request to get config for this lab
+            $.get(`/user/config/${labNum}`, function(config) {
+                const form = $('#addPresetModal form'); // The form inside the modal
+                form.empty(); // Clear previous form fields
+
+                // Create form fields based on config
+                config.params.forEach(param => {
+                    let input;
+                    switch(param.type) {
+                        case 'string':
+                            input = `<input type="text" class="form-control" id="${param.name}" name="${param.name}" required>`;
+                            break;
+                        case 'int': case 'float':
+                            input = `<input type="number" class="form-control" id="${param.name}" name="${param.name}" required>`;
+                            break;
+                        case 'bool':
+                            input = `
+                                <select class="form-select" id="${param.name}" name="${param.name}" required>
+                                    <option selected value="true">Да</option>
+                                    <option value="false">Нет</option>
+                                </select>
+                            `;
+                            break;
+                        case 'options':
+                            let options = param.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+                            input = `<select class="form-select" id="${param.name}" name="${param.name}" required>${options}</select>`;
+                            break;
+                    }
+                    const formGroup = `
+                        <div class="mb-3">
+                            <label for="${param.name}" class="form-label">${param.label}</label>
+                            ${input}
+                        </div>
+                    `;
+                    form.append(formGroup);
+                });
+
+                // Add the submit button
+                const submitButton = `<button type="submit" class="btn btn-primary">Добавить</button>`;
+                form.append(submitButton);
+            });
+        });
+    });
+</script>

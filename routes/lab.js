@@ -409,4 +409,82 @@ router.post('/lab4/', (req, res, next) => {
     });
 })
 
+router.get('/lab5', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.lab_id = 5
+        `, [req.cookies.usr_id]);
+
+    const presets = result.rows.map(row => ({
+        lab_num: row.lab_id,
+        presets: {
+            test_num: row.test_in_lab_id,
+            ...row.params,
+        },
+        test_num: row.params.test_num
+    }));
+
+    res.status(200)
+    res.render('lab5', {
+        title: "Лаба 5 | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+        presets: presets
+    })
+})
+
+router.get('/lab5/lab5_consciousness', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.lab_id = 5
+        `, [req.cookies.usr_id]);
+
+    const presets = result.rows.map(row => ({
+        lab_num: row.lab_id,
+        presets: {
+            test_num: row.test_in_lab_id,
+            ...row.params,
+        },
+        test_num: row.params.test_num
+    }));
+
+    res.status(200)
+    res.render('lab5_consciousness', {
+        title: "Тесты на внимание | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+        presets: presets
+    })
+})
+
+router.get('/lab5/lab5_sustainability', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.lab_id = 5
+        `, [req.cookies.usr_id]);
+
+    const presets = result.rows.map(row => ({
+        lab_num: row.lab_id,
+        presets: {
+            test_num: row.test_in_lab_id,
+            ...row.params,
+        },
+        test_num: row.params.test_num
+    }));
+
+    res.status(200)
+    res.render('lab5_sustainability', {
+        title: "Тест на устойчивость | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+        presets: presets
+    })
+})
+
 module.exports = router

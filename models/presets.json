@@ -1,0 +1,139 @@
+[
+    {
+        "lab_num": 3,
+        "params": [
+            {
+                "name": "preset_name",
+                "type": "string",
+                "label": "Название пресета"
+            },
+            {
+                "name": "runtime",
+                "type": "int",
+                "label": "Время выполнения"
+            },
+            {
+                "name": "time",
+                "type": "int",
+                "label": "Время"
+            },
+            {
+                "name": "show_stats",
+                "type": "bool",
+                "label": "Показывать статистику"
+            },
+            {
+                "name": "show_time",
+                "type": "bool",
+                "label": "Показывать время"
+            },
+            {
+                "name": "speed_koef",
+                "type": "float",
+                "label": "Начальная скорость"
+            },
+            {
+                "name": "acceleration_koef",
+                "type": "float",
+                "label": "Коэффициент ускорения"
+            }
+        ]
+    },
+    {
+        "lab_num": 4,
+        "params": [
+            {
+                "name": "preset_name",
+                "type": "string",
+                "label": "Название пресета"
+            },
+            {
+                "name": "runtime",
+                "type": "int",
+                "label": "Время выполнения"
+            },
+            {
+                "name": "time",
+                "type": "int",
+                "label": "Время"
+            },
+            {
+                "name": "show_stats",
+                "type": "bool",
+                "label": "Показывать статистику"
+            },
+            {
+                "name": "show_time",
+                "type": "bool",
+                "label": "Показывать время"
+            },
+            {
+                "name": "speed_koef",
+                "type": "float",
+                "label": "Начальная скорость"
+            },
+            {
+                "name": "acceleration_koef",
+                "type": "float",
+                "label": "Коэффициент ускорения"
+            }
+        ]
+    },
+    {
+        "lab_num": 5,
+        "test_num": 1,
+        "params": [
+            {
+                "name": "preset_name",
+                "type": "string",
+                "label": "Название пресета"
+            },
+            {
+                "name": "runtime",
+                "type": "int",
+                "label": "Время выполнения"
+            },
+            {
+                "name": "time",
+                "type": "int",
+                "label": "Время"
+            },
+            {
+                "name": "show_stats",
+                "type": "bool",
+                "label": "Показывать статистику"
+            },
+            {
+                "name": "show_time",
+                "type": "bool",
+                "label": "Показывать время"
+            },
+            {
+                "name": "easy_matrix_size",
+                "type": "int",
+                "label": "Размер простой матрицы"
+            },
+            {
+                "name": "medium_matrix_size",
+                "type": "int",
+                "label": "Размер средней матрицы"
+            },
+            {
+                "name": "hard_matrix_size",
+                "type": "int",
+                "label": "Размер сложной матрицы"
+            },
+            {
+                "name": "num_levels",
+                "type": "int",
+                "label": "Количество уровней"
+            },
+            {
+                "name": "level_distribution",
+                "type": "options",
+                "label": "Распределение уровней",
+                "options": ["random", "fair"]
+            }
+        ]
+    }
+]

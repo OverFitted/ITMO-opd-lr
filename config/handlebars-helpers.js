@@ -5,6 +5,9 @@ module.exports = {
         }
         return options.inverse(this);
     },
+    eq: function (a, b) {
+        return a === b
+    },
     var: function (name, value, options) {
         options.data.root[name] = value;
     },

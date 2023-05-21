@@ -2,18 +2,32 @@ const User = require('../models/user');
 const { Router } = require('express')
 const CLIENT = require("../models/connector");
 const router = Router()
+const fs = require('fs');
+
+const configJson = fs.readFileSync('models/presets.json', 'utf8');
+const config = JSON.parse(configJson);
 
 async function getPresets() {
     try {
         const result = await CLIENT.query('SELECT * FROM presets');
-        const presets = result.rows.map(row => ({
-            lab_num: row.lab_id,
-            presets: {
-                preset_id: row.preset_id,
-                test_num: row.test_in_lab_id,
-                ...row.params,
-            },
-        }));
+        const presets = result.rows.map(row => {
+            const labConfig = config.find(c => c.lab_num === row.lab_id);
+            const presetParams = Object.entries(row.params).map(([key, value]) => {
+                const paramConfig = labConfig.params.find(p => p.name === key);
+                return {
+                    label: paramConfig ? paramConfig.label : key,
+                    value: value
+                };
+            });
+            return {
+                lab_num: row.lab_id,
+                presets: {
+                    preset_id: row.preset_id,
+                    test_num: row.test_in_lab_id,
+                    params: presetParams,
+                },
+            };
+        });
 
         const groupedPresets = [];
         presets.forEach(preset => {
@@ -115,6 +129,12 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+router.get("/config/:lab_num", (req, res, next) => {
+    const labNum = parseInt(req.params.lab_num, 10);
+    const labConfig = config.find(item => item.lab_num === labNum);
+    res.json(labConfig);
+});
+
 router.get("/presets", async (req, res, next) => {
     try {
         const groupedPresets = await getPresets();
@@ -122,7 +142,8 @@ router.get("/presets", async (req, res, next) => {
         res.status(200).render('presets', {
             title: "Пресеты | Без CHATGPT",
             isLoggedIn: req.cookies.usr_id,
-            presets: groupedPresets
+            presets: groupedPresets,
+            config: config
         });
     } catch (err) {
         console.error('Error querying database:', err);

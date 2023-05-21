@@ -1,0 +1,127 @@
+<div class="bloc l-bloc" id="bloc-15">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="mb-4 section-heading primary-text">
+                            Тест на устойчивость
+                        </h3>
+
+                        {{!-- {{#if preset.show_stats}} --}}
+                        <div class="row justify-content-center">
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика</h5>
+                                    <p id="clicks" class="card-text">Кликов: 0</p>
+                                    <p id="misses" class="card-text">Промахов: 0</p>
+                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- {{/if}} --}}
+
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+                                <div id="buttonContainer">
+                                    <button id="startButton" class="btn btn-primary">Начать тест</button>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                            </div>
+                        </div>
+                        <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let gameCanvas = document.getElementById("gameCanvas");
+    let ctx = gameCanvas.getContext("2d");
+
+    let difficulty = "easy"; // Set this according to your need (easy, medium, hard)
+    let sizes = { "easy": 6, "medium": 10, "hard": 15 };
+    let size = sizes[difficulty];
+
+    let img = new Image();
+    img.src = '/sustainability_img.png';
+    img.width = 30;
+    img.height = 30;
+
+    let correctRotation = Math.floor(Math.random() * 4); // one of 0, 1, 2, 3 (0 degree, 90 degree, 180 degree, 270 degree)
+    let clicks = 0, misses = 0, startTime, lastClickTime, totalReactionTime = 0, reactionTimes = [];
+
+    let gridSize = Math.min(gameCanvas.width, gameCanvas.height) / size;
+    let xOffset = (gameCanvas.width - gridSize * size) / 2;
+    let yOffset = (gameCanvas.height - gridSize * size) / 2;
+
+    let rotatedImages = Array.from({ length: size }, () => Array.from({ length: size }, () => Math.floor(Math.random() * 4)));
+    let correctImages = Array.from({ length: size }, () => Array.from({ length: size }, () => false));
+    let correctCount = rotatedImages.reduce((total, row) => total + row.filter(rot => rot === correctRotation).length, 0);
+
+    document.getElementById("startButton").addEventListener("click", function() {
+        startTime = lastClickTime = Date.now();
+        drawImages();
+    });
+
+    gameCanvas.addEventListener('click', function (evt) {
+        let rect = gameCanvas.getBoundingClientRect();
+        let x = evt.clientX - rect.left;
+        let y = evt.clientY - rect.top;
+
+        let row = Math.floor((y - yOffset) / gridSize);
+        let col = Math.floor((x - xOffset) / gridSize);
+
+        if(rotatedImages[row] && rotatedImages[row][col] === correctRotation) {
+            let reactionTime = Date.now() - lastClickTime;
+            lastClickTime = Date.now();
+            totalReactionTime += reactionTime;
+            reactionTimes.push(reactionTime);
+            correctImages[row][col] = true;
+            clicks += 1;
+            let avgTime = totalReactionTime / clicks;
+
+            let variance = reactionTimes.map(rt => (rt - avgTime) ** 2).reduce((a, b) => a + b) / reactionTimes.length;
+            let stdDev = Math.sqrt(variance);
+
+            document.getElementById("clicks").innerText = "Кликов: " + clicks;
+            document.getElementById("avgTime").innerText = "Среднее время реакции: " + avgTime.toFixed(2) + "ms";
+            document.getElementById("stdDev").innerText = "Стандартное отклонение: " + stdDev.toFixed(2) + "ms";
+        } else if(rotatedImages[row]) {
+            misses += 1;
+            document.getElementById("misses").innerText = "Промахов: " + misses;
+        }
+        drawImages();
+
+        if (clicks === correctCount) {
+            alert("Вы закончили! Ваши клики: " + clicks + ", промахов: " + misses);
+        }
+    });
+
+    function drawImages() {
+        ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+                if (!correctImages[i][j]) {
+                    ctx.save();
+                    ctx.translate(xOffset + j * gridSize + gridSize / 2, yOffset + i * gridSize + gridSize / 2);
+                    ctx.rotate(rotatedImages[i][j] * Math.PI / 2);
+                    ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
+                    ctx.restore();
+                }
+            }
+        }
+
+        // Draw the correct image at top right corner of the canvas
+        ctx.save();
+        ctx.translate(gameCanvas.width - img.width / 2 - 10, img.height / 2 + 10);
+        ctx.rotate(correctRotation * Math.PI / 2);
+        ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
+        ctx.restore();
+    }
+</script>
