@@ -164,16 +164,11 @@ router.post("/assign-test", async (req, res) => {
 
 router.post("/add-preset", async (req, res) => {
     const preset = req.body;
+    const params = {...preset};
+    delete params["lab_num"]
+    delete params["test_num"]
 
-    const params = {
-        preset_name: preset.preset_name,
-        test_num: preset.test_num,
-        runtime: preset.runtime,
-        show_time: preset.show_time === 'true',
-        show_stats: preset.show_stats === 'true',
-        speed_koef: parseFloat(preset.speed_koef),
-        acceleration_koef: parseFloat(preset.acceleration_koef),
-    };
+    console.log(preset);
 
     const query = {
         text: 'INSERT INTO presets(lab_id, test_in_lab_id, params) VALUES($1, $2, $3)',

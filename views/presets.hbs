@@ -148,6 +148,8 @@
                     form.append(formGroup);
                 });
 
+                form.append(`<input type="hidden" name="lab_num" id="lab_num" value=${labNum}>`)
+
                 // Add the submit button
                 const submitButton = `<button type="submit" class="btn btn-primary">Добавить</button>`;
                 form.append(submitButton);

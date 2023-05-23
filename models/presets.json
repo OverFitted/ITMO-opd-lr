@@ -8,6 +8,11 @@
                 "label": "Название пресета"
             },
             {
+                "name": "test_num",
+                "type": "int",
+                "label": "Номер теста"
+            },
+            {
                 "name": "runtime",
                 "type": "int",
                 "label": "Время выполнения"
@@ -43,6 +48,11 @@
                 "label": "Название пресета"
             },
             {
+                "name": "test_num",
+                "type": "int",
+                "label": "Номер теста"
+            },
+            {
                 "name": "runtime",
                 "type": "int",
                 "label": "Время выполнения"
@@ -76,6 +86,11 @@
                 "name": "preset_name",
                 "type": "string",
                 "label": "Название пресета"
+            },
+            {
+                "name": "test_num",
+                "type": "int",
+                "label": "Номер теста"
             },
             {
                 "name": "runtime",
