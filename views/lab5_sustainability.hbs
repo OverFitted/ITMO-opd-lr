@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-center align-items-center">
-                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                                <canvas id="testCanvas" width="1070" height="600"></canvas>
                             </div>
                         </div>
                         <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
@@ -41,10 +41,14 @@
 </div>
 
 <script>
-    let gameCanvas = document.getElementById("gameCanvas");
-    let ctx = gameCanvas.getContext("2d");
+    let testCanvas = document.getElementById("testCanvas");
+    let ctx = testCanvas.getContext("2d");
 
-    let difficulty = "easy"; // Set this according to your need (easy, medium, hard)
+    const levelCount = {{preset.num_levels}}
+    const levelDistribution = "{{preset.level_distribution}}" // random or fair (easy -> medium -> hard)
+
+    let level = 0;
+    let difficulty = "easy";
     let sizes = { "easy": 6, "medium": 10, "hard": 15 };
     let size = sizes[difficulty];
 
@@ -56,9 +60,9 @@
     let correctRotation = Math.floor(Math.random() * 4); // one of 0, 1, 2, 3 (0 degree, 90 degree, 180 degree, 270 degree)
     let clicks = 0, misses = 0, startTime, lastClickTime, totalReactionTime = 0, reactionTimes = [];
 
-    let gridSize = Math.min(gameCanvas.width, gameCanvas.height) / size;
-    let xOffset = (gameCanvas.width - gridSize * size) / 2;
-    let yOffset = (gameCanvas.height - gridSize * size) / 2;
+    let gridSize = Math.min(testCanvas.width, testCanvas.height) / size;
+    let xOffset = (testCanvas.width - gridSize * size) / 2;
+    let yOffset = (testCanvas.height - gridSize * size) / 2;
 
     let rotatedImages = Array.from({ length: size }, () => Array.from({ length: size }, () => Math.floor(Math.random() * 4)));
     let correctImages = Array.from({ length: size }, () => Array.from({ length: size }, () => false));
@@ -69,8 +73,8 @@
         drawImages();
     });
 
-    gameCanvas.addEventListener('click', function (evt) {
-        let rect = gameCanvas.getBoundingClientRect();
+    testCanvas.addEventListener('click', function (evt) {
+        let rect = testCanvas.getBoundingClientRect();
         let x = evt.clientX - rect.left;
         let y = evt.clientY - rect.top;
 
@@ -99,12 +103,44 @@
         drawImages();
 
         if (clicks === correctCount) {
-            alert("Вы закончили! Ваши клики: " + clicks + ", промахов: " + misses);
+            alert("Level completed! Your clicks: " + clicks + ", misses: " + misses);
+
+            if (level < levelCount - 1) {
+                level += 1;
+
+                // Update difficulty based on levelDistribution
+                if (levelDistribution === 'fair') {
+                    difficulty = level < levelCount / 3 ? 'easy' : (level < 2 * levelCount / 3 ? 'medium' : 'hard');
+                } else if (levelDistribution === 'random') {
+                    difficulty = ['easy', 'medium', 'hard'][Math.floor(Math.random() * 3)];
+                }
+
+                // Reset test parameters for the new level
+                size = sizes[difficulty];
+                gridSize = Math.min(testCanvas.width, testCanvas.height) / size;
+                xOffset = (testCanvas.width - gridSize * size) / 2;
+                yOffset = (testCanvas.height - gridSize * size) / 2;
+
+                rotatedImages = Array.from({ length: size }, () => Array.from({ length: size }, () => Math.floor(Math.random() * 4)));
+                correctImages = Array.from({ length: size }, () => Array.from({ length: size }, () => false));
+                correctCount = rotatedImages.reduce((total, row) => total + row.filter(rot => rot === correctRotation).length, 0);
+
+                // Reset statistics for the new level
+                clicks = 0;
+                misses = 0;
+                startTime = lastClickTime = Date.now();
+                totalReactionTime = 0;
+                reactionTimes = [];
+
+                drawImages();
+            } else {
+                alert("Test completed! Your total clicks: " + clicks + ", total misses: " + misses);
+            }
         }
     });
 
     function drawImages() {
-        ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+        ctx.clearRect(0, 0, testCanvas.width, testCanvas.height);
         for (let i = 0; i < size; i++) {
             for (let j = 0; j < size; j++) {
                 if (!correctImages[i][j]) {
@@ -117,9 +153,8 @@
             }
         }
 
-        // Draw the correct image at top right corner of the canvas
         ctx.save();
-        ctx.translate(gameCanvas.width - img.width / 2 - 10, img.height / 2 + 10);
+        ctx.translate(testCanvas.width - img.width / 2 - 10, img.height / 2 + 10);
         ctx.rotate(correctRotation * Math.PI / 2);
         ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
         ctx.restore();

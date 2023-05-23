@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-center align-items-center">
-                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                                <canvas id="testCanvas" width="1070" height="600"></canvas>
                             </div>
                         </div>
 
@@ -48,7 +48,7 @@
 </div>
 
 <script>
-    const canvas = document.querySelector('#gameCanvas');
+    const canvas = document.querySelector('#testCanvas');
     const ctx = canvas.getContext('2d');
     const stats = { clicks: 0, misses: 0, times: [] };
     let targetNumber, targetColor;
@@ -84,7 +84,7 @@
     function nextTarget() {
         const remaining = numbers.filter(num => !num.found);
         if (remaining.length === 0) {
-            alert('Game Over!');
+            alert('Test Over!');
             return;
         }
         const target = remaining[Math.floor(Math.random() * remaining.length)];

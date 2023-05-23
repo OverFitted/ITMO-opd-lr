@@ -490,16 +490,13 @@ router.get('/lab5/lab5_memory', async (req, res, next) => {
     })
 })
 
-router.get('/lab5/lab5_sustainability', async (req, res, next) => {
+router.get('/lab5/lab5_brain', async (req, res, next) => {
     const result = await CLIENT.query(`
-            SELECT preset_to_resp.*, presets.*
+            SELECT presets.*
             FROM preset_to_resp
             JOIN presets ON preset_to_resp.preset_id = presets.preset_id
             WHERE preset_to_resp.user_id = $1
-            AND presets.test_in_lab_id = 1
             AND presets.lab_id = 5
-            ORDER BY preset_to_resp.id DESC
-            LIMIT 1
         `, [req.cookies.usr_id]);
 
     const presets = result.rows.map(row => ({
@@ -512,10 +509,31 @@ router.get('/lab5/lab5_sustainability', async (req, res, next) => {
     }));
 
     res.status(200)
+    res.render('lab5_brain', {
+        title: "Тесты на мышление | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+        presets: presets
+    })
+})
+
+router.get('/lab5/lab5_sustainability', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT preset_to_resp.*, presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.test_in_lab_id = 1
+            AND presets.lab_id = 5
+            ORDER BY preset_to_resp.id DESC
+            LIMIT 1
+        `, [req.cookies.usr_id]);
+
+    res.status(200)
     res.render('lab5_sustainability', {
         title: "Тест на устойчивость | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
-        presets: presets
+        preset: result.rows[0].params,
+        preset_id: result.rows[0].preset_id
     })
 })
 
@@ -525,7 +543,7 @@ router.get('/lab5/lab5_switchability', async (req, res, next) => {
             FROM preset_to_resp
             JOIN presets ON preset_to_resp.preset_id = presets.preset_id
             WHERE preset_to_resp.user_id = $1
-            AND presets.test_in_lab_id = 2
+            AND presets.test_in_lab_id = 1
             AND presets.lab_id = 5
             ORDER BY preset_to_resp.id DESC
             LIMIT 1
@@ -554,7 +572,7 @@ router.get('/lab5/lab5_visual', async (req, res, next) => {
             FROM preset_to_resp
             JOIN presets ON preset_to_resp.preset_id = presets.preset_id
             WHERE preset_to_resp.user_id = $1
-            AND presets.test_in_lab_id = 2
+            AND presets.test_in_lab_id = 1
             AND presets.lab_id = 5
             ORDER BY preset_to_resp.id DESC
             LIMIT 1
@@ -583,7 +601,7 @@ router.get('/lab5/lab5_low', async (req, res, next) => {
             FROM preset_to_resp
             JOIN presets ON preset_to_resp.preset_id = presets.preset_id
             WHERE preset_to_resp.user_id = $1
-            AND presets.test_in_lab_id = 2
+            AND presets.test_in_lab_id = 1
             AND presets.lab_id = 5
             ORDER BY preset_to_resp.id DESC
             LIMIT 1
@@ -606,39 +624,13 @@ router.get('/lab5/lab5_low', async (req, res, next) => {
     })
 })
 
-router.get('/lab5/lab5_brain', async (req, res, next) => {
-    const result = await CLIENT.query(`
-            SELECT presets.*
-            FROM preset_to_resp
-            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
-            WHERE preset_to_resp.user_id = $1
-            AND presets.lab_id = 5
-        `, [req.cookies.usr_id]);
-
-    const presets = result.rows.map(row => ({
-        lab_num: row.lab_id,
-        presets: {
-            test_num: row.test_in_lab_id,
-            ...row.params,
-        },
-        test_num: row.params.test_num
-    }));
-
-    res.status(200)
-    res.render('lab5_brain', {
-        title: "Тесты на память | без CHATGPT",
-        isLoggedIn: req.cookies.usr_id,
-        presets: presets
-    })
-})
-
 router.get('/lab5/lab5_analytical', async (req, res, next) => {
     const result = await CLIENT.query(`
             SELECT preset_to_resp.*, presets.*
             FROM preset_to_resp
             JOIN presets ON preset_to_resp.preset_id = presets.preset_id
             WHERE preset_to_resp.user_id = $1
-            AND presets.test_in_lab_id = 2
+            AND presets.test_in_lab_id = 1
             AND presets.lab_id = 5
             ORDER BY preset_to_resp.id DESC
             LIMIT 1
@@ -668,7 +660,7 @@ router.get('/lab5/lab5_abstract', async (req, res, next) => {
             FROM preset_to_resp
             JOIN presets ON preset_to_resp.preset_id = presets.preset_id
             WHERE preset_to_resp.user_id = $1
-            AND presets.test_in_lab_id = 2
+            AND presets.test_in_lab_id = 1
             AND presets.lab_id = 5
             ORDER BY preset_to_resp.id DESC
             LIMIT 1

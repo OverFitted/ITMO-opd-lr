@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-center align-items-center">
-                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                                <canvas id="testCanvas" width="1070" height="600"></canvas>
                             </div>
                         </div>
                         <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
@@ -43,10 +43,10 @@
 
 <script>
     (() => {
-        const canvas = document.getElementById('gameCanvas');
+        const canvas = document.getElementById('testCanvas');
         const ctx = canvas.getContext('2d');
 
-        let gameRunning = false;
+        let testRunning = false;
         const presetTime = {{ preset.runtime }};
         const acceleration = {{ preset.acceleration_koef }} * 30;
         const initialSpeed = {{ preset.speed_koef }} * 200;
@@ -117,15 +117,15 @@
         };
 
 
-        const startGame = () => {
-            if (gameRunning) return;
-            gameRunning = true;
+        const startTest = () => {
+            if (testRunning) return;
+            testRunning = true;
             buttonContainer.classList.add('hidden');
             let startTime = Date.now();
 
-            let gameInterval = setInterval(() => {
-                if (!gameRunning) {
-                    clearInterval(gameInterval);
+            let testInterval = setInterval(() => {
+                if (!testRunning) {
+                    clearInterval(testInterval);
                     return;
                 }
 
@@ -141,14 +141,14 @@
                 updateStats();
 
                 if (Date.now() - startTime >= presetTime * 1000) {
-                    gameRunning = false;
+                    testRunning = false;
                     postResults();
-                    clearInterval(gameInterval);
+                    clearInterval(testInterval);
                 }
             }, 10);
         };
 
-        startButton.addEventListener('click', startGame);
+        startButton.addEventListener('click', startTest);
 
         window.addEventListener('keydown', (event) => {
             if (event.code == 'ArrowRight') {

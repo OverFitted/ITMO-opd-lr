@@ -24,6 +24,7 @@ async function getPresets() {
                 presets: {
                     preset_id: row.preset_id,
                     test_num: row.test_in_lab_id,
+                    preset_name: row.preset_name,
                     params: presetParams,
                 },
             };
@@ -168,11 +169,9 @@ router.post("/add-preset", async (req, res) => {
     delete params["lab_num"]
     delete params["test_num"]
 
-    console.log(preset);
-
     const query = {
-        text: 'INSERT INTO presets(lab_id, test_in_lab_id, params) VALUES($1, $2, $3)',
-        values: [preset.lab_num, preset.test_num, params],
+        text: 'INSERT INTO presets(lab_id, test_in_lab_id, preset_name, params) VALUES($1, $2, $3, $4)',
+        values: [preset.lab_num, preset.test_num, preset.preset_name, params],
     };
 
     try {

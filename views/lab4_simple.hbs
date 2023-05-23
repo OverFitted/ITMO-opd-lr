@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-center align-items-center">
-                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                                <canvas id="testCanvas" width="1070" height="600"></canvas>
                             </div>
                         </div>
                         <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
@@ -41,7 +41,7 @@
 </div>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
+    const canvas = document.getElementById('testCanvas');
     const ctx = canvas.getContext('2d');
 
     let rectWidth = 50;
@@ -50,7 +50,7 @@
     let rectY = canvas.height / 2;
     let targetX = Math.random() * (canvas.width - rectWidth);
     let targetY = canvas.height / 2;
-    let gameRunning = false;
+    let testRunning = false;
     let reactionTimes = [];
     let spacePressed = false;
     let presetTime = {{ preset.runtime }};
@@ -84,13 +84,13 @@
         ctx.closePath();
     }
 
-    function startGame() {
-        gameRunning = true;
+    function startTest() {
+        testRunning = true;
         let startTime = Date.now();
 
-        let gameInterval = setInterval(() => {
-            if (!gameRunning) {
-                clearInterval(gameInterval);
+        let testInterval = setInterval(() => {
+            if (!testRunning) {
+                clearInterval(testInterval);
             } else {
                 rectX += speed;
                 if (rectX + rectWidth > canvas.width || rectX < 0) {
@@ -109,22 +109,22 @@
             }
 
             if (Date.now() - startTime >= presetTime * 1000) {
-                gameRunning = false;
+                testRunning = false;
                 postResults();
-                clearInterval(gameInterval);
+                clearInterval(testInterval);
             }
         }, 10);
     }
 
     document.getElementById('startButton').addEventListener('click', function () {
-        if (!gameRunning) {
-            startGame();
+        if (!testRunning) {
+            startTest();
             document.getElementById('buttonContainer').style.display = 'none';
         }
     });
 
     window.addEventListener('keydown', function (event) {
-        if (gameRunning) {
+        if (testRunning) {
             if (event.code == 'Space') {
                 spacePressed = true;
                 clicks++;

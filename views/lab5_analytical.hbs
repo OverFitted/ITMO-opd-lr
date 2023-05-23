@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             <div class="col-12 d-flex justify-content-center align-items-center">
-                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                                <canvas id="testCanvas" width="1070" height="600"></canvas>
                             </div>
                         </div>
 
@@ -51,8 +51,8 @@
     const correctAnswers = JSON.parse('{{{raven_answers}}}');
 
     const startButton = document.getElementById("startButton");
-    const gameCanvas = document.getElementById("gameCanvas");
-    const ctx = gameCanvas.getContext("2d");
+    const testCanvas = document.getElementById("testCanvas");
+    const ctx = testCanvas.getContext("2d");
 
     let totalClicks = 0;
     let totalMisses = 0;
@@ -64,25 +64,25 @@
         let image = new Image();
         image.src = imagePath;
         image.onload = function() {
-            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+            ctx.clearRect(0, 0, testCanvas.width, testCanvas.height);
 
             let targetWidth, targetHeight;
             if (image.width > image.height) {
-                targetWidth = gameCanvas.width;
-                targetHeight = image.height * (gameCanvas.width / image.width);
+                targetWidth = testCanvas.width;
+                targetHeight = image.height * (testCanvas.width / image.width);
             } else {
-                targetHeight = gameCanvas.height;
-                targetWidth = image.width * (gameCanvas.height / image.height);
+                targetHeight = testCanvas.height;
+                targetWidth = image.width * (testCanvas.height / image.height);
             }
 
-            let x = (gameCanvas.width - targetWidth) / 2;
-            let y = (gameCanvas.height - targetHeight) / 2;
+            let x = (testCanvas.width - targetWidth) / 2;
+            let y = (testCanvas.height - targetHeight) / 2;
 
-            gameCanvas.imageX = x;
-            gameCanvas.imageY = y;
-            gameCanvas.imageWidth = targetWidth;
-            gameCanvas.imageHeight = targetHeight;
-            gameCanvas.clickZoneHeight = gameCanvas.imageHeight - 350;
+            testCanvas.imageX = x;
+            testCanvas.imageY = y;
+            testCanvas.imageWidth = targetWidth;
+            testCanvas.imageHeight = targetHeight;
+            testCanvas.clickZoneHeight = testCanvas.imageHeight - 350;
 
             ctx.drawImage(image, x, y, targetWidth, targetHeight);
             callback();
@@ -107,13 +107,13 @@
         document.getElementById("misses").innerText = "Промахов: " + totalMisses;
     }
 
-    gameCanvas.addEventListener("click", function(event) {
-        const rect = gameCanvas.getBoundingClientRect();
-        const x = event.clientX - rect.left - gameCanvas.imageX;
-        const y = event.clientY - rect.top - gameCanvas.imageY - 350;
+    testCanvas.addEventListener("click", function(event) {
+        const rect = testCanvas.getBoundingClientRect();
+        const x = event.clientX - rect.left - testCanvas.imageX;
+        const y = event.clientY - rect.top - testCanvas.imageY - 350;
 
-        const zoneWidth = gameCanvas.imageWidth / 3;
-        const zoneHeight = gameCanvas.clickZoneHeight / 2;
+        const zoneWidth = testCanvas.imageWidth / 3;
+        const zoneHeight = testCanvas.clickZoneHeight / 2;
         const zoneColumn = Math.floor(x / zoneWidth) + 1;
         const zoneRow = Math.floor(y / zoneHeight) + 1;
         const clickedZone = (zoneRow - 1) * 3 + zoneColumn;
