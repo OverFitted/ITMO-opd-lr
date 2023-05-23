@@ -549,20 +549,12 @@ router.get('/lab5/lab5_switchability', async (req, res, next) => {
             LIMIT 1
         `, [req.cookies.usr_id]);
 
-    const presets = result.rows.map(row => ({
-        lab_num: row.lab_id,
-        presets: {
-            test_num: row.test_in_lab_id,
-            ...row.params,
-        },
-        test_num: row.params.test_num
-    }));
-
     res.status(200)
     res.render('lab5_switchability', {
         title: "Тест на переключаемость | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
-        presets: presets
+        preset: result.rows[0].params,
+        preset_id: result.rows[0].preset_id
     })
 })
 
@@ -578,20 +570,12 @@ router.get('/lab5/lab5_visual', async (req, res, next) => {
             LIMIT 1
         `, [req.cookies.usr_id]);
 
-    const presets = result.rows.map(row => ({
-        lab_num: row.lab_id,
-        presets: {
-            test_num: row.test_in_lab_id,
-            ...row.params,
-        },
-        test_num: row.params.test_num
-    }));
-
     res.status(200)
     res.render('lab5_visual', {
         title: "Тест на визуальную память | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
-        presets: presets
+        preset: result.rows[0].params,
+        preset_id: result.rows[0].preset_id
     })
 })
 
@@ -607,20 +591,12 @@ router.get('/lab5/lab5_low', async (req, res, next) => {
             LIMIT 1
         `, [req.cookies.usr_id]);
 
-    const presets = result.rows.map(row => ({
-        lab_num: row.lab_id,
-        presets: {
-            test_num: row.test_in_lab_id,
-            ...row.params,
-        },
-        test_num: row.params.test_num
-    }));
-
     res.status(200)
     res.render('lab5_low', {
         title: "Тест на краткосрочную память | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
-        presets: presets
+        preset: result.rows[0].params,
+        preset_id: result.rows[0].preset_id
     })
 })
 
@@ -636,20 +612,12 @@ router.get('/lab5/lab5_analytical', async (req, res, next) => {
             LIMIT 1
         `, [req.cookies.usr_id]);
 
-    const presets = result.rows.map(row => ({
-        lab_num: row.lab_id,
-        presets: {
-            test_num: row.test_in_lab_id,
-            ...row.params,
-        },
-        test_num: row.params.test_num
-    }));
-
     res.status(200)
     res.render('lab5_analytical', {
         title: "Тест на аналитичекое мышление | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
-        presets: presets,
+        preset: result.rows[0].params,
+        preset_id: result.rows[0].preset_id,
         raven_answers: raven_answers
     })
 })
@@ -666,20 +634,12 @@ router.get('/lab5/lab5_abstract', async (req, res, next) => {
             LIMIT 1
         `, [req.cookies.usr_id]);
 
-    const presets = result.rows.map(row => ({
-        lab_num: row.lab_id,
-        presets: {
-            test_num: row.test_in_lab_id,
-            ...row.params,
-        },
-        test_num: row.params.test_num
-    }));
-
     res.status(200)
     res.render('lab5_abstract', {
         title: "Тест на абстрактное мышление | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
-        presets: presets
+        preset: result.rows[0].params,
+        preset_id: result.rows[0].preset_id
     })
 })
 

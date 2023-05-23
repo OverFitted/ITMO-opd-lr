@@ -51,18 +51,45 @@
     const canvas = document.querySelector('#testCanvas');
     const ctx = canvas.getContext('2d');
     const stats = { clicks: 0, misses: 0, times: [] };
+
+    const levelCount = {{ preset.num_levels }}
+    const levelDistribution = "{{preset.level_distribution}}" // random or fair (easy -> medium -> hard)
+
     let targetNumber, targetColor;
     let numbers = [];
-    let size = Math.ceil(4 / 2) * 2;
+
+    let level = 0;
+    let difficulty = "hard";
+    let sizes = { "easy": 4, "medium": 8, "hard": 12 };
+    let size = sizes[difficulty];
 
     function generateNumbers() {
+        size = sizes[difficulty];
         numbers = [];
-        for(let i=1; i<=size * size; i++){
+        for (let i = 1; i <= size * size; i++) {
             const color = i % 2 === 0 ? 'red' : 'black';
             let n = Math.ceil(i / 2)
             numbers.push({ number: n, color: color });
         }
         numbers.sort(() => Math.random() - 0.5);
+    }
+
+    function levelUp() {
+        level += 1;
+        switch (levelDistribution) {
+            case 'random':
+                const diffKeys = Object.keys(sizes);
+                difficulty = diffKeys[Math.floor(Math.random() * diffKeys.length)];
+                break;
+            case 'fair':
+                if (difficulty === 'easy') difficulty = 'medium';
+                else if (difficulty === 'medium') difficulty = 'hard';
+                else difficulty = 'easy';
+                break;
+        }
+        generateNumbers();
+        drawNumbers();
+        nextTarget();
     }
 
     function drawNumbers() {
@@ -84,7 +111,11 @@
     function nextTarget() {
         const remaining = numbers.filter(num => !num.found);
         if (remaining.length === 0) {
-            alert('Test Over!');
+            if (level >= levelCount - 1) {
+                alert('Test Over!');
+                return;
+            }
+            levelUp();
             return;
         }
         const target = remaining[Math.floor(Math.random() * remaining.length)];
@@ -96,44 +127,27 @@
     function handleClick(e) {
         const x = e.clientX - canvas.getBoundingClientRect().left;
         const y = e.clientY - canvas.getBoundingClientRect().top;
-        const row = Math.floor(y / 50);
-        const col = Math.floor((x - 10) / 50);
-        const index = row * size + col;
-        if (numbers[index].number === targetNumber && numbers[index].color === targetColor) {
-            stats.clicks++;
-            stats.times.push(new Date().getTime());
-            numbers[index].found = true;
-
-            drawNumbers();
-            nextTarget();
-        } else {
-            stats.misses++;
-        }
-        updateStats();
-    }
-
-    function handleClick(e) {
-        const x = e.clientX - canvas.getBoundingClientRect().left;
-        const y = e.clientY - canvas.getBoundingClientRect().top;
         const totalWidth = 50 * size;
         const totalHeight = 50 * size;
         const startX = (canvas.width - totalWidth) / 2;
         const startY = (canvas.height - totalHeight) / 2;
         const row = Math.floor((y - startY) / 50);
         const col = Math.floor((x - startX) / 50);
+
         if (row < 0 || row >= size || col < 0 || col >= size) {
             return;
         }
+
+        stats.clicks++;
         const index = row * size + col;
         if (numbers[index].number === targetNumber && numbers[index].color === targetColor) {
-            stats.clicks++;
             stats.times.push(new Date().getTime());
             numbers[index].found = true;
             nextTarget();
-            drawNumbers();
         } else {
             stats.misses++;
         }
+
         updateStats();
     }
 
