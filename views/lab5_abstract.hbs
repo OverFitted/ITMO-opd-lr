@@ -50,21 +50,59 @@
 <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+
     const padding = 30;
     const maxHeight = (canvas.height - 3 * padding) / 2;
 
+    let questionIndex = 0;
+    const questions = [
+        "Атмосферный окурок",
+        "Ваза с видом изо рта",
+        "Ёжик под наркозом",
+        "Мост через ночь",
+        "Шарикоподшипник с кубическими шариками",
+        "Горстка вечных конфет",
+        "Таблетки от безденежья",
+        "Интеллектуальное ведро",
+        "Яма вверх дном",
+        "Туземцы говорят, что на черный день красного вина не напасёшься",
+    ];
+
+    const correctAnswers = {
+        "Атмосферный окурок": "метеорит",
+        "Ваза с видом изо рта": "труба в оркестре",
+        "Ёжик под наркозом": "кактус",
+        "Мост через ночь": "кровать",
+        "Шарикоподшипник с кубическими шариками": "коллектив из несовместимых людей",
+        "Горстка вечных конфет": "зубы",
+        "Таблетки от безденежья": "монеты",
+        "Интеллектуальное ведро": "каска",
+        "Яма вверх дном": "парашют",
+        "Туземцы говорят, что на черный день красного вина не напасёшься": "пессимизм",
+    };
+
+    const answers = ["пессемизм", "зубы", "кровать", "коллектив из несовместимых людей", "монеты", "кактус",
+        "метеорит", "труба в оркестре", "парашют", "каска"];
+
     let answerMapping = {
-            "A1.jpg": 2,
-            "A2.jpg": 1,
-            "A3.jpg": 0,
-            "A4.jpg": 0,
-            "A5.jpg": 2,
-            "A6.jpg": 1,
-            "A7.jpg": 2,
-            "A8.jpg": 1,
-            "A9.jpg": 2,
-            "A10.jpg": 0,
-        };
+        "A1.jpg": 2,
+        "A2.jpg": 1,
+        "A3.jpg": 0,
+        "A4.jpg": 0,
+        "A5.jpg": 2,
+        "A6.jpg": 1,
+        "A7.jpg": 2,
+        "A8.jpg": 1,
+        "A9.jpg": 2,
+        "A10.jpg": 0,
+    };
+
+    const shownImages = {
+        count: 0,
+        max: 2,
+        increment: function () { this.count++; },
+        reset: function () { this.count = 0; },
+    };
 
     const gameData = {
         totalClicks: 0,
@@ -73,25 +111,28 @@
         startTime: null,
     };
 
-    const startButton = document.getElementById('startButton');
-    startButton.onclick = function () {
-        nextImage();
-    };
+    document.getElementById('startButton').addEventListener('click', nextImage);
 
     function nextImage() {
-        gameData.startTime = Date.now();
-        const imageNum = Math.ceil(Math.random() * 10);
-        const imageKey = `A${imageNum}.jpg`;
-        const answerKey = `A${imageNum}-ans.jpg`;
-        startGame(imageKey, answerKey, answerMapping[imageKey]);
+        if (shownImages.count < shownImages.max) {
+            shownImages.increment();
+            gameData.startTime = Date.now();
+            const imageNum = Math.ceil(Math.random() * 10);
+            const imageKey = `A${imageNum}.jpg`;
+            const answerKey = `A${imageNum}-ans.jpg`;
+            startImageTest(imageKey, answerKey, answerMapping[imageKey]);
+        } else {
+            shownImages.reset();
+            startTextTest();
+        }
     }
 
     function setupImages(imageKey, answerKey) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const loadImage = (imgKey, yOffset) => {
             const img = new Image();
-            img.onload = function() {
+            img.onload = function () {
                 const aspectRatio = img.width / img.height;
                 let newHeight = Math.min(maxHeight, img.height);
                 let newWidth = newHeight * aspectRatio;
@@ -107,7 +148,7 @@
     }
 
     function setupOnClickEvent(correctPart) {
-        canvas.onclick = function(event) {
+        canvas.onclick = function (event) {
             const rect = canvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
@@ -125,13 +166,63 @@
             }
 
             updateStats();
-            nextImage();  // Go to the next image after a click
+            if (shownImages.count < shownImages.max) {
+                nextImage();
+            } else {
+                startTextTest()
+            }
         };
     }
 
-    function startGame(imageKey, answerKey, correctPart) {
+    function startImageTest(imageKey, answerKey, correctPart) {
         setupImages(imageKey, answerKey);
         setupOnClickEvent(correctPart);
+    }
+
+    function startTextTest() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        if (questionIndex < questions.length) {
+            gameData.startTime = Date.now();
+            const question = questions[questionIndex];
+
+            ctx.font = '24px Arial';
+            ctx.fillText(question, canvas.width / 2, canvas.height / 4);
+
+            ctx.font = '20px Arial';
+            for (let i = 0; i < answers.length; i++) {
+                ctx.fillText(answers[i], canvas.width / 2, canvas.height / 2 + i * 30);
+            }
+
+            canvas.onclick = function (event) {
+                const rect = canvas.getBoundingClientRect();
+                const y = event.clientY - rect.top;
+
+                const lineHeight = parseInt(ctx.font, 10);
+                const answerHeight = lineHeight + 10;
+
+                if (y > canvas.height / 2 && y < (canvas.height / 2 + answers.length * answerHeight)) {
+                    const answerIndex = Math.floor((y - canvas.height / 2) / answerHeight);
+                    if (answerIndex < answers.length) {
+                        gameData.totalClicks++;
+                        if (answers[answerIndex] === correctAnswers[questions[questionIndex]]) {
+                            gameData.reactionTimes.push(Date.now() - gameData.startTime);
+                        } else {
+                            gameData.misses++;
+                        }
+                    }
+                }
+
+                questionIndex++;
+                startTextTest();
+                updateStats();
+            };
+        } else {
+            ctx.font = '24px Arial';
+            ctx.fillText('Test Complete', canvas.width / 2, canvas.height / 2);
+        }
     }
 
     function updateStats() {
