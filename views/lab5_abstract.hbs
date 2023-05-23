@@ -46,3 +46,103 @@
         </div>
     </div>
 </div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const padding = 30;
+    const maxHeight = (canvas.height - 3 * padding) / 2;
+
+    let answerMapping = {
+            "A1.jpg": 2,
+            "A2.jpg": 1,
+            "A3.jpg": 0,
+            "A4.jpg": 0,
+            "A5.jpg": 2,
+            "A6.jpg": 1,
+            "A7.jpg": 2,
+            "A8.jpg": 1,
+            "A9.jpg": 2,
+            "A10.jpg": 0,
+        };
+
+    const gameData = {
+        totalClicks: 0,
+        misses: 0,
+        reactionTimes: [],
+        startTime: null,
+    };
+
+    const startButton = document.getElementById('startButton');
+    startButton.onclick = function () {
+        nextImage();
+    };
+
+    function nextImage() {
+        gameData.startTime = Date.now();
+        const imageNum = Math.ceil(Math.random() * 10);
+        const imageKey = `A${imageNum}.jpg`;
+        const answerKey = `A${imageNum}-ans.jpg`;
+        startGame(imageKey, answerKey, answerMapping[imageKey]);
+    }
+
+    function setupImages(imageKey, answerKey) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas
+
+        const loadImage = (imgKey, yOffset) => {
+            const img = new Image();
+            img.onload = function() {
+                const aspectRatio = img.width / img.height;
+                let newHeight = Math.min(maxHeight, img.height);
+                let newWidth = newHeight * aspectRatio;
+                const xStart = (canvas.width - newWidth) / 2;
+                ctx.drawImage(img, xStart, yOffset, newWidth, newHeight);
+            };
+            img.src = `/img/deduction/${imgKey}`;
+            return img;
+        };
+
+        const mainImg = loadImage(imageKey, padding);
+        const ansImg = loadImage(answerKey, 2 * padding + maxHeight);
+    }
+
+    function setupOnClickEvent(correctPart) {
+        canvas.onclick = function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            gameData.totalClicks++;
+
+            if (y < 2 * padding + maxHeight) {
+                return;  // Clicked on the main image
+            }
+
+            if (x >= correctPart * canvas.width / 3 && x < (correctPart + 1) * canvas.width / 3) {
+                gameData.reactionTimes.push(Date.now() - gameData.startTime);
+            } else {
+                gameData.misses++;
+            }
+
+            updateStats();
+            nextImage();  // Go to the next image after a click
+        };
+    }
+
+    function startGame(imageKey, answerKey, correctPart) {
+        setupImages(imageKey, answerKey);
+        setupOnClickEvent(correctPart);
+    }
+
+    function updateStats() {
+        document.getElementById('clicks').textContent = `Кликов: ${gameData.totalClicks}`;
+        document.getElementById('misses').textContent = `Промахов: ${gameData.misses}`;
+
+        const avgTime = gameData.reactionTimes.reduce((a, b) => a + b, 0) / gameData.reactionTimes.length || 0;
+        document.getElementById('avgTime').textContent = `Среднее время реакции: ${avgTime.toFixed(2)}`;
+
+        const timeValues = gameData.reactionTimes.map(t => (t - avgTime) ** 2);
+        const stdDev = Math.sqrt(timeValues.reduce((a, b) => a + b, 0) / timeValues.length) || 0;
+        document.getElementById('stdDev').textContent = `Стандартное отклонение: ${stdDev.toFixed(2)}`;
+    }
+</script>
