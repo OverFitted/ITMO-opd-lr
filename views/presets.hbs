@@ -15,7 +15,7 @@
                             </div>
                             {{#each this.presets}}
                             <div class="col-md-6">
-                                <div class="card">
+                                <div class="card shadow-sm p-1">
                                     <div class="card-body">
                                         <h5 class="card-title">{{preset_name}}</h5>
                                         <p class="card-text">Номер теста: {{test_num}}</p>
@@ -36,18 +36,21 @@
                 </div>
             </div>
             <div class="col-sm-4 text-start offset-lg-0">
-                <div class="card">
-                    <label for="lab_select" class="form-label">Выберите лабораторную</label>
-                    <select id="lab_select" class="form-select">
-                        {{#each config}}
-                            <option value="{{this.lab_num}}">Лабораторная {{this.lab_num}}</option>
-                        {{/each}}
-                    </select>
+                <div class="card bg-light shadow p-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title mb-4">Выберите лабораторную</h5>
+                        <div class="mb-4">
+                            <select id="lab_select" class="form-select">
+                                {{#each config}}
+                                    <option value="{{this.lab_num}}">Лабораторная {{this.lab_num}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPresetModal" data-lab-num="1">
+                            Добавить пресет
+                        </button>
+                    </div>
                 </div>
-
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPresetModal" data-lab-num="1">
-                    Добавить пресет
-                </button>
 
                 <div class="modal fade" id="addPresetModal" tabindex="-1" aria-labelledby="addPresetModalLabel" aria-hidden="true">
                     <div class="modal-dialog">

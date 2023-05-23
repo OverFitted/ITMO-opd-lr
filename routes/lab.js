@@ -4,6 +4,9 @@ const {
 } = require('express')
 const CLIENT = require('../models/connector');
 const router = Router()
+const fs = require('fs');
+
+const raven_answers = fs.readFileSync('./public/raven_answers.json', 'utf8');
 
 router.get('/lab1', (req, res, next) => {
     res.status(200)
@@ -598,6 +601,91 @@ router.get('/lab5/lab5_low', async (req, res, next) => {
     res.status(200)
     res.render('lab5_low', {
         title: "Тест на краткосрочную память | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+        presets: presets
+    })
+})
+
+router.get('/lab5/lab5_brain', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.lab_id = 5
+        `, [req.cookies.usr_id]);
+
+    const presets = result.rows.map(row => ({
+        lab_num: row.lab_id,
+        presets: {
+            test_num: row.test_in_lab_id,
+            ...row.params,
+        },
+        test_num: row.params.test_num
+    }));
+
+    res.status(200)
+    res.render('lab5_brain', {
+        title: "Тесты на память | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+        presets: presets
+    })
+})
+
+router.get('/lab5/lab5_analytical', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT preset_to_resp.*, presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.test_in_lab_id = 2
+            AND presets.lab_id = 5
+            ORDER BY preset_to_resp.id DESC
+            LIMIT 1
+        `, [req.cookies.usr_id]);
+
+    const presets = result.rows.map(row => ({
+        lab_num: row.lab_id,
+        presets: {
+            test_num: row.test_in_lab_id,
+            ...row.params,
+        },
+        test_num: row.params.test_num
+    }));
+
+    res.status(200)
+    res.render('lab5_analytical', {
+        title: "Тест на аналитичекое мышление | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id,
+        presets: presets,
+        raven_answers: raven_answers
+    })
+})
+
+router.get('/lab5/lab5_abstract', async (req, res, next) => {
+    const result = await CLIENT.query(`
+            SELECT preset_to_resp.*, presets.*
+            FROM preset_to_resp
+            JOIN presets ON preset_to_resp.preset_id = presets.preset_id
+            WHERE preset_to_resp.user_id = $1
+            AND presets.test_in_lab_id = 2
+            AND presets.lab_id = 5
+            ORDER BY preset_to_resp.id DESC
+            LIMIT 1
+        `, [req.cookies.usr_id]);
+
+    const presets = result.rows.map(row => ({
+        lab_num: row.lab_id,
+        presets: {
+            test_num: row.test_in_lab_id,
+            ...row.params,
+        },
+        test_num: row.params.test_num
+    }));
+
+    res.status(200)
+    res.render('lab5_abstract', {
+        title: "Тест на абстрактное мышление | без CHATGPT",
         isLoggedIn: req.cookies.usr_id,
         presets: presets
     })

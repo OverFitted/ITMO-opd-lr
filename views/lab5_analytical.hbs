@@ -1,0 +1,137 @@
+<div class="bloc l-bloc" id="bloc-15">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="mb-4 section-heading primary-text">
+                            Тест на аналитическое мышление
+                        </h3>
+
+                        {{!-- {{#if preset.show_stats}} --}}
+                        <div class="row justify-content-center">
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика</h5>
+                                    <p id="clicks" class="card-text">Кликов: 0</p>
+                                    <p id="misses" class="card-text">Промахов: 0</p>
+                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- {{/if}} --}}
+
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+                                <div id="buttonContainer">
+                                    <button id="startButton" class="btn btn-primary">Начать тест</button>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+                                <div id="targetDisplay" class="text-center"></div>
+                            </div>
+                        </div>
+
+                        <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const correctAnswers = JSON.parse('{{{raven_answers}}}');
+
+    const startButton = document.getElementById("startButton");
+    const gameCanvas = document.getElementById("gameCanvas");
+    const ctx = gameCanvas.getContext("2d");
+
+    let totalClicks = 0;
+    let totalMisses = 0;
+    let clickTimes = [];
+    let imageCount = Object.keys(correctAnswers).length;
+    let currentImageIndex = 0;
+
+    function drawImage(imagePath, callback) {
+        let image = new Image();
+        image.src = imagePath;
+        image.onload = function() {
+            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            let targetWidth, targetHeight;
+            if (image.width > image.height) {
+                targetWidth = gameCanvas.width;
+                targetHeight = image.height * (gameCanvas.width / image.width);
+            } else {
+                targetHeight = gameCanvas.height;
+                targetWidth = image.width * (gameCanvas.height / image.height);
+            }
+
+            let x = (gameCanvas.width - targetWidth) / 2;
+            let y = (gameCanvas.height - targetHeight) / 2;
+
+            gameCanvas.imageX = x;
+            gameCanvas.imageY = y;
+            gameCanvas.imageWidth = targetWidth;
+            gameCanvas.imageHeight = targetHeight;
+            gameCanvas.clickZoneHeight = gameCanvas.imageHeight - 350;
+
+            ctx.drawImage(image, x, y, targetWidth, targetHeight);
+            callback();
+        };
+    }
+
+    function nextImage() {
+        let imageKeys = Object.keys(correctAnswers);
+        if (currentImageIndex < imageCount) {
+            let imagePath = "/img/raven/" + imageKeys[currentImageIndex];
+            drawImage(imagePath, () => {
+                currentImageIndex++;
+            });
+        } else {
+            alert("Test complete!");
+            startButton.disabled = false;
+        }
+    }
+
+    function updateStats() {
+        document.getElementById("clicks").innerText = "Кликов: " + totalClicks;
+        document.getElementById("misses").innerText = "Промахов: " + totalMisses;
+    }
+
+    gameCanvas.addEventListener("click", function(event) {
+        const rect = gameCanvas.getBoundingClientRect();
+        const x = event.clientX - rect.left - gameCanvas.imageX;
+        const y = event.clientY - rect.top - gameCanvas.imageY - 350;
+
+        const zoneWidth = gameCanvas.imageWidth / 3;
+        const zoneHeight = gameCanvas.clickZoneHeight / 2;
+        const zoneColumn = Math.floor(x / zoneWidth) + 1;
+        const zoneRow = Math.floor(y / zoneHeight) + 1;
+        const clickedZone = (zoneRow - 1) * 3 + zoneColumn;
+
+        totalClicks++;
+
+        const imageKeys = Object.keys(correctAnswers);
+        if (clickedZone === correctAnswers[imageKeys[currentImageIndex - 1]]) {
+            // Ill think it over later
+        } else {
+            totalMisses++;
+        }
+        nextImage();
+    }, false);
+
+    startButton.addEventListener("click", function() {
+        currentImageIndex = 0;
+        startButton.disabled = true;
+        nextImage();
+    });
+</script>
