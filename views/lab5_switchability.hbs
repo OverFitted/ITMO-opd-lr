@@ -1,0 +1,163 @@
+<div class="bloc l-bloc" id="bloc-15">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="mb-4 section-heading primary-text">
+                            Тест на переключаемость
+                        </h3>
+
+                        {{!-- {{#if preset.show_stats}} --}}
+                        <div class="row justify-content-center">
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика</h5>
+                                    <p id="clicks" class="card-text">Кликов: 0</p>
+                                    <p id="misses" class="card-text">Промахов: 0</p>
+                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- {{/if}} --}}
+
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+                                <div id="buttonContainer">
+                                    <button id="startButton" class="btn btn-primary">Начать тест</button>
+                                </div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <canvas id="gameCanvas" width="1070" height="600"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+                                <div id="targetDisplay" class="text-center"></div>
+                            </div>
+                        </div>
+
+                        <a href="../" class="btn btn-d box-btn fill-mob-btn primary-btn mt-lg-5 float-lg-end btn-rd btn-lg">Назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.querySelector('#gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const stats = { clicks: 0, misses: 0, times: [] };
+    let targetNumber, targetColor;
+    let numbers = [];
+    let size = Math.ceil(4 / 2) * 2;
+
+    function generateNumbers() {
+        numbers = [];
+        for(let i=1; i<=size * size; i++){
+            const color = i % 2 === 0 ? 'red' : 'black';
+            let n = Math.ceil(i / 2)
+            numbers.push({ number: n, color: color });
+        }
+        numbers.sort(() => Math.random() - 0.5);
+    }
+
+    function drawNumbers() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let totalWidth = 50 * size;
+        let totalHeight = 50 * size;
+        let x = (canvas.width - totalWidth) / 2;
+        let y = (canvas.height - totalHeight) / 2;
+        numbers.forEach((num, index) => {
+            ctx.fillStyle = num.color;
+            ctx.fillRect(x, y, 40, 40);
+            ctx.fillStyle = 'white';
+            ctx.fillText(num.number.toString(), x + 15, y + 25);
+            if ((index + 1) % size === 0) { x = (canvas.width - totalWidth) / 2; y += 50; }
+            else { x += 50; }
+        });
+    }
+
+    function nextTarget() {
+        const remaining = numbers.filter(num => !num.found);
+        if (remaining.length === 0) {
+            alert('Game Over!');
+            return;
+        }
+        const target = remaining[Math.floor(Math.random() * remaining.length)];
+        targetNumber = target.number;
+        targetColor = target.color;
+        $('#targetDisplay').text(`Target: ${targetNumber} (${targetColor})`).css('color', targetColor);
+    }
+
+    function handleClick(e) {
+        const x = e.clientX - canvas.getBoundingClientRect().left;
+        const y = e.clientY - canvas.getBoundingClientRect().top;
+        const row = Math.floor(y / 50);
+        const col = Math.floor((x - 10) / 50);
+        const index = row * size + col;
+        if (numbers[index].number === targetNumber && numbers[index].color === targetColor) {
+            stats.clicks++;
+            stats.times.push(new Date().getTime());
+            numbers[index].found = true;
+
+            drawNumbers();
+            nextTarget();
+        } else {
+            stats.misses++;
+        }
+        updateStats();
+    }
+
+    function handleClick(e) {
+        const x = e.clientX - canvas.getBoundingClientRect().left;
+        const y = e.clientY - canvas.getBoundingClientRect().top;
+        const totalWidth = 50 * size;
+        const totalHeight = 50 * size;
+        const startX = (canvas.width - totalWidth) / 2;
+        const startY = (canvas.height - totalHeight) / 2;
+        const row = Math.floor((y - startY) / 50);
+        const col = Math.floor((x - startX) / 50);
+        if (row < 0 || row >= size || col < 0 || col >= size) {
+            return;
+        }
+        const index = row * size + col;
+        if (numbers[index].number === targetNumber && numbers[index].color === targetColor) {
+            stats.clicks++;
+            stats.times.push(new Date().getTime());
+            numbers[index].found = true;
+            nextTarget();
+            drawNumbers();
+        } else {
+            stats.misses++;
+        }
+        updateStats();
+    }
+
+    function updateStats() {
+        $('#clicks').text('Кликов: ' + stats.clicks);
+        $('#misses').text('Промахов: ' + stats.misses);
+        if (stats.times.length > 1) {
+            const diffs = stats.times.slice(1).map((time, index) => time - stats.times[index]);
+            const avgTime = diffs.reduce((a, b) => a + b) / diffs.length;
+            $('#avgTime').text('Среднее время реакции: ' + avgTime.toFixed(2) + 'ms');
+            const stdDev = Math.sqrt(diffs.map(diff => Math.pow(diff - avgTime, 2)).reduce((a, b) => a + b) / diffs.length);
+            $('#stdDev').text('Стандартное отклонение: ' + stdDev.toFixed(2));
+        }
+    }
+
+    $(document).ready(() => {
+        ctx.font = '20px Arial';
+        ctx.textBaseline = 'middle';
+        canvas.addEventListener('click', handleClick);
+        $('#startButton').click(() => {
+            generateNumbers();
+            drawNumbers();
+            nextTarget();
+            updateStats();
+        });
+    });
+</script>
