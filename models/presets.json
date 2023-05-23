@@ -13,11 +13,6 @@
                 "label": "Время выполнения"
             },
             {
-                "name": "time",
-                "type": "int",
-                "label": "Время"
-            },
-            {
                 "name": "show_stats",
                 "type": "bool",
                 "label": "Показывать статистику"
@@ -53,11 +48,6 @@
                 "label": "Время выполнения"
             },
             {
-                "name": "time",
-                "type": "int",
-                "label": "Время"
-            },
-            {
                 "name": "show_stats",
                 "type": "bool",
                 "label": "Показывать статистику"
@@ -81,7 +71,6 @@
     },
     {
         "lab_num": 5,
-        "test_num": 1,
         "params": [
             {
                 "name": "preset_name",
@@ -94,11 +83,6 @@
                 "label": "Время выполнения"
             },
             {
-                "name": "time",
-                "type": "int",
-                "label": "Время"
-            },
-            {
                 "name": "show_stats",
                 "type": "bool",
                 "label": "Показывать статистику"
@@ -107,21 +91,6 @@
                 "name": "show_time",
                 "type": "bool",
                 "label": "Показывать время"
-            },
-            {
-                "name": "easy_matrix_size",
-                "type": "int",
-                "label": "Размер простой матрицы"
-            },
-            {
-                "name": "medium_matrix_size",
-                "type": "int",
-                "label": "Размер средней матрицы"
-            },
-            {
-                "name": "hard_matrix_size",
-                "type": "int",
-                "label": "Размер сложной матрицы"
             },
             {
                 "name": "num_levels",
