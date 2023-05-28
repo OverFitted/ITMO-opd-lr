@@ -8,19 +8,19 @@
                             Тест на абстрактное мышление
                         </h3>
 
-                        {{!-- {{#if preset.show_stats}} --}}
-                        <div class="row justify-content-center">
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика</h5>
-                                    <p id="clicks" class="card-text">Кликов: 0</p>
-                                    <p id="misses" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                        {{#if preset.show_stats}}
+                            <div class="row justify-content-center">
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика</h5>
+                                        <p id="clicks" class="card-text">Кликов: 0</p>
+                                        <p id="misses" class="card-text">Промахов: 0</p>
+                                        <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                        <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        {{!-- {{/if}} --}}
+                        {{/if}}
 
                         <div class="row justify-content-center align-items-center">
                             <div class="col-12 d-flex justify-content-center align-items-center mb-3">
@@ -55,7 +55,7 @@
     const maxHeight = (canvas.height - 3 * padding) / 2;
 
     let questionIndex = 0;
-    const questions = [
+    const allQuestions = [
         "Атмосферный окурок",
         "Ваза с видом изо рта",
         "Ёжик под наркозом",
@@ -81,8 +81,11 @@
         "Туземцы говорят, что на черный день красного вина не напасёшься": "пессимизм",
     };
 
-    const answers = ["пессемизм", "зубы", "кровать", "коллектив из несовместимых людей", "монеты", "кактус",
+    const allAnswers = ["пессемизм", "зубы", "кровать", "коллектив из несовместимых людей", "монеты", "кактус",
         "метеорит", "труба в оркестре", "парашют", "каска"];
+
+    let questions = []
+    let answers = []
 
     let answerMapping = {
         "A1.jpg": 2,
@@ -96,6 +99,15 @@
         "A9.jpg": 2,
         "A10.jpg": 0,
     };
+
+    const levels = [
+        { difficulty: "easy", num_pictures: 2, num_questions: 2 },
+        { difficulty: "medium", num_pictures: 4, num_questions: 4 },
+        { difficulty: "hard", num_pictures: 6, num_questions: 6 }
+    ];
+    const levelCount = {{ preset.num_levels }}
+    const levelDistribution = "{{preset.level_distribution}}"  // random or fair (easy -> medium -> hard)
+    let currentLevel = 0;
 
     const shownImages = {
         count: 0,
@@ -111,7 +123,40 @@
         startTime: null,
     };
 
-    document.getElementById('startButton').addEventListener('click', nextImage);
+    document.getElementById('startButton').addEventListener('click', nextLevel);
+
+    function nextLevel() {
+        if (currentLevel < levels.length) {
+            shownImages.max = levels[currentLevel].num_pictures;
+            questionIndex = 0;
+            questions = allQuestions.slice(0, levels[currentLevel].num_questions);
+            answers = questions.map(q => correctAnswers[q]);
+            shuffleQuestions();
+            shuffleImages();
+            nextImage();
+        } else {
+            console.log("Test over, all levels completed!");
+        }
+    }
+
+    function shuffleQuestions() {
+        // Fisher-Yates shuffle algorithm to rearrange questions and answers
+        for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+            [answers[i], answers[j]] = [answers[j], answers[i]];
+        }
+    }
+
+    function shuffleImages() {
+        // Fisher-Yates shuffle algorithm to rearrange images and answerMapping
+        const keys = Object.keys(answerMapping);
+        for (let i = keys.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [keys[i], keys[j]] = [keys[j], keys[i]];
+            [answerMapping[keys[i]], answerMapping[keys[j]]] = [answerMapping[keys[j]], answerMapping[keys[i]]];
+        }
+    }
 
     function nextImage() {
         if (shownImages.count < shownImages.max) {
@@ -168,8 +213,11 @@
             updateStats();
             if (shownImages.count < shownImages.max) {
                 nextImage();
+            } else if (questionIndex < questions.length) {
+                startTextTest();
             } else {
-                startTextTest()
+                currentLevel++;
+                nextLevel();
             }
         };
     }
@@ -216,7 +264,12 @@
                 }
 
                 questionIndex++;
-                startTextTest();
+                if (questionIndex < questions.length) {
+                    startTextTest();
+                } else {
+                    currentLevel++;
+                    nextLevel();
+                }
                 updateStats();
             };
         } else {
@@ -226,14 +279,16 @@
     }
 
     function updateStats() {
-        document.getElementById('clicks').textContent = `Кликов: ${testData.totalClicks}`;
-        document.getElementById('misses').textContent = `Промахов: ${testData.misses}`;
+        {{#if preset.show_stats}}
+            document.getElementById('clicks').textContent = `Кликов: ${testData.totalClicks}`;
+            document.getElementById('misses').textContent = `Промахов: ${testData.misses}`;
 
-        const avgTime = testData.reactionTimes.reduce((a, b) => a + b, 0) / testData.reactionTimes.length || 0;
-        document.getElementById('avgTime').textContent = `Среднее время реакции: ${avgTime.toFixed(2)}`;
+            const avgTime = testData.reactionTimes.reduce((a, b) => a + b, 0) / testData.reactionTimes.length || 0;
+            document.getElementById('avgTime').textContent = `Среднее время реакции: ${avgTime.toFixed(2)}`;
 
-        const timeValues = testData.reactionTimes.map(t => (t - avgTime) ** 2);
-        const stdDev = Math.sqrt(timeValues.reduce((a, b) => a + b, 0) / timeValues.length) || 0;
-        document.getElementById('stdDev').textContent = `Стандартное отклонение: ${stdDev.toFixed(2)}`;
+            const timeValues = testData.reactionTimes.map(t => (t - avgTime) ** 2);
+            const stdDev = Math.sqrt(timeValues.reduce((a, b) => a + b, 0) / timeValues.length) || 0;
+            document.getElementById('stdDev').textContent = `Стандартное отклонение: ${stdDev.toFixed(2)}`;
+        {{/if}}
     }
 </script>

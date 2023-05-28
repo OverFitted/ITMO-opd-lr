@@ -8,19 +8,19 @@
                             Тест на аналитическое мышление
                         </h3>
 
-                        {{!-- {{#if preset.show_stats}} --}}
-                        <div class="row justify-content-center">
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика</h5>
-                                    <p id="clicks" class="card-text">Кликов: 0</p>
-                                    <p id="misses" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                        {{#if preset.show_stats}}
+                            <div class="row justify-content-center">
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика</h5>
+                                        <p id="clicks" class="card-text">Кликов: 0</p>
+                                        <p id="misses" class="card-text">Промахов: 0</p>
+                                        <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                        <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        {{!-- {{/if}} --}}
+                        {{/if}}
 
                         <div class="row justify-content-center align-items-center">
                             <div class="col-12 d-flex justify-content-center align-items-center mb-3">
@@ -54,16 +54,64 @@
     const testCanvas = document.getElementById("testCanvas");
     const ctx = testCanvas.getContext("2d");
 
+    const levelCount = {{ preset.num_levels }}
+    const levelDistribution = "{{preset.level_distribution}}"  // random or fair (easy -> medium -> hard)
+
+    let level = 0;
+    let difficulty = "hard";
+    let difficulty_prefixes = { "easy": "A", "medium": "B", "hard": "C" };
+
+    let reactionTimes = [];
+
     let totalClicks = 0;
     let totalMisses = 0;
     let clickTimes = [];
     let imageCount = Object.keys(correctAnswers).length;
-    let currentImageIndex = 0;
 
-    function drawImage(imagePath, callback) {
+    const imagesByLevel = {
+        "easy": [],
+        "medium": [],
+        "hard": []
+    };
+
+    Object.keys(correctAnswers).forEach(key => {
+        if (key.startsWith("A")) {
+            imagesByLevel.easy.push(key);
+        } else if (key.startsWith("B")) {
+            imagesByLevel.medium.push(key);
+        } else if (key.startsWith("C")) {
+            imagesByLevel.hard.push(key);
+        }
+    });
+
+    let currentLevelImages = [];
+    let currentImageIndex = 0;
+    let currentLevel = "easy";
+
+    function updateLevel() {
+        level++;
+        if (level > levelCount) {
+            level = 1;
+        }
+
+        if (level === 1) {
+            currentLevel = "easy";
+            currentLevelImages = imagesByLevel.easy;
+        } else if (level === 2) {
+            currentLevel = "medium";
+            currentLevelImages = imagesByLevel.medium;
+        } else {
+            currentLevel = "hard";
+            currentLevelImages = imagesByLevel.hard;
+        }
+
+        currentImageIndex = 0;
+    }
+
+    function drawImage(imagePath) {
         let image = new Image();
         image.src = imagePath;
-        image.onload = function() {
+        image.onload = function () {
             ctx.clearRect(0, 0, testCanvas.width, testCanvas.height);
 
             let targetWidth, targetHeight;
@@ -84,30 +132,53 @@
             testCanvas.imageHeight = targetHeight;
             testCanvas.clickZoneHeight = testCanvas.imageHeight - 350;
 
-            ctx.drawImage(image, x, y, targetWidth, targetHeight);
-            callback();
+             ctx.drawImage(image, x, y, targetWidth, targetHeight);
         };
     }
 
     function nextImage() {
-        let imageKeys = Object.keys(correctAnswers);
-        if (currentImageIndex < imageCount) {
-            let imagePath = "/img/raven/" + imageKeys[currentImageIndex];
-            drawImage(imagePath, () => {
-                currentImageIndex++;
-            });
-        } else {
-            alert("Test complete!");
-            startButton.disabled = false;
+        if (currentImageIndex >= currentLevelImages.length) {
+            alert("Level complete!");
+            updateLevel();
+            if (level <= levelCount) {
+                nextImage();
+            } else {
+                startButton.disabled = false; // Re-enable start button after finishing all levels
+                alert("Test complete!"); // Notify user that the test is complete
+            }
+            return;
         }
+
+        let imagePath = "/img/raven/" + currentLevelImages[currentImageIndex];
+        drawImage(imagePath);
+        currentImageIndex++;
     }
 
     function updateStats() {
-        document.getElementById("clicks").innerText = "Кликов: " + totalClicks;
-        document.getElementById("misses").innerText = "Промахов: " + totalMisses;
+        {{#if preset.show_stats}}
+            document.getElementById("clicks").innerText = "Кликов: " + totalClicks;
+            document.getElementById("misses").innerText = "Промахов: " + totalMisses;
+
+            if (totalClicks > 1) {
+                let mean = reactionTimes.reduce((a, b) => a + b) / totalClicks;
+                document.getElementById("avgTime").innerText = "Среднее время реакции: " + mean.toFixed(2);
+
+                let deviations = reactionTimes.map(x => Math.pow(x - mean, 2));
+                let variance = deviations.reduce((a, b) => a + b) / totalClicks;
+                let stdDev = Math.sqrt(variance);
+                document.getElementById("stdDev").innerText = "Стандартное отклонение: " + stdDev.toFixed(2);
+            }
+        {{/if}}
     }
 
-    testCanvas.addEventListener("click", function(event) {
+    testCanvas.addEventListener("click", function (event) {
+        let currentTime = new Date().getTime();
+        if (totalClicks > 0) {
+            let reactionTime = currentTime - clickTimes[clickTimes.length - 1]; // Get the time difference between the current and the last click
+            reactionTimes.push(reactionTime);
+        }
+        clickTimes.push(currentTime);
+
         const rect = testCanvas.getBoundingClientRect();
         const x = event.clientX - rect.left - testCanvas.imageX;
         const y = event.clientY - rect.top - testCanvas.imageY - 350;
@@ -127,11 +198,18 @@
             totalMisses++;
         }
         nextImage();
+        updateStats();
     }, false);
 
     startButton.addEventListener("click", function() {
         currentImageIndex = 0;
+        level = 0;
+        totalClicks = 0;
+        totalMisses = 0;
         startButton.disabled = true;
+        reactionTimes = []; // Clear the reaction times before starting a new test
+        clickTimes = []; // Also clear the click times
+        updateLevel();
         nextImage();
     });
 </script>

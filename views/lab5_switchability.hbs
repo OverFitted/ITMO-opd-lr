@@ -8,19 +8,19 @@
                             Тест на переключаемость
                         </h3>
 
-                        {{!-- {{#if preset.show_stats}} --}}
-                        <div class="row justify-content-center">
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика</h5>
-                                    <p id="clicks" class="card-text">Кликов: 0</p>
-                                    <p id="misses" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                        {{#if preset.show_stats}}
+                            <div class="row justify-content-center">
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика</h5>
+                                        <p id="clicks" class="card-text">Кликов: 0</p>
+                                        <p id="misses" class="card-text">Промахов: 0</p>
+                                        <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                        <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        {{!-- {{/if}} --}}
+                        {{/if}}
 
                         <div class="row justify-content-center align-items-center">
                             <div class="col-12 d-flex justify-content-center align-items-center mb-3">
@@ -152,15 +152,17 @@
     }
 
     function updateStats() {
-        $('#clicks').text('Кликов: ' + stats.clicks);
-        $('#misses').text('Промахов: ' + stats.misses);
-        if (stats.times.length > 1) {
-            const diffs = stats.times.slice(1).map((time, index) => time - stats.times[index]);
-            const avgTime = diffs.reduce((a, b) => a + b) / diffs.length;
-            $('#avgTime').text('Среднее время реакции: ' + avgTime.toFixed(2) + 'ms');
-            const stdDev = Math.sqrt(diffs.map(diff => Math.pow(diff - avgTime, 2)).reduce((a, b) => a + b) / diffs.length);
-            $('#stdDev').text('Стандартное отклонение: ' + stdDev.toFixed(2));
-        }
+        {{#if preset.show_stats}}
+            $('#clicks').text('Кликов: ' + stats.clicks);
+            $('#misses').text('Промахов: ' + stats.misses);
+            if (stats.times.length > 1) {
+                const diffs = stats.times.slice(1).map((time, index) => time - stats.times[index]);
+                const avgTime = diffs.reduce((a, b) => a + b) / diffs.length;
+                $('#avgTime').text('Среднее время реакции: ' + avgTime.toFixed(2) + 'ms');
+                const stdDev = Math.sqrt(diffs.map(diff => Math.pow(diff - avgTime, 2)).reduce((a, b) => a + b) / diffs.length);
+                $('#stdDev').text('Стандартное отклонение: ' + stdDev.toFixed(2));
+            }
+        {{/if}}
     }
 
     $(document).ready(() => {
