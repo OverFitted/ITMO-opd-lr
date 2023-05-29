@@ -202,4 +202,19 @@ router.post("/change-data", (req, res, next) => {
     });
 })
 
+router.get("/criteria_list", (req, res, next) => {
+    res.status(200)
+    res.render('criteria_list', {
+        title: "Список критериев | без CHATGPT",
+        isLoggedIn: req.cookies.usr_id
+    })
+})
+
+router.post('/choose-criteria', (req, res) => {
+    let option = req.body.option;
+    let newTestOptions = [];
+
+    res.json({ testOptions: newTestOptions });
+});
+
 module.exports = router

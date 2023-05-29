@@ -1,0 +1,173 @@
+<div class="bloc l-bloc" id="bloc-13">
+	<div class="container bloc-lg">
+		<div class="row">
+			<div class="col text-center">
+				<div class="text-lg-center container-div-style">
+					<h3 class="mb-4 section-heading primary-text">
+						Список критериев
+					</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bloc l-bloc" id="bloc-1">
+	<div class="container bloc-lg">
+		<div class="row">
+			<div class="col">
+				<div class="blocs-grid-container">
+					<div>
+						<label class="form-label text-start">
+							Крит 1
+						</label>
+					</div>
+					<div class="text-lg-end">
+						<a href="../" class="btn btn-d btn-lg">Удалить</a>
+					</div>
+					<div>
+						<label class="form-label text-start">
+							Крит 2<br>
+						</label>
+					</div>
+					<div class="text-lg-end">
+						<a href="../" class="btn btn-d btn-lg">Удалить</a>
+					</div>
+				</div>
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#criteriaModal">Добавить критерий</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bloc l-bloc" id="bloc-2">
+	<div class="container bloc-lg">
+		<div class="row">
+			<div class="col text-start">
+				<div class="form-group mb-8">
+					<div id="criteriaModal" class="modal modal-xl fade" tabindex="-1" role="dialog">
+						<div class="modal-dialog modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h3 class="mg-clear primary-text box-heading">
+										Добавить критерии
+									</h3>
+								</div>
+								<div class="modal-body">
+									<div>
+										<form data-clean-url-used="true" id="form_criteria" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
+											<div class="row">
+												<div class="col form-group mb-3">
+													<label class="form-label">Название критерия</label>
+													<input id="name_criteria" class="form-control" required="">
+												</div>
+											</div>
+											<div class="row">
+												<label class="form-label">Номер лабораторной</label>
+												<div class="dropdown">
+													<button class="btn btn-secondary dropdown-toggle" type="button" id="labButton" data-bs-toggle="dropdown" aria-expanded="false">
+														Select
+													</button>
+													<ul class="dropdown-menu" aria-labelledby="labButton">
+														<li><a class="dropdown-item" href="#">1</a></li>
+														<li><a class="dropdown-item" href="#">2</a></li>
+														<li><a class="dropdown-item" href="#">3</a></li>
+														<li><a class="dropdown-item" href="#">4</a></li>
+														<li><a class="dropdown-item" href="#">5</a></li>
+														<li><a class="dropdown-item" href="#">6</a></li>
+														<li><a class="dropdown-item" href="#">7</a></li>
+														<li><a class="dropdown-item" href="#">8</a></li>
+													</ul>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col form-group mb-3">
+													<label class="form-label">Номер теста</label>
+													<input id="test_criteria" class="form-control" type="number" required="">
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-md-3 form-group mb-3">
+													<label class="form-label">Параметр 1</label>
+													<input id="parameter1_criteria" class="form-control" value="Sample Parameter 1" readonly>
+												</div>
+												<div class="col-md-3 form-group mb-3">
+													<label class="form-label">Вес 1</label>
+													<input id="weight_param1_criteria" class="form-control" type="number" required="">
+												</div>
+												<div class="col-md-3 form-group mb-3">
+													<label class="form-label">Направление 1</label>
+													<input id="direction1_criteria" type="text" class="form-control">
+												</div>
+												<div class="col-md-3 form-group mb-3">
+													<label class="form-label">Срез 1</label>
+													<input id="slice1_criteria" class="form-control" type="range" required="">
+												</div>
+											</div>
+
+											<div class="row">
+												<div class="col-md-3 form-group mb-3">
+													<label class="form-label">Параметр 2</label>
+													<input id="parameter2_criteria" class="form-control" value="Sample Parameter 2" readonly>
+												</div>
+												<div class="col-md-3 form-group mb-3">
+													<label class="form-label">Вес 2</label>
+													<input id="weight_param2_criteria" class="form-control" type="number" required="">
+												</div>
+												<div class="col-md-3 form-group mb-3">
+													<label class="form-label">Направление 2</label>
+													<input id="direction2_criteria" type="text" class="form-control">
+												</div>
+												<div class="col-md-3 form-group mb-3">
+													<label class="form-label">Срез 2</label>
+													<input id="slice1_criteria" class="form-control" type="range" required="">
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<a href="../" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Закрыть<br></a>
+									<a href="../" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Сохранить</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.querySelectorAll('.dropdown-menu a').forEach(item => {
+		item.addEventListener('click', function (event) {
+			event.preventDefault();
+
+			const selectedOption = this.innerText;
+			console.log(selectedOption);
+
+			fetch('/user/choose-criteria', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ option: selectedOption }),
+			}).then(response => response.json())
+				.then(data => {
+					if (this.parentElement.parentElement.previousElementSibling.id === 'labButton') {
+						let testDropdownMenu = document.querySelector('#testButton ~ .dropdown-menu');
+						testDropdownMenu.innerHTML = '';
+
+						data.testOptions.forEach(option => {
+							let newOption = document.createElement('li');
+							newOption.innerHTML = `<a class="dropdown-item" href="#">${option}</a>`;
+							testDropdownMenu.appendChild(newOption);
+						});
+					}
+				})
+				.catch(error => console.error('Error:', error));
+		});
+	});
+</script>
