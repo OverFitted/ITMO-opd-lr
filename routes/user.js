@@ -4,14 +4,17 @@ const CLIENT = require("../models/connector");
 const router = Router()
 const fs = require('fs');
 
-const configJson = fs.readFileSync('models/presets.json', 'utf8');
-const config = JSON.parse(configJson);
+const presetsConfigJson = fs.readFileSync('models/presets.json', 'utf8');
+const presetsConfig = JSON.parse(presetsConfigJson);
+
+const criteriaConfigJson = fs.readFileSync('models/criteria.json', 'utf8');
+const criteriaConfig = JSON.parse(criteriaConfigJson);
 
 async function getPresets() {
     try {
         const result = await CLIENT.query('SELECT * FROM presets');
         const presets = result.rows.map(row => {
-            const labConfig = config.find(c => c.lab_num === row.lab_id);
+            const labConfig = presetsConfig.find(c => c.lab_num === row.lab_id);
             const presetParams = Object.entries(row.params).map(([key, value]) => {
                 const paramConfig = labConfig.params.find(p => p.name === key);
                 return {
@@ -132,7 +135,7 @@ router.get('/', async (req, res, next) => {
 
 router.get("/config/:lab_num", (req, res, next) => {
     const labNum = parseInt(req.params.lab_num, 10);
-    const labConfig = config.find(item => item.lab_num === labNum);
+    const labConfig = presetsConfig.find(item => item.lab_num === labNum);
     res.json(labConfig);
 });
 

@@ -1,0 +1,24 @@
+[
+    {
+        "lab_num": 2,
+        "tests": [
+            [
+                {
+                    "test_num": 1,
+                    "params": [
+                        {
+                            "param_name": "mean",
+                            "db_index": [0],
+                            "formula": "{0}"
+                        },
+                        {
+                            "param_name": "z-value",
+                            "db_index": [0, 1],
+                            "formula": "({0} + {1}) / 2"
+                        }
+                    ]
+                }
+            ]
+        ]
+    }
+]
