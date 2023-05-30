@@ -5,31 +5,46 @@
                 <div class="row">
                     <div class="col">
                         <h3 class="mb-4 section-heading primary-text">
-                            Тест на кратковременную память
+                            Тест звуковой памяти
                         </h3>
 
                         {{!-- {{#if preset.show_stats}} --}}
-                        <div class="row justify-content-center">
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика</h5>
-                                    <p id="clicks" class="card-text">Кликов: 0</p>
-                                    <p id="misses" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                            <div class="row justify-content-center">
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика</h5>
+                                        <p id="clicks" class="card-text">Кликов: 0</p>
+                                        <p id="misses" class="card-text">Промахов: 0</p>
+                                        <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                        <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         {{!-- {{/if}} --}}
+
+                        <br>
 
                         <div class="row justify-content-center align-items-center">
                             <div class="col-12 d-flex justify-content-center align-items-center mb-3">
                                 <div id="buttonContainer">
-                                    <button id="startButton" class="btn btn-primary">Начать тест</button>
+                                    <button class="btn btn-primary" onclick="startTest('sequential')">
+                                        Начать тест (от простому к сложному)
+                                    </button>
+                                    <button class="btn btn-primary" onclick="startTest('random')">
+                                        Начать тест (случайная генерация)
+                                    </button>
                                 </div>
                             </div>
-                            <div class="col-12 d-flex justify-content-center align-items-center">
-                                <canvas id="testCanvas" width="1070" height="600"></canvas>
+                            <div class="col col-12 d-flex flex-column justify-content-center align-items-center">
+                                <div class="row justify-content-center">
+                                    <div id="inputContainer"></div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <button id="nextButton" class="btn btn-primary" onclick="checkAnswers()" hidden>
+                                        Далее
+                                    </button>
+                                    <p id="resultMessage"></p>
+                                </div>
                             </div>
                         </div>
 
@@ -46,3 +61,218 @@
         </div>
     </div>
 </div>
+
+<script>
+    const pool = [
+        "журналист",
+        "бой",
+        "стекло",
+        "основа",
+        "публика",
+        "кровать",
+        "гора",
+        "церковь",
+        "отрасль",
+        "инженер",
+        "сила",
+        "поворот",
+        "человечество",
+        "запас",
+        "страх",
+        "дочка",
+        "огонь",
+        "оплата",
+        "комитет",
+        "модель",
+        "вещь",
+        "период",
+        "специалист",
+        "член",
+        "имущество",
+        "рождение",
+        "капитал",
+        "право",
+        "память",
+        "номер",
+        "день",
+        "статус",
+        "причина",
+        "обстановка",
+        "лагерь",
+        "мальчик",
+        "взгляд",
+        "знак",
+        "соглашение",
+        "передача",
+        "величина",
+        "билет",
+        "сотрудник",
+        "врач",
+        "солнце",
+        "рабочий",
+        "полковник",
+        "поверхность",
+        "дурак",
+        "учитель",
+        "этап",
+        "необходимость",
+        "продукция",
+        "машина",
+        "штука",
+        "путь",
+        "статус",
+        "растение",
+        "природа",
+        "человек",
+        "друг",
+        "чай",
+        "капитан",
+        "бабушка",
+        "комиссия",
+        "комната",
+        "чтение",
+        "сделка",
+        "заказ",
+        "артист",
+        "субъект",
+        "число",
+        "июнь",
+        "площадка",
+        "объединение",
+        "писатель",
+        "чувство",
+        "масштаб",
+        "лицо",
+        "вид",
+        "большинство",
+        "реформа",
+        "отдых",
+        "разработка",
+        "палец",
+        "изображение",
+        "рождение",
+        "двигатель",
+        "окно",
+        "сфера",
+        "заместитель",
+        "пол",
+        "болезнь",
+        "рассказ",
+        "мысль",
+        "день",
+        "цифра",
+        "губа",
+        "наличие",
+        "экран"
+    ];
+
+    const levelWords = {
+        sequential: [10, 20, 30], // Количество слов для каждого уровня сложности
+        random: [10, 20, 30]
+    };
+
+    let currentLevel = 0;
+    let currentWords = [];
+    let correctAnswers = 0;
+    let selectedMode = "";
+
+    function startTest(mode) {
+        selectedMode = mode;
+        document.getElementById("inputContainer").innerHTML = "";
+        document.getElementById("resultMessage").textContent = "";
+        currentLevel = 0;
+        correctAnswers = 0;
+        generateWords();
+        speakWords();
+    }
+
+    function generateWords() {
+        const level = selectedMode === "sequential" ? currentLevel : getRandomInt(0, levelWords[selectedMode].length - 1);
+        const wordCount = levelWords[selectedMode][level];
+        currentWords = getRandomWords(wordCount);
+    }
+
+    function getRandomWords(count) {
+        const wordsCopy = [...pool];
+        const words = [];
+        for (let i = 0; i < count; i++) {
+            const randomIndex = getRandomInt(0, wordsCopy.length - 1);
+            words.push(wordsCopy.splice(randomIndex, 1)[0]);
+        }
+        return words;
+    }
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+
+    function speakWords() {
+        let index = 0;
+        const interval = setInterval(function () {
+            const word = currentWords[index];
+            speakWord(word);
+            index++;
+            if (index >= currentWords.length) {
+                clearInterval(interval);
+                showAnswerFields();
+            }
+        }, 1500);
+    }
+
+    function speakWord(word) {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = "ru-RU";
+        speechSynthesis.speak(utterance);
+    }
+
+    function showAnswerFields() {
+        const inputContainer = document.getElementById("inputContainer");
+        inputContainer.innerHTML = "";
+
+        const wordCount = currentWords.length;
+        for (let i = 0; i < wordCount; i++) {
+            const input = document.createElement("input");
+            input.type = "text";
+            inputContainer.appendChild(input);
+        }
+
+        $("#nextButton").removeAttr('hidden');
+    }
+
+    function checkAnswers() {
+        const inputContainer = document.getElementById("inputContainer");
+        const inputs = inputContainer.getElementsByTagName("input");
+        const wordCount = currentWords.length;
+        const userAnswers = [];
+        let correctCount = 0;
+
+        for (let i = 0; i < wordCount; i++) {
+            const input = inputs[i];
+            const userAnswer = input.value.trim().toLowerCase();
+            userAnswers.push(userAnswer);
+        }
+
+        for (let i = 0; i < wordCount; i++) {
+            const correctWord = currentWords[i].toLowerCase();
+
+            if (userAnswers.includes(correctWord)) {
+                correctCount++;
+            }
+        }
+
+        correctAnswers += correctCount;
+        const message = `Вы правильно указали ${correctCount} из ${wordCount} слов.`;
+        alert(message);
+
+        if (currentLevel === 2) {
+            const totalMessage = `Вы ответили правильно на ${correctAnswers} из ${levelWords[selectedMode].reduce((a, b) => a + b, 0)} слов.`;
+            document.getElementById("resultMessage").textContent = totalMessage;
+            document.getElementById("nextButton").disabled = true;
+        } else {
+            currentLevel++;
+            generateWords();
+            speakWords();
+        }
+    }
+</script>
