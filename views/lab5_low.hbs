@@ -8,27 +8,27 @@
                             Тест звуковой памяти
                         </h3>
 
-                        {{!-- {{#if preset.show_stats}} --}}
-                            <div class="row justify-content-center">
-                                <div id="stats" class="card col-4">
-                                    <div class="text-lg-center card-body">
-                                        <h5 class="card-title">Статистика</h5>
-                                        <p id="clicks" class="card-text">Кликов: 0</p>
-                                        <p id="misses" class="card-text">Промахов: 0</p>
-                                        <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
-                                        <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
-                                    </div>
+                        {{#if preset.show_stats}}
+                        <div class="row justify-content-center">
+                            <div id="stats" class="card col-4">
+                                <div class="text-lg-center card-body">
+                                    <h5 class="card-title">Статистика</h5>
+                                    <p id="clicks" class="card-text">Кликов: 0</p>
+                                    <p id="misses" class="card-text">Промахов: 0</p>
+                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
+                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
                                 </div>
                             </div>
-                        {{!-- {{/if}} --}}
+                        </div>
+                        {{/if}}
 
                         <br>
 
                         <div class="row justify-content-center align-items-center">
                             <div class="col-12 d-flex justify-content-center align-items-center mb-3">
                                 <div id="buttonContainer">
-                                    <button class="btn btn-primary" onclick="startTest('sequential')">
-                                        Начать тест (от простому к сложному)
+                                    <button class="btn btn-primary" onclick="startTest('fair')">
+                                        Начать тест
                                     </button>
                                     <button class="btn btn-primary" onclick="startTest('random')">
                                         Начать тест (случайная генерация)
@@ -64,117 +64,41 @@
 
 <script>
     const pool = [
-        "журналист",
-        "бой",
-        "стекло",
-        "основа",
-        "публика",
-        "кровать",
-        "гора",
-        "церковь",
-        "отрасль",
-        "инженер",
-        "сила",
-        "поворот",
-        "человечество",
-        "запас",
-        "страх",
-        "дочка",
-        "огонь",
-        "оплата",
-        "комитет",
-        "модель",
-        "вещь",
-        "период",
-        "специалист",
-        "член",
-        "имущество",
-        "рождение",
-        "капитал",
-        "право",
-        "память",
-        "номер",
-        "день",
-        "статус",
-        "причина",
-        "обстановка",
-        "лагерь",
-        "мальчик",
-        "взгляд",
-        "знак",
-        "соглашение",
-        "передача",
-        "величина",
-        "билет",
-        "сотрудник",
-        "врач",
-        "солнце",
-        "рабочий",
-        "полковник",
-        "поверхность",
-        "дурак",
-        "учитель",
-        "этап",
-        "необходимость",
-        "продукция",
-        "машина",
-        "штука",
-        "путь",
-        "статус",
-        "растение",
-        "природа",
-        "человек",
-        "друг",
-        "чай",
-        "капитан",
-        "бабушка",
-        "комиссия",
-        "комната",
-        "чтение",
-        "сделка",
-        "заказ",
-        "артист",
-        "субъект",
-        "число",
-        "июнь",
-        "площадка",
-        "объединение",
-        "писатель",
-        "чувство",
-        "масштаб",
-        "лицо",
-        "вид",
-        "большинство",
-        "реформа",
-        "отдых",
-        "разработка",
-        "палец",
-        "изображение",
-        "рождение",
-        "двигатель",
-        "окно",
-        "сфера",
-        "заместитель",
-        "пол",
-        "болезнь",
-        "рассказ",
-        "мысль",
-        "день",
-        "цифра",
-        "губа",
-        "наличие",
-        "экран"
+        "журналист", "бой", "стекло", "основа",
+        "публика", "кровать", "гора", "церковь",
+        "отрасль", "инженер", "сила", "поворот",
+        "человечество", "запас", "страх", "дочка",
+        "огонь", "оплата", "комитет", "модель",
+        "вещь", "период", "специалист", "имущество",
+        "рождение", "капитал", "право", "память",
+        "номер", "день", "статус", "причина",
+        "обстановка", "лагерь", "мальчик", "взгляд",
+        "знак", "соглашение", "передача", "величина",
+        "билет", "сотрудник", "врач", "солнце",
+        "рабочий", "полковник", "поверхность", "дурак",
+        "учитель", "этап", "необходимость", "продукция",
+        "машина", "штука", "путь", "статус",
+        "растение", "природа", "человек", "друг",
+        "чай", "капитан", "бабушка", "комиссия",
+        "комната", "чтение", "сделка", "заказ",
+        "артист", "субъект", "число", "объединение",
+        "писатель", "чувство", "масштаб", "лицо",
+        "вид", "большинство", "реформа", "отдых",
+        "разработка", "палец", "изображение", "рождение",
+        "двигатель", "окно", "сфера", "заместитель",
+        "пол", "болезнь", "рассказ", "мысль",
+        "день", "цифра", "губа", "наличие", "экран"
     ];
 
     const levelWords = {
-        sequential: [10, 20, 30], // Количество слов для каждого уровня сложности
+        fair: [10, 20, 30],
         random: [10, 20, 30]
     };
 
     let currentLevel = 0;
     let currentWords = [];
     let correctAnswers = 0;
-    let selectedMode = "";
+    let selectedMode = "{{preset.level_distribution}}";
 
     function startTest(mode) {
         selectedMode = mode;
@@ -187,7 +111,7 @@
     }
 
     function generateWords() {
-        const level = selectedMode === "sequential" ? currentLevel : getRandomInt(0, levelWords[selectedMode].length - 1);
+        const level = selectedMode === "fair" ? currentLevel : getRandomInt(0, levelWords[selectedMode].length - 1);
         const wordCount = levelWords[selectedMode][level];
         currentWords = getRandomWords(wordCount);
     }
@@ -205,7 +129,6 @@
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-
 
     function speakWords() {
         let index = 0;

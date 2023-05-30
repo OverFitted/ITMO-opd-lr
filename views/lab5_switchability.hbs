@@ -158,7 +158,7 @@
             if (stats.times.length > 1) {
                 const diffs = stats.times.slice(1).map((time, index) => time - stats.times[index]);
                 const avgTime = diffs.reduce((a, b) => a + b) / diffs.length;
-                $('#avgTime').text('Среднее время реакции: ' + avgTime.toFixed(2) + 'ms');
+                $('#avgTime').text('Среднее время реакции: ' + avgTime.toFixed(2));
                 const stdDev = Math.sqrt(diffs.map(diff => Math.pow(diff - avgTime, 2)).reduce((a, b) => a + b) / diffs.length);
                 $('#stdDev').text('Стандартное отклонение: ' + stdDev.toFixed(2));
             }
@@ -176,4 +176,33 @@
             updateStats();
         });
     });
+
+    function postResults() {
+        const diffs = stats.times.slice(1).map((time, index) => time - stats.times[index]);
+        const avgTime = diffs.reduce((a, b) => a + b) / diffs.length;
+        const sd = Math.sqrt(diffs.map(diff => Math.pow(diff - avgTime, 2)).reduce((a, b) => a + b) / diffs.length);
+
+        let results = {
+            avgTime: avgTime.toFixed(2),
+            stdDev: sd.toFixed(2),
+            test_id: 1,
+            preset_id: {{preset_id}}
+        };
+
+        fetch('../../', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error: ' + response.statusText);
+            }
+        }).then(data => {
+            console.log(data);
+        }).catch(error => console.error('Error:', error));
+    }
 </script>

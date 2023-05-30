@@ -58,7 +58,6 @@
     const levelDistribution = "{{preset.level_distribution}}"  // random or fair (easy -> medium -> hard)
 
     let level = 0;
-    let difficulty = "hard";
     let difficulty_prefixes = { "easy": "A", "medium": "B", "hard": "C" };
 
     let reactionTimes = [];
@@ -212,4 +211,32 @@
         updateLevel();
         nextImage();
     });
+
+    function postResults() {
+        let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+        let sd = Math.sqrt(reactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1));
+
+        let results = {
+            avgTime: avgTime.toFixed(2),
+            stdDev: sd.toFixed(2),
+            test_id: 1,
+            preset_id: {{preset_id}}
+        };
+
+        fetch('../../', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error: ' + response.statusText);
+            }
+        }).then(data => {
+            console.log(data);
+        }).catch(error => console.error('Error:', error));
+    }
 </script>

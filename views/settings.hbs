@@ -231,18 +231,18 @@
                                                             Результаты 4 лабы
                                                         </p>
                                                         <div>
-                                                            <ul class="nav nav-tabs" id="nav-47192-tab" role="tablist">
+                                                            <ul class="nav nav-tabs" id="nav-47193-tab" role="tablist">
                                                                 <li class="nav-item">
-                                                                    <a class="a-btn nav-link active" id="nav-47192-tab-1" data-bs-toggle="tab" href="#" role="tab" aria-controls="nav-47192-content-1" aria-selected="true" data-bs-target="#nav-47192-content-1">
+                                                                    <a class="a-btn nav-link active" id="nav-47193-tab-1" data-bs-toggle="tab" href="#" role="tab" aria-controls="nav-47193-content-1" aria-selected="true" data-bs-target="#nav-47193-content-1">
                                                                         Простые<br></a>
                                                                 </li>
                                                                 <li class="nav-item">
-                                                                    <a class="a-btn nav-link" id="nav-47192-tab-2" data-bs-toggle="tab" href="#" role="tab" aria-controls="nav-47192-content-2" data-bs-target="#nav-47192-content-2">
+                                                                    <a class="a-btn nav-link" id="nav-47193-tab-2" data-bs-toggle="tab" href="#" role="tab" aria-controls="nav-47193-content-2" data-bs-target="#nav-47193-content-2">
                                                                         Сложные<br></a>
                                                                 </li>
                                                             </ul>
                                                             <div class="tab-content">
-                                                                <div class="tab-pane fade-tab-bs show active" id="nav-47192-content-1" role="tabpanel" aria-labelledby="nav-47192-content-1">
+                                                                <div class="tab-pane fade-tab-bs show active" id="nav-47193-content-1" role="tabpanel" aria-labelledby="nav-47193-content-1">
                                                                     <div class="blocs-grid-container grid-bloc-8-style">
                                                                         {{#each resp_res_lr4_simple}}
                                                                         <div>
@@ -258,7 +258,7 @@
                                                                         {{/each}}
                                                                     </div>
                                                                 </div>
-                                                                <div class="tab-pane fade-tab-bs" id="nav-47192-content-2" role="tabpanel" aria-labelledby="nav-47192-content-2">
+                                                                <div class="tab-pane fade-tab-bs" id="nav-47193-content-2" role="tabpanel" aria-labelledby="nav-47193-content-2">
                                                                     <div class="blocs-grid-container grid-bloc-8-style">
                                                                         {{#each resp_res_lr4_hard}}
                                                                         <div>
@@ -282,6 +282,70 @@
                                                             Результаты 5 лабы
                                                         </p>
                                                         <div>
+                                                            <ul class="nav nav-tabs" id="nav-47192-tab" role="tablist">
+                                                                <li class="nav-item">
+                                                                    <a class="a-btn nav-link active" id="nav-47192-tab-1" data-bs-toggle="tab" href="#" role="tab" aria-controls="nav-47192-content-1" aria-selected="true" data-bs-target="#nav-47192-content-1">
+                                                                        На внимание<br></a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a class="a-btn nav-link" id="nav-47192-tab-2" data-bs-toggle="tab" href="#" role="tab" aria-controls="nav-47192-content-2" data-bs-target="#nav-47192-content-2">
+                                                                        На память<br></a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a class="a-btn nav-link" id="nav-47192-tab-3" data-bs-toggle="tab" href="#" role="tab" aria-controls="nav-47192-content-3" data-bs-target="#nav-47192-content-2">
+                                                                        На мышление<br></a>
+                                                                </li>
+                                                            </ul>
+                                                            <div class="tab-content">
+                                                                <div class="tab-pane fade-tab-bs show active" id="nav-47192-content-1" role="tabpanel" aria-labelledby="nav-47192-content-1">
+                                                                    <div class="blocs-grid-container grid-bloc-8-style">
+                                                                        {{#each resp_res_lr5_visual}}
+                                                                        <div>
+                                                                            <p class="bento-box active-token">
+                                                                                {{this.test_name}}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p class="bento-box active-token">
+                                                                                {{this.result_list}}
+                                                                            </p>
+                                                                        </div>
+                                                                        {{/each}}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="tab-pane fade-tab-bs" id="nav-47192-content-2" role="tabpanel" aria-labelledby="nav-47192-content-2">
+                                                                    <div class="blocs-grid-container grid-bloc-8-style">
+                                                                        {{#each resp_res_lr5_memory}}
+                                                                        <div>
+                                                                            <p class="bento-box active-token">
+                                                                                {{this.test_name}}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p class="bento-box active-token">
+                                                                                {{this.result_list}}
+                                                                            </p>
+                                                                        </div>
+                                                                        {{/each}}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="tab-pane fade-tab-bs" id="nav-47192-content-3" role="tabpanel" aria-labelledby="nav-47192-content-3">
+                                                                    <div class="blocs-grid-container grid-bloc-8-style">
+                                                                        {{#each resp_res_lr5_brain}}
+                                                                        <div>
+                                                                            <p class="bento-box active-token">
+                                                                                {{this.test_name}}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div>
+                                                                            <p class="bento-box active-token">
+                                                                                {{this.result_list}}
+                                                                            </p>
+                                                                        </div>
+                                                                        {{/each}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane fade-tab-bs" role="tabpanel" aria-labelledby="nav-47122-content-6" id="nav-47122-content-6">

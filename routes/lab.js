@@ -643,4 +643,15 @@ router.get('/lab5/lab5_abstract', async (req, res, next) => {
     })
 })
 
+router.post('/lab5/', (req, res, next) => {
+    res.status(200)
+    results = req.body
+    User.userById(req.cookies.usr_id).then((user) => {
+        if (user) {
+            user = new User(user)
+            user.sendResultFifth(results)
+        }
+    });
+})
+
 module.exports = router

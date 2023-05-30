@@ -114,7 +114,6 @@
             if (level < levelCount - 1) {
                 level += 1;
 
-                // Update difficulty based on levelDistribution
                 if (levelDistribution === 'fair') {
                     difficulty = level < levelCount / 3 ? 'easy' : (level < 2 * levelCount / 3 ? 'medium' : 'hard');
                 } else if (levelDistribution === 'random') {
@@ -131,12 +130,10 @@
                 correctImages = Array.from({ length: size }, () => Array.from({ length: size }, () => false));
                 correctCount = rotatedImages.reduce((total, row) => total + row.filter(rot => rot === correctRotation).length, 0);
 
-                // Reset statistics for the new level
                 clicks = 0;
                 misses = 0;
                 startTime = lastClickTime = Date.now();
                 totalReactionTime = 0;
-                reactionTimes = [];
 
                 drawImages();
             } else {
@@ -164,5 +161,33 @@
         ctx.rotate(correctRotation * Math.PI / 2);
         ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
         ctx.restore();
+    }
+
+    function postResults() {
+        let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+        let sd = Math.sqrt(reactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1));
+
+        let results = {
+            avgTime: avgTime.toFixed(2),
+            stdDev: sd.toFixed(2),
+            test_id: 1,
+            preset_id: {{preset_id}}
+        };
+
+        fetch('../../', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error: ' + response.statusText);
+            }
+        }).then(data => {
+            console.log(data);
+        }).catch(error => console.error('Error:', error));
     }
 </script>

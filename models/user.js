@@ -209,6 +209,29 @@ class User {
             })
         })
     }
+
+    sendResultFifth(results) {
+        var data = this.toJSON()
+
+        var res_query = {
+            text: 'INSERT INTO result_list_lr5 (result_list) VALUES ($1) RETURNING id',
+            values: [
+                [results.avgTime, results.stdDev]
+            ],
+        }
+
+        CLIENT.query(res_query).then((res) => {
+            var id = res.rows[0].id
+
+            const query = {
+                text: 'INSERT INTO lr5_to_resp (respondent_id, result_list_id_lr5, preset_id) VALUES ($1, $2, $3)',
+                values: [data.usr_id, id, results.preset_id],
+            }
+            CLIENT.query(query).then((result) => {
+                console.log(result)
+            })
+        })
+    }
 }
 
 module.exports = User
