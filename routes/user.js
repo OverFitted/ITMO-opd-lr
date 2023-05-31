@@ -115,9 +115,9 @@ router.get('/', async (req, res, next) => {
         const sortResponsesByDifficultyLR5 = (resp_res, visualArray, memoryArray, brainArray) => {
             for (let i = 0; i < resp_res.length; i++) {
                 resp_res[i].result_list = resp_res[i].result_list.join("; ");
-                if (resp_res[i].test_id < 3) {
+                if (resp_res[i].test_in_lab_id < 3) {
                     visualArray.push(resp_res[i]);
-                } else if (resp_res[i].test_id < 5) {
+                } else if (resp_res[i].test_in_lab_id < 5) {
                     memoryArray.push(resp_res[i]);
                 } else {
                     brainArray.push(resp_res[i]);

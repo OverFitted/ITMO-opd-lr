@@ -9,17 +9,17 @@
                         </h3>
 
                         {{#if preset.show_stats}}
-                        <div class="row justify-content-center">
-                            <div id="stats" class="card col-4">
-                                <div class="text-lg-center card-body">
-                                    <h5 class="card-title">Статистика</h5>
-                                    <p id="clicks" class="card-text">Кликов: 0</p>
-                                    <p id="misses" class="card-text">Промахов: 0</p>
-                                    <p id="avgTime" class="card-text">Среднее время реакции: 0</p>
-                                    <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                            <div class="row justify-content-center">
+                                <div id="stats" class="card col-4">
+                                    <div class="text-lg-center card-body">
+                                        <h5 class="card-title">Статистика</h5>
+                                        <p id="clicks" class="card-text">Ответов: 0</p>
+                                        <p id="misses" class="card-text">Неправильных: 0</p>
+                                        <p id="avg" class="card-text">Средний процент правильных ответов: 0</p>
+                                        <p id="stdDev" class="card-text">Стандартное отклонение: 0</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         {{/if}}
 
                         <br>
@@ -29,9 +29,6 @@
                                 <div id="buttonContainer">
                                     <button class="btn btn-primary" onclick="startTest('fair')">
                                         Начать тест
-                                    </button>
-                                    <button class="btn btn-primary" onclick="startTest('random')">
-                                        Начать тест (случайная генерация)
                                     </button>
                                 </div>
                             </div>
@@ -91,8 +88,8 @@
     ];
 
     const levelWords = {
-        fair: [10, 20, 30],
-        random: [10, 20, 30]
+        fair: [5, 10, 20],
+        random: [5, 10, 20]
     };
 
     let currentLevel = 0;
@@ -100,8 +97,11 @@
     let correctAnswers = 0;
     let selectedMode = "{{preset.level_distribution}}";
 
-    function startTest(mode) {
-        selectedMode = mode;
+    let totalCorrectAnswers = 0;
+    let totalTests = 0;
+    let testsResults = [];
+
+    function startTest() {
         document.getElementById("inputContainer").innerHTML = "";
         document.getElementById("resultMessage").textContent = "";
         currentLevel = 0;
@@ -163,6 +163,12 @@
         $("#nextButton").removeAttr('hidden');
     }
 
+    function calculateStdDev(arr) {
+        const n = arr.length;
+        const mean = arr.reduce((a, b) => a + b) / n;
+        return Math.sqrt(arr.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n);
+    }
+
     function checkAnswers() {
         const inputContainer = document.getElementById("inputContainer");
         const inputs = inputContainer.getElementsByTagName("input");
@@ -185,17 +191,54 @@
         }
 
         correctAnswers += correctCount;
-        const message = `Вы правильно указали ${correctCount} из ${wordCount} слов.`;
-        alert(message);
+
+        const percentage = (correctCount / wordCount) * 100;
+        testsResults.push(percentage);
+        totalCorrectAnswers += correctCount;
+        totalTests += wordCount;
 
         if (currentLevel === 2) {
             const totalMessage = `Вы ответили правильно на ${correctAnswers} из ${levelWords[selectedMode].reduce((a, b) => a + b, 0)} слов.`;
             document.getElementById("resultMessage").textContent = totalMessage;
+
+            const globalMean = totalCorrectAnswers / totalTests * 100;  // Calculate mean
+            document.getElementById("avg").textContent = "Средний процент правильных ответов: " + globalMean.toFixed(2);
+
+            const globalStdDev = calculateStdDev(testsResults);  // Calculate standard deviation
+            document.getElementById("stdDev").textContent = "Стандартное отклонение: " + globalStdDev.toFixed(2);
+
             document.getElementById("nextButton").disabled = true;
         } else {
             currentLevel++;
             generateWords();
             speakWords();
         }
+    }
+
+    function postResults() {
+        const globalMean = totalCorrectAnswers / totalTests * 100;
+        const globalStdDev = calculateStdDev(testsResults);
+
+        let results = {
+            avgTime: globalMean.toFixed(2),
+            stdDev: globalStdDev.toFixed(2),
+            test_id: 4,
+            preset_id: {{preset_id}}
+        };
+        fetch('../', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(results)
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error: ' + response.statusText);
+            }
+        }).then(data => {
+            console.log(data);
+        }).catch(error => console.error('Error:', error));
     }
 </script>

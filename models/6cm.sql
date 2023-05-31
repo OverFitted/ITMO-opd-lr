@@ -805,6 +805,36 @@ COPY public.expert_profession_pvk_lab6 (respondent_profession_id, fields) FROM s
 --
 
 COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id, importance) FROM stdin;
+25	1902235510	1	23	3
+26	1902235510	1	24	3
+27	1902235510	1	25	3
+28	1902235510	1	26	3
+29	1902235510	1	27	3
+30	1902235510	1	28	3
+31	1902235510	1	29	3
+32	1902235510	1	30	3
+33	1902235510	1	31	3
+34	1902235510	1	32	3
+35	1902235510	2	5	3
+36	1902235510	2	7	3
+37	1902235510	2	8	3
+38	1902235510	2	11	3
+39	1902235510	2	13	3
+40	1902235510	2	15	3
+41	1902235510	2	17	3
+42	1902235510	2	19	3
+43	1902235510	2	21	3
+44	1902235510	2	23	3
+45	1902235510	3	5	3
+46	1902235510	3	6	3
+47	1902235510	3	7	3
+48	1902235510	3	8	3
+49	1902235510	3	9	3
+50	1902235510	3	10	3
+51	1902235510	3	11	3
+52	1902235510	3	12	3
+53	1902235510	3	13	3
+54	1902235510	3	71	3
 \.
 
 
@@ -1118,6 +1148,12 @@ COPY public.test_name (lab_id, test_id, test_name) FROM stdin;
 3	2	Сложное движение
 4	1	Аналоговое слежение
 4	2	Слежение с преследованием
+5	1	Внимание. Устойчивость
+5	2	Внимание. Переключаемость
+5	3	Зрительная память
+5	4	Кратковременная память
+5	5	Анализ, сравнение
+5	6	Дедукция, абстракция
 \.
 
 
@@ -1149,6 +1185,7 @@ COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert
 8	TestName4	TestSurname4	testlogin4	1234	fakeMail6@mail.ru	94	f	F
 1232473507	testuser	testuser	testuser	1234	1234@mail.ru	12	t	M
 1902235510	aboba	aboba	aboba	aboba	aboba@mail.ru	12	t	M
+598787172	AMD	NVIDIA	1234	1234	AS@ITMO.RU	99	t	M
 \.
 
 
@@ -1170,7 +1207,7 @@ SELECT pg_catalog.setval('public.expert_profession_pvk_lab6_respondent_professio
 -- Name: expert_profession_quality_id_seq; Type: SEQUENCE SET; Schema: public; Owner: graevsky
 --
 
-SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 24, true);
+SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 54, true);
 
 
 --
