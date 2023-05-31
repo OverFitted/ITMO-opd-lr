@@ -142,6 +142,7 @@
             if (level <= levelCount) {
                 nextImage();
             } else {
+                postResults();
                 startButton.disabled = false; // Re-enable start button after finishing all levels
                 alert("Test complete!"); // Notify user that the test is complete
             }

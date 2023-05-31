@@ -112,6 +112,7 @@
         const remaining = numbers.filter(num => !num.found);
         if (remaining.length === 0) {
             if (level >= levelCount - 1) {
+                postResults();
                 alert('Test Over!');
                 return;
             }

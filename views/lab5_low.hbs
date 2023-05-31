@@ -208,6 +208,7 @@
             document.getElementById("stdDev").textContent = "Стандартное отклонение: " + globalStdDev.toFixed(2);
 
             document.getElementById("nextButton").disabled = true;
+            postResults();
         } else {
             currentLevel++;
             generateWords();
