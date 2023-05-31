@@ -30,6 +30,74 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: criteria; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.criteria (
+    criteria_id integer NOT NULL,
+    criteria_fields json
+);
+
+
+ALTER TABLE public.criteria OWNER TO master;
+
+--
+-- Name: criteria_criteria_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.criteria_criteria_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.criteria_criteria_id_seq OWNER TO master;
+
+--
+-- Name: criteria_criteria_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.criteria_criteria_id_seq OWNED BY public.criteria.criteria_id;
+
+
+--
+-- Name: expert_profession_pvk_lab6; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.expert_profession_pvk_lab6 (
+    respondent_profession_id integer NOT NULL,
+    fields json
+);
+
+
+ALTER TABLE public.expert_profession_pvk_lab6 OWNER TO master;
+
+--
+-- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNER TO master;
+
+--
+-- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNED BY public.expert_profession_pvk_lab6.respondent_profession_id;
+
+
+--
 -- Name: expert_profession_quality_lab1; Type: TABLE; Schema: public; Owner: graevsky
 --
 
@@ -184,6 +252,42 @@ ALTER SEQUENCE public.lr4_to_resp_id_seq OWNED BY public.lr4_to_resp.id;
 
 
 --
+-- Name: lr5_to_resp; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.lr5_to_resp (
+    id integer NOT NULL,
+    respondent_id integer,
+    result_list_id_lr5 integer,
+    preset_id integer
+);
+
+
+ALTER TABLE public.lr5_to_resp OWNER TO master;
+
+--
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.lr5_to_resp_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.lr5_to_resp_id_seq OWNER TO master;
+
+--
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.lr5_to_resp_id_seq OWNED BY public.lr5_to_resp.id;
+
+
+--
 -- Name: preset_to_resp; Type: TABLE; Schema: public; Owner: master
 --
 
@@ -291,6 +395,40 @@ ALTER SEQUENCE public.professions_id_seq OWNED BY public.professions_lab1.id;
 
 
 --
+-- Name: pvk_criteria_list; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.pvk_criteria_list (
+    list_id integer NOT NULL,
+    criteria_list_for_pvk json
+);
+
+
+ALTER TABLE public.pvk_criteria_list OWNER TO master;
+
+--
+-- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.pvk_criteria_list_list_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pvk_criteria_list_list_id_seq OWNER TO master;
+
+--
+-- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.pvk_criteria_list_list_id_seq OWNED BY public.pvk_criteria_list.list_id;
+
+
+--
 -- Name: pvk_lab1; Type: TABLE; Schema: public; Owner: graevsky
 --
 
@@ -326,16 +464,16 @@ ALTER SEQUENCE public.pvk_id_seq OWNED BY public.pvk_lab1.id;
 
 
 --
--- Name: result_list_lr4; Type: TABLE; Schema: public; Owner: master
+-- Name: results_list_lr4; Type: TABLE; Schema: public; Owner: master
 --
 
-CREATE TABLE public.result_list_lr4 (
+CREATE TABLE public.results_list_lr4 (
     id integer NOT NULL,
     result_list double precision[]
 );
 
 
-ALTER TABLE public.result_list_lr4 OWNER TO master;
+ALTER TABLE public.results_list_lr4 OWNER TO master;
 
 --
 -- Name: result_list_lr4_id_seq; Type: SEQUENCE; Schema: public; Owner: master
@@ -356,7 +494,7 @@ ALTER TABLE public.result_list_lr4_id_seq OWNER TO master;
 -- Name: result_list_lr4_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
 --
 
-ALTER SEQUENCE public.result_list_lr4_id_seq OWNED BY public.result_list_lr4.id;
+ALTER SEQUENCE public.result_list_lr4_id_seq OWNED BY public.results_list_lr4.id;
 
 
 --
@@ -428,6 +566,40 @@ ALTER SEQUENCE public.results_list_lr3_id_seq OWNED BY public.results_list_lr3.i
 
 
 --
+-- Name: results_list_lr5; Type: TABLE; Schema: public; Owner: master
+--
+
+CREATE TABLE public.results_list_lr5 (
+    id integer NOT NULL,
+    result_list double precision[]
+);
+
+
+ALTER TABLE public.results_list_lr5 OWNER TO master;
+
+--
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+--
+
+CREATE SEQUENCE public.results_list_lr5_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.results_list_lr5_id_seq OWNER TO master;
+
+--
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+--
+
+ALTER SEQUENCE public.results_list_lr5_id_seq OWNED BY public.results_list_lr5.id;
+
+
+--
 -- Name: test_name; Type: TABLE; Schema: public; Owner: master
 --
 
@@ -494,6 +666,20 @@ ALTER SEQUENCE public.users_usr_id_seq OWNED BY public.users.usr_id;
 
 
 --
+-- Name: criteria criteria_id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.criteria ALTER COLUMN criteria_id SET DEFAULT nextval('public.criteria_criteria_id_seq'::regclass);
+
+
+--
+-- Name: expert_profession_pvk_lab6 respondent_profession_id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.expert_profession_pvk_lab6 ALTER COLUMN respondent_profession_id SET DEFAULT nextval('public.expert_profession_pvk_lab6_respondent_profession_id_seq'::regclass);
+
+
+--
 -- Name: expert_profession_quality_lab1 id; Type: DEFAULT; Schema: public; Owner: graevsky
 --
 
@@ -522,6 +708,13 @@ ALTER TABLE ONLY public.lr4_to_resp ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
+-- Name: lr5_to_resp id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr5_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr5_to_resp_id_seq'::regclass);
+
+
+--
 -- Name: preset_to_resp id; Type: DEFAULT; Schema: public; Owner: master
 --
 
@@ -543,17 +736,17 @@ ALTER TABLE ONLY public.professions_lab1 ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: pvk_criteria_list list_id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.pvk_criteria_list ALTER COLUMN list_id SET DEFAULT nextval('public.pvk_criteria_list_list_id_seq'::regclass);
+
+
+--
 -- Name: pvk_lab1 id; Type: DEFAULT; Schema: public; Owner: graevsky
 --
 
 ALTER TABLE ONLY public.pvk_lab1 ALTER COLUMN id SET DEFAULT nextval('public.pvk_id_seq'::regclass);
-
-
---
--- Name: result_list_lr4 id; Type: DEFAULT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.result_list_lr4 ALTER COLUMN id SET DEFAULT nextval('public.result_list_lr4_id_seq'::regclass);
 
 
 --
@@ -571,6 +764,20 @@ ALTER TABLE ONLY public.results_list_lr3 ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
+-- Name: results_list_lr4 id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.results_list_lr4 ALTER COLUMN id SET DEFAULT nextval('public.result_list_lr4_id_seq'::regclass);
+
+
+--
+-- Name: results_list_lr5 id; Type: DEFAULT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.results_list_lr5 ALTER COLUMN id SET DEFAULT nextval('public.results_list_lr5_id_seq'::regclass);
+
+
+--
 -- Name: users usr_id; Type: DEFAULT; Schema: public; Owner: master
 --
 
@@ -578,10 +785,56 @@ ALTER TABLE ONLY public.users ALTER COLUMN usr_id SET DEFAULT nextval('public.us
 
 
 --
+-- Data for Name: criteria; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.criteria (criteria_id, criteria_fields) FROM stdin;
+\.
+
+
+--
+-- Data for Name: expert_profession_pvk_lab6; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.expert_profession_pvk_lab6 (respondent_profession_id, fields) FROM stdin;
+\.
+
+
+--
 -- Data for Name: expert_profession_quality_lab1; Type: TABLE DATA; Schema: public; Owner: graevsky
 --
 
 COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id, importance) FROM stdin;
+25	1902235510	1	23	3
+26	1902235510	1	24	3
+27	1902235510	1	25	3
+28	1902235510	1	26	3
+29	1902235510	1	27	3
+30	1902235510	1	28	3
+31	1902235510	1	29	3
+32	1902235510	1	30	3
+33	1902235510	1	31	3
+34	1902235510	1	32	3
+35	1902235510	2	5	3
+36	1902235510	2	7	3
+37	1902235510	2	8	3
+38	1902235510	2	11	3
+39	1902235510	2	13	3
+40	1902235510	2	15	3
+41	1902235510	2	17	3
+42	1902235510	2	19	3
+43	1902235510	2	21	3
+44	1902235510	2	23	3
+45	1902235510	3	5	3
+46	1902235510	3	6	3
+47	1902235510	3	7	3
+48	1902235510	3	8	3
+49	1902235510	3	9	3
+50	1902235510	3	10	3
+51	1902235510	3	11	3
+52	1902235510	3	12	3
+53	1902235510	3	13	3
+54	1902235510	3	71	3
 \.
 
 
@@ -618,6 +871,14 @@ COPY public.lr4_to_resp (id, respondent_id, result_list_id_lr4, preset_id) FROM 
 
 
 --
+-- Data for Name: lr5_to_resp; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id) FROM stdin;
+\.
+
+
+--
 -- Data for Name: preset_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
@@ -641,6 +902,14 @@ COPY public.professions_lab1 (id, name, description) FROM stdin;
 1	Программист 1С	Программист 1С – специалист, занимающийся разработкой, настройкой и сопровождением программных решений на платформе 1С:Предприятие. Этот профессионал работает с автоматизацией учета, анализа и управления различными бизнес-процессами компаний.
 2	Программист PHP	Программист PHP – специалист, ответственный за создание, разработку и поддержку веб-приложений с использованием серверного языка программирования PHP. Этот профессионал участвует во всех этапах разработки, начиная от проектирования архитектуры и заканчивая тестированием и оптимизацией кода.
 3	Программист HTML	Программист HTML – специалист, занимающийся созданием и доработкой структуры веб-страниц с помощью языка разметки HTML. Он работает в тесном сотрудничестве с дизайнерами и разработчиками CSS и JavaScript, чтобы обеспечить отличный пользовательский опыт и качественное отображение контента на сайтах.
+\.
+
+
+--
+-- Data for Name: pvk_criteria_list; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.pvk_criteria_list (list_id, criteria_list_for_pvk) FROM stdin;
 \.
 
 
@@ -823,14 +1092,6 @@ COPY public.pvk_lab1 (id, name, description) FROM stdin;
 
 
 --
--- Data for Name: result_list_lr4; Type: TABLE DATA; Schema: public; Owner: master
---
-
-COPY public.result_list_lr4 (id, result_list) FROM stdin;
-\.
-
-
---
 -- Data for Name: results_list_lr2; Type: TABLE DATA; Schema: public; Owner: master
 --
 
@@ -863,6 +1124,22 @@ COPY public.results_list_lr3 (id, result_list) FROM stdin;
 
 
 --
+-- Data for Name: results_list_lr4; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.results_list_lr4 (id, result_list) FROM stdin;
+\.
+
+
+--
+-- Data for Name: results_list_lr5; Type: TABLE DATA; Schema: public; Owner: master
+--
+
+COPY public.results_list_lr5 (id, result_list) FROM stdin;
+\.
+
+
+--
 -- Data for Name: test_name; Type: TABLE DATA; Schema: public; Owner: master
 --
 
@@ -871,6 +1148,12 @@ COPY public.test_name (lab_id, test_id, test_name) FROM stdin;
 3	2	Сложное движение
 4	1	Аналоговое слежение
 4	2	Слежение с преследованием
+5	1	Внимание. Устойчивость
+5	2	Внимание. Переключаемость
+5	3	Зрительная память
+5	4	Кратковременная память
+5	5	Анализ, сравнение
+5	6	Дедукция, абстракция
 \.
 
 
@@ -902,14 +1185,29 @@ COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert
 8	TestName4	TestSurname4	testlogin4	1234	fakeMail6@mail.ru	94	f	F
 1232473507	testuser	testuser	testuser	1234	1234@mail.ru	12	t	M
 1902235510	aboba	aboba	aboba	aboba	aboba@mail.ru	12	t	M
+598787172	AMD	NVIDIA	1234	1234	AS@ITMO.RU	99	t	M
 \.
+
+
+--
+-- Name: criteria_criteria_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.criteria_criteria_id_seq', 1, false);
+
+
+--
+-- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.expert_profession_pvk_lab6_respondent_profession_id_seq', 1, false);
 
 
 --
 -- Name: expert_profession_quality_id_seq; Type: SEQUENCE SET; Schema: public; Owner: graevsky
 --
 
-SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 24, true);
+SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 54, true);
 
 
 --
@@ -934,6 +1232,13 @@ SELECT pg_catalog.setval('public.lr4_to_resp_id_seq', 1, false);
 
 
 --
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 1, false);
+
+
+--
 -- Name: preset_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
@@ -952,6 +1257,13 @@ SELECT pg_catalog.setval('public.presets_preset_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.professions_id_seq', 15, true);
+
+
+--
+-- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.pvk_criteria_list_list_id_seq', 1, false);
 
 
 --
@@ -983,10 +1295,33 @@ SELECT pg_catalog.setval('public.results_list_lr3_id_seq', 1, false);
 
 
 --
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+--
+
+SELECT pg_catalog.setval('public.results_list_lr5_id_seq', 1, false);
+
+
+--
 -- Name: users_usr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
 SELECT pg_catalog.setval('public.users_usr_id_seq', 15, true);
+
+
+--
+-- Name: criteria criteria_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.criteria
+    ADD CONSTRAINT criteria_pkey PRIMARY KEY (criteria_id);
+
+
+--
+-- Name: expert_profession_pvk_lab6 expert_profession_pvk_lab6_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.expert_profession_pvk_lab6
+    ADD CONSTRAINT expert_profession_pvk_lab6_pkey PRIMARY KEY (respondent_profession_id);
 
 
 --
@@ -995,14 +1330,6 @@ SELECT pg_catalog.setval('public.users_usr_id_seq', 15, true);
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1
     ADD CONSTRAINT expert_profession_quality_pkey PRIMARY KEY (id);
-
-
---
--- Name: presets lab_id_unique; Type: CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.presets
-    ADD CONSTRAINT lab_id_unique UNIQUE (lab_id);
 
 
 --
@@ -1027,6 +1354,14 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 ALTER TABLE ONLY public.lr4_to_resp
     ADD CONSTRAINT lr4_to_resp_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: lr5_to_resp lr5_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr5_to_resp
+    ADD CONSTRAINT lr5_to_resp_pkey PRIMARY KEY (id);
 
 
 --
@@ -1062,6 +1397,14 @@ ALTER TABLE ONLY public.professions_lab1
 
 
 --
+-- Name: pvk_criteria_list pvk_criteria_list_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.pvk_criteria_list
+    ADD CONSTRAINT pvk_criteria_list_pkey PRIMARY KEY (list_id);
+
+
+--
 -- Name: pvk_lab1 pvk_pkey; Type: CONSTRAINT; Schema: public; Owner: graevsky
 --
 
@@ -1070,10 +1413,10 @@ ALTER TABLE ONLY public.pvk_lab1
 
 
 --
--- Name: result_list_lr4 result_list_lr4_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: results_list_lr4 result_list_lr4_pkey; Type: CONSTRAINT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.result_list_lr4
+ALTER TABLE ONLY public.results_list_lr4
     ADD CONSTRAINT result_list_lr4_pkey PRIMARY KEY (id);
 
 
@@ -1091,6 +1434,14 @@ ALTER TABLE ONLY public.results_list_lr2
 
 ALTER TABLE ONLY public.results_list_lr3
     ADD CONSTRAINT results_list_lr3_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: results_list_lr5 results_list_lr5_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.results_list_lr5
+    ADD CONSTRAINT results_list_lr5_pkey PRIMARY KEY (id);
 
 
 --
@@ -1232,11 +1583,35 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
+-- Name: lr5_to_resp fk_prest_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr5_to_resp
+    ADD CONSTRAINT fk_prest_id FOREIGN KEY (preset_id) REFERENCES public.presets(preset_id);
+
+
+--
 -- Name: preset_to_resp fk_resp_id; Type: FK CONSTRAINT; Schema: public; Owner: master
 --
 
 ALTER TABLE ONLY public.preset_to_resp
     ADD CONSTRAINT fk_resp_id FOREIGN KEY (user_id) REFERENCES public.users(usr_id);
+
+
+--
+-- Name: lr5_to_resp fk_respondent_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr5_to_resp
+    ADD CONSTRAINT fk_respondent_id FOREIGN KEY (respondent_id) REFERENCES public.users(usr_id);
+
+
+--
+-- Name: lr5_to_resp fk_result_list; Type: FK CONSTRAINT; Schema: public; Owner: master
+--
+
+ALTER TABLE ONLY public.lr5_to_resp
+    ADD CONSTRAINT fk_result_list FOREIGN KEY (result_list_id_lr5) REFERENCES public.results_list_lr5(id);
 
 
 --
@@ -1324,7 +1699,7 @@ ALTER TABLE ONLY public.lr4_to_resp
 --
 
 ALTER TABLE ONLY public.lr4_to_resp
-    ADD CONSTRAINT lr4_to_resp_result_list_id_lr4_fkey FOREIGN KEY (result_list_id_lr4) REFERENCES public.result_list_lr4(id);
+    ADD CONSTRAINT lr4_to_resp_result_list_id_lr4_fkey FOREIGN KEY (result_list_id_lr4) REFERENCES public.results_list_lr4(id);
 
 
 --
