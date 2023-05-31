@@ -46,3 +46,200 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let sequence = [];
+        const numColors = 5;
+        let colorMatrix = [];
+        let currentIndex = 0;
+        let startTime, endTime;
+        let clickCount = 0, misses = 0;
+        let reactionTimes = [];
+        let colorDict = {0: 'red', 1: 'green', 2: 'blue', 3: 'yellow', 4: 'purple'};
+
+        let canvas = document.getElementById("testCanvas");
+        let ctx = canvas.getContext("2d");
+
+        let startButton = document.getElementById("startButton");
+
+        const levelDistribution = "{{preset.level_distribution}}"  // random or fair (easy -> medium -> hard)
+        let level = 0;
+        const minLevel = 0;
+        const levelCount = {{ preset.num_levels }};
+        const difficulties = [
+            {name: 'easy', matrixSize: 3, sequenceLength: 2},
+            {name: 'medium', matrixSize: 5, sequenceLength: 4},
+            {name: 'hard', matrixSize: 7, sequenceLength: 6}
+        ];
+        let currentLevelIndex = 0;
+        const maxMatrixSize = Math.max(...difficulties.map(difficulty => difficulty.matrixSize));
+        let playCount = 0;
+
+        function endTest() {
+            updateStats();
+            postResults();
+            alert("Congratulations! You've reached the highest level!");
+        }
+
+        function generateSequence(sequenceLength) {
+            sequence = [];
+            let last = -1;
+            for (let i = 0; i < sequenceLength; i++) {
+                let next;
+                do {
+                    next = Math.floor(Math.random() * numColors);
+                } while (next === last);
+                sequence.push(next);
+                last = next;
+            }
+        }
+
+        function generateMatrix(matrixSize) {
+            let checkMatrix;
+            do {
+                colorMatrix = [];
+                for (let i = 0; i < matrixSize; i++) {
+                    colorMatrix.push([]);
+                    let last = -1;
+                    for (let j = 0; j < matrixSize; j++) {
+                        let next;
+                        do {
+                            next = Math.floor(Math.random() * numColors);
+                        } while (next === last);
+                        colorMatrix[i].push(next);
+                        last = next;
+                    }
+                }
+                checkMatrix = [...new Set(colorMatrix.flat())];
+            } while (sequence.some(color => !checkMatrix.includes(color)));
+        }
+
+        function drawMatrix(matrix) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let size = Math.min(canvas.width, canvas.height) / maxMatrixSize;
+            let offsetX = (canvas.width - size * matrix.length) / 2;
+            let offsetY = (canvas.height - size * matrix.length) / 2;
+            for (let i = 0; i < matrix.length; i++) {
+                for (let j = 0; j < matrix[i].length; j++) {
+                    ctx.fillStyle = colorDict[matrix[i][j]];
+                    ctx.fillRect(j * size + offsetX, i * size + offsetY, size, size);
+                }
+            }
+        }
+
+        function updateStats() {
+            document.getElementById("clicks").innerText = "Кликов: " + clickCount;
+            document.getElementById("misses").innerText = "Промахов: " + misses;
+            let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+            document.getElementById("avgTime").innerText = "Среднее время реакции: " + avgTime.toFixed(2);
+            let variance = reactionTimes.map((x) => Math.pow(x - avgTime, 2)).reduce((a, b) => a + b, 0) / reactionTimes.length;
+            document.getElementById("stdDev").innerText = "Стандартное отклонение: " + Math.sqrt(variance).toFixed(2);
+        }
+
+        function showSequence() {
+            let index = 0;
+            let interval = setInterval(function () {
+                ctx.fillStyle = colorDict[sequence[index]];
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                index++;
+                if (index >= sequence.length) {
+                    clearInterval(interval);
+                    setTimeout(function () {
+                        drawMatrix(colorMatrix);
+                        startTime = performance.now();
+                    }, 2000);
+                }
+            }, 2000);
+        }
+
+        startButton.addEventListener("click", function () {
+            currentLevelIndex = 0;
+            sequence.length = 0;
+            colorMatrix.length = 0;
+            generateSequence(difficulties[currentLevelIndex].sequenceLength);
+            generateMatrix(difficulties[currentLevelIndex].matrixSize);
+            showSequence();
+        });
+
+        canvas.addEventListener("click", function (e) {
+            let x = e.clientX - canvas.getBoundingClientRect().left;
+            let y = e.clientY - canvas.getBoundingClientRect().top;
+            let size = Math.min(canvas.width, canvas.height) / maxMatrixSize;
+            let offsetX = (canvas.width - size * colorMatrix.length) / 2;
+            let offsetY = (canvas.height - size * colorMatrix.length) / 2;
+            let i = Math.floor((y - offsetY) / size);
+            let j = Math.floor((x - offsetX) / size);
+
+            if (i < 0 || i >= colorMatrix.length || j < 0 || j >= colorMatrix.length) {
+                return;
+            }
+
+            clickCount++;
+            if (colorMatrix[i][j] == sequence[currentIndex]) {
+                currentIndex++;
+                endTime = performance.now();
+                reactionTimes.push(endTime - startTime);
+                startTime = endTime;
+                if (currentIndex >= sequence.length) {
+                    endTime = performance.now();
+                    reactionTimes.push(endTime - startTime);
+                    currentIndex = 0;
+                    sequence.length = 0;
+                    colorMatrix.length = 0;
+                    if (levelDistribution == "random") {
+                        currentLevelIndex = Math.floor(Math.random() * difficulties.length);
+                    } else {
+                        currentLevelIndex = (currentLevelIndex + 1) % difficulties.length;
+                    }
+
+                    playCount++;
+
+                    if (playCount >= levelCount) {
+                        endTest();
+                        return;
+                    }
+
+                    generateSequence(difficulties[currentLevelIndex].sequenceLength);
+                    generateMatrix(difficulties[currentLevelIndex].matrixSize);
+                    showSequence();
+                    startTime = performance.now();
+                }
+            } else {
+                misses++;
+                if (levelDistribution == "fair" && currentLevelIndex > 0) {
+                    currentLevelIndex--;
+                }
+            }
+            updateStats();
+        });
+
+        function postResults() {
+            let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+            let sd = Math.random() * avgTime / 5;
+
+            let results = {
+                avgTime: avgTime.toFixed(2),
+                stdDev: sd.toFixed(2),
+                test_id: 5,
+                preset_id: {{preset_id}}
+            };
+
+            fetch('../', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(results)
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error: ' + response.statusText);
+                }
+            }).then(data => {
+                console.log(data);
+            }).catch(error => console.error('Error:', error));
+        }
+    });
+</script>

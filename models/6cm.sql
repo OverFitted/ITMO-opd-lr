@@ -16,15 +16,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: schema_name; Type: SCHEMA; Schema: -; Owner: graevsky
---
-
-CREATE SCHEMA schema_name;
-
-
-ALTER SCHEMA schema_name OWNER TO graevsky;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -883,6 +874,9 @@ COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id) FROM 
 --
 
 COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
+1	1902235510	7
+2	1902235510	8
+3	1902235510	11
 \.
 
 
@@ -891,6 +885,15 @@ COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
 --
 
 COPY public.presets (preset_id, lab_id, test_in_lab_id, params, preset_name) FROM stdin;
+1	5	1	{"preset_name":"llas","show_stats":"true","show_time":"true","num_levels":"6","level_distribution":"random"}	llas
+4	5	1	{"preset_name":"asa","show_stats":"true","show_time":"true","num_levels":"6","level_distribution":"random"}	asa
+5	5	1	{"preset_name":"husis","show_stats":"true","show_time":"false","num_levels":"6","level_distribution":"random"}	husis
+6	5	2	{"preset_name":"cream2","show_stats":"true","show_time":"true","num_levels":"3","level_distribution":"fair"}	cream2
+7	5	3	{"preset_name":"pelmeni3","show_stats":"true","show_time":"true","num_levels":"4","level_distribution":"fair"}	pelmeni3
+8	5	4	{"preset_name":"acerAspire4","show_stats":"true","show_time":"true","num_levels":"4","level_distribution":"random"}	acerAspire4
+9	5	5	{"preset_name":"watermelon5","show_stats":"true","show_time":"true","num_levels":"3","level_distribution":"random"}	watermelon5
+10	5	6	{"preset_name":"macbook6","show_stats":"true","show_time":"true","num_levels":"3","level_distribution":"fair"}	macbook6
+11	4	2	{"preset_name":"RDO","runtime":"300","show_stats":"true","show_time":"true","speed_koef":"1","acceleration_koef":"2"}	RDO
 \.
 
 
@@ -1151,9 +1154,9 @@ COPY public.test_name (lab_id, test_id, test_name) FROM stdin;
 5	1	Внимание. Устойчивость
 5	2	Внимание. Переключаемость
 5	3	Зрительная память
-5	4	Кратковременная память
 5	5	Анализ, сравнение
 5	6	Дедукция, абстракция
+5	4	Звуковая память
 \.
 
 
@@ -1242,14 +1245,14 @@ SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 1, false);
 -- Name: preset_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 1, false);
+SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 3, true);
 
 
 --
 -- Name: presets_preset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.presets_preset_id_seq', 1, false);
+SELECT pg_catalog.setval('public.presets_preset_id_seq', 11, true);
 
 
 --
@@ -1442,14 +1445,6 @@ ALTER TABLE ONLY public.results_list_lr3
 
 ALTER TABLE ONLY public.results_list_lr5
     ADD CONSTRAINT results_list_lr5_pkey PRIMARY KEY (id);
-
-
---
--- Name: presets uniq_lab_i_test; Type: CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.presets
-    ADD CONSTRAINT uniq_lab_i_test UNIQUE (lab_id, test_in_lab_id);
 
 
 --
@@ -1708,13 +1703,6 @@ ALTER TABLE ONLY public.lr4_to_resp
 
 GRANT ALL ON SCHEMA public TO graevsky;
 GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
--- Name: SCHEMA schema_name; Type: ACL; Schema: -; Owner: graevsky
---
-
-GRANT ALL ON SCHEMA schema_name TO PUBLIC;
 
 
 --

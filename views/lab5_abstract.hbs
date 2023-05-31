@@ -294,8 +294,8 @@
     }
 
     function postResults() {
-        let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
-        let sd = Math.sqrt(reactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1));
+        let avgTime = testData.reactionTimes.reduce((a, b) => a + b, 0) / testData.reactionTimes.length;
+        let sd = Math.sqrt(testData.reactionTimes.map(time => Math.pow(time - avgTime, 2)).reduce((a, b) => a + b, 0) / (testData.reactionTimes.length - 1));
 
         let results = {
             avgTime: avgTime.toFixed(2),
