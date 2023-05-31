@@ -169,7 +169,7 @@ router.get("/presets", async (req, res, next) => {
             title: "Пресеты | Без CHATGPT",
             isLoggedIn: req.cookies.usr_id,
             presets: groupedPresets,
-            config: config
+            config: presetsConfig
         });
     } catch (err) {
         console.error('Error querying database:', err);

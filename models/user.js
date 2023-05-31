@@ -183,14 +183,14 @@ class User {
 
         if (results.test_id === 2) {
             var res_query = {
-                text: 'INSERT INTO result_list_lr4 (result_list) VALUES ($1) RETURNING id',
+                text: 'INSERT INTO results_list_lr4 (result_list) VALUES ($1) RETURNING id',
                 values: [
                     [results.hits, results.misses, results.hitPercent]
                 ],
             }
         } else {
             var res_query = {
-                text: 'INSERT INTO result_list_lr4 (result_list) VALUES ($1) RETURNING id',
+                text: 'INSERT INTO results_list_lr4 (result_list) VALUES ($1) RETURNING id',
                 values: [
                     [results.clicks, results.misses, results.avgTime, results.stdDev]
                 ],
@@ -214,7 +214,7 @@ class User {
         var data = this.toJSON()
 
         var res_query = {
-            text: 'INSERT INTO result_list_lr5 (result_list) VALUES ($1) RETURNING id',
+            text: 'INSERT INTO results_list_lr5 (result_list) VALUES ($1) RETURNING id',
             values: [
                 [results.avgTime, results.stdDev]
             ],

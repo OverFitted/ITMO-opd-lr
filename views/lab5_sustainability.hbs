@@ -68,6 +68,10 @@
     let correctImages = Array.from({ length: size }, () => Array.from({ length: size }, () => false));
     let correctCount = rotatedImages.reduce((total, row) => total + row.filter(rot => rot === correctRotation).length, 0);
 
+    let avgTime = 0;
+    let variance = 0;
+    let stdDev = 0;
+
     document.getElementById("startButton").addEventListener("click", function() {
         startTime = lastClickTime = Date.now();
         drawImages();
@@ -75,10 +79,16 @@
 
     function updateStats() {
         {{#if preset.show_stats}}
-            document.getElementById("clicks").innerText = "Кликов: " + clicks;
-            document.getElementById("misses").innerText = "Промахов: " + misses;
-            document.getElementById("avgTime").innerText = "Среднее время реакции: " + avgTime.toFixed(2) + "ms";
-            document.getElementById("stdDev").innerText = "Стандартное отклонение: " + stdDev.toFixed(2) + "ms";
+            if (reactionTimes.length > 1){
+                avgTime = totalReactionTime / clicks;
+                variance = reactionTimes.map(rt => (rt - avgTime) ** 2).reduce((a, b) => a + b) / reactionTimes.length;
+                stdDev = Math.sqrt(variance);
+
+                document.getElementById("clicks").innerText = "Кликов: " + clicks;
+                document.getElementById("misses").innerText = "Промахов: " + misses;
+                document.getElementById("avgTime").innerText = "Среднее время реакции: " + avgTime.toFixed(2) + "ms";
+                document.getElementById("stdDev").innerText = "Стандартное отклонение: " + stdDev.toFixed(2) + "ms";
+            }
         {{/if}}
     }
 
@@ -97,11 +107,6 @@
             reactionTimes.push(reactionTime);
             correctImages[row][col] = true;
             clicks += 1;
-            let avgTime = totalReactionTime / clicks;
-
-            let variance = reactionTimes.map(rt => (rt - avgTime) ** 2).reduce((a, b) => a + b) / reactionTimes.length;
-            let stdDev = Math.sqrt(variance);
-
         } else if(rotatedImages[row]) {
             misses += 1;
         }
@@ -138,6 +143,7 @@
                 drawImages();
             } else {
                 alert("Test completed! Your total clicks: " + clicks + ", total misses: " + misses);
+                postResults();
             }
         }
     });
@@ -174,7 +180,7 @@
             preset_id: {{preset_id}}
         };
 
-        fetch('../../', {
+        fetch('../', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

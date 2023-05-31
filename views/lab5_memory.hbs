@@ -12,18 +12,22 @@
                     Тесты на память
                 </h5>
                 <div class="row">
+                    {{#ifinpres 3 presets}}
                     <div class="col">
                         <div class="text-lg-center">
                             <a href="/labs/lab5/lab5_visual/" class="btn btn-d box-btn fill-mob-btn primary-btn btn-xl btn-rd float-lg-none">
                             Тест на зрительную память<br></a>
                         </div>
                     </div>
+                    {{/ifinpres}}
+                    {{#ifinpres 4 presets}}
                     <div class="col">
                         <div class="text-lg-center">
                             <a href="/labs/lab5/lab5_low/" class="btn btn-d w-100 box-btn fill-mob-btn primary-btn btn-xl btn-rd">
                             Тест на звуковую память<br></a>
                         </div>
                     </div>
+                    {{/ifinpres}}
                 </div>
             </div>
         </div>
