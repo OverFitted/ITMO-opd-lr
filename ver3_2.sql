@@ -16,15 +16,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: schema_name; Type: SCHEMA; Schema: -; Owner: graevsky
---
-
-CREATE SCHEMA schema_name;
-
-
-ALTER SCHEMA schema_name OWNER TO graevsky;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -68,7 +59,7 @@ ALTER SEQUENCE public.criteria_criteria_id_seq OWNED BY public.criteria.criteria
 --
 
 CREATE TABLE public.expert_profession_pvk_lab6 (
-    respondent_profession_id integer NOT NULL,
+    respondent_id integer NOT NULL,
     fields json
 );
 
@@ -94,7 +85,7 @@ ALTER TABLE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNER
 -- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
 --
 
-ALTER SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNED BY public.expert_profession_pvk_lab6.respondent_profession_id;
+ALTER SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNED BY public.expert_profession_pvk_lab6.respondent_id;
 
 
 --
@@ -673,10 +664,10 @@ ALTER TABLE ONLY public.criteria ALTER COLUMN criteria_id SET DEFAULT nextval('p
 
 
 --
--- Name: expert_profession_pvk_lab6 respondent_profession_id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: expert_profession_pvk_lab6 respondent_id; Type: DEFAULT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.expert_profession_pvk_lab6 ALTER COLUMN respondent_profession_id SET DEFAULT nextval('public.expert_profession_pvk_lab6_respondent_profession_id_seq'::regclass);
+ALTER TABLE ONLY public.expert_profession_pvk_lab6 ALTER COLUMN respondent_id SET DEFAULT nextval('public.expert_profession_pvk_lab6_respondent_profession_id_seq'::regclass);
 
 
 --
@@ -796,7 +787,7 @@ COPY public.criteria (criteria_id, criteria_fields) FROM stdin;
 -- Data for Name: expert_profession_pvk_lab6; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.expert_profession_pvk_lab6 (respondent_profession_id, fields) FROM stdin;
+COPY public.expert_profession_pvk_lab6 (respondent_id, fields) FROM stdin;
 \.
 
 
@@ -875,6 +866,16 @@ COPY public.lr4_to_resp (id, respondent_id, result_list_id_lr4, preset_id) FROM 
 --
 
 COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id) FROM stdin;
+1	1902235510	1	7
+2	1902235510	2	8
+3	1902235510	3	9
+4	1902235510	4	9
+5	1902235510	5	10
+6	1902235510	6	10
+7	1902235510	7	10
+8	1902235510	8	10
+9	1902235510	9	10
+10	1902235510	10	10
 \.
 
 
@@ -883,6 +884,22 @@ COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id) FROM 
 --
 
 COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
+1	1902235510	7
+2	1902235510	8
+3	1902235510	11
+4	1902235510	1
+5	598787172	4
+6	598787172	5
+7	598787172	6
+8	598787172	7
+9	598787172	8
+10	598787172	9
+11	598787172	10
+12	598787172	11
+13	1902235510	1
+14	1902235510	6
+15	1902235510	9
+16	1902235510	10
 \.
 
 
@@ -891,6 +908,15 @@ COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
 --
 
 COPY public.presets (preset_id, lab_id, test_in_lab_id, params, preset_name) FROM stdin;
+1	5	1	{"preset_name":"llas","show_stats":"true","show_time":"true","num_levels":"6","level_distribution":"random"}	llas
+4	5	1	{"preset_name":"asa","show_stats":"true","show_time":"true","num_levels":"6","level_distribution":"random"}	asa
+5	5	1	{"preset_name":"husis","show_stats":"true","show_time":"false","num_levels":"6","level_distribution":"random"}	husis
+6	5	2	{"preset_name":"cream2","show_stats":"true","show_time":"true","num_levels":"3","level_distribution":"fair"}	cream2
+7	5	3	{"preset_name":"pelmeni3","show_stats":"true","show_time":"true","num_levels":"4","level_distribution":"fair"}	pelmeni3
+8	5	4	{"preset_name":"acerAspire4","show_stats":"true","show_time":"true","num_levels":"4","level_distribution":"random"}	acerAspire4
+9	5	5	{"preset_name":"watermelon5","show_stats":"true","show_time":"true","num_levels":"3","level_distribution":"random"}	watermelon5
+10	5	6	{"preset_name":"macbook6","show_stats":"true","show_time":"true","num_levels":"3","level_distribution":"fair"}	macbook6
+11	4	2	{"preset_name":"RDO","runtime":"300","show_stats":"true","show_time":"true","speed_koef":"1","acceleration_koef":"2"}	RDO
 \.
 
 
@@ -1136,6 +1162,16 @@ COPY public.results_list_lr4 (id, result_list) FROM stdin;
 --
 
 COPY public.results_list_lr5 (id, result_list) FROM stdin;
+1	{3014.54,36.48}
+2	{25.71,30.91}
+3	{1399.14,1208.34}
+4	{1433.78,1209.93}
+5	{3630.71,3024.92}
+6	{3630.71,3024.92}
+7	{3630.71,3024.92}
+8	{3630.71,3024.92}
+9	{3630.71,3024.92}
+10	{3630.71,3024.92}
 \.
 
 
@@ -1151,9 +1187,9 @@ COPY public.test_name (lab_id, test_id, test_name) FROM stdin;
 5	1	Внимание. Устойчивость
 5	2	Внимание. Переключаемость
 5	3	Зрительная память
-5	4	Кратковременная память
 5	5	Анализ, сравнение
 5	6	Дедукция, абстракция
+5	4	Звуковая память
 \.
 
 
@@ -1235,21 +1271,21 @@ SELECT pg_catalog.setval('public.lr4_to_resp_id_seq', 1, false);
 -- Name: lr5_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 1, false);
+SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 10, true);
 
 
 --
 -- Name: preset_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 1, false);
+SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 16, true);
 
 
 --
 -- Name: presets_preset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.presets_preset_id_seq', 1, false);
+SELECT pg_catalog.setval('public.presets_preset_id_seq', 11, true);
 
 
 --
@@ -1298,7 +1334,7 @@ SELECT pg_catalog.setval('public.results_list_lr3_id_seq', 1, false);
 -- Name: results_list_lr5_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.results_list_lr5_id_seq', 1, false);
+SELECT pg_catalog.setval('public.results_list_lr5_id_seq', 10, true);
 
 
 --
@@ -1314,14 +1350,6 @@ SELECT pg_catalog.setval('public.users_usr_id_seq', 15, true);
 
 ALTER TABLE ONLY public.criteria
     ADD CONSTRAINT criteria_pkey PRIMARY KEY (criteria_id);
-
-
---
--- Name: expert_profession_pvk_lab6 expert_profession_pvk_lab6_pkey; Type: CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.expert_profession_pvk_lab6
-    ADD CONSTRAINT expert_profession_pvk_lab6_pkey PRIMARY KEY (respondent_profession_id);
 
 
 --
@@ -1442,14 +1470,6 @@ ALTER TABLE ONLY public.results_list_lr3
 
 ALTER TABLE ONLY public.results_list_lr5
     ADD CONSTRAINT results_list_lr5_pkey PRIMARY KEY (id);
-
-
---
--- Name: presets uniq_lab_i_test; Type: CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.presets
-    ADD CONSTRAINT uniq_lab_i_test UNIQUE (lab_id, test_in_lab_id);
 
 
 --
@@ -1708,13 +1728,6 @@ ALTER TABLE ONLY public.lr4_to_resp
 
 GRANT ALL ON SCHEMA public TO graevsky;
 GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
--- Name: SCHEMA schema_name; Type: ACL; Schema: -; Owner: graevsky
---
-
-GRANT ALL ON SCHEMA schema_name TO PUBLIC;
 
 
 --
