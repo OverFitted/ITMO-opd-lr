@@ -96,8 +96,15 @@
 													<input id="weight_param1_criteria" class="form-control" type="number" required="">
 												</div>
 												<div class="col-md-3 form-group mb-3">
-													<label class="form-label">Направление 1</label>
-													<input id="direction1_criteria" type="text" class="form-control">
+													<div class="dropdown">
+														<button class="btn btn-secondary dropdown-toggle" type="button" id="direction1Button" data-bs-toggle="dropdown" aria-expanded="false">
+															Направление 1
+														</button>
+														<ul class="dropdown-menu" aria-labelledby="direction1Button">
+															<li><a class="dropdown-item" href="#">Больше - лучше</a></li>
+															<li><a class="dropdown-item" href="#">Меньше - лучше</a></li>
+														</ul>
+													</div>
 												</div>
 												<div class="col-md-3 form-group mb-3">
 													<label class="form-label">Срез 1</label>

@@ -59,7 +59,7 @@ ALTER SEQUENCE public.criteria_criteria_id_seq OWNED BY public.criteria.criteria
 --
 
 CREATE TABLE public.expert_profession_pvk_lab6 (
-    respondent_profession_id integer NOT NULL,
+    respondent_id integer NOT NULL,
     fields json
 );
 
@@ -85,7 +85,7 @@ ALTER TABLE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNER
 -- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
 --
 
-ALTER SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNED BY public.expert_profession_pvk_lab6.respondent_profession_id;
+ALTER SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNED BY public.expert_profession_pvk_lab6.respondent_id;
 
 
 --
@@ -135,7 +135,8 @@ CREATE TABLE public.lr2_to_resp (
     respondent_id integer,
     expert_id integer,
     result_id_lr2 integer,
-    test_id integer
+    test_id integer,
+    timeofoper timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -178,7 +179,8 @@ CREATE TABLE public.lr3_to_resp (
     id integer NOT NULL,
     respondent_id integer,
     result_list_id_lr3 integer,
-    preset_id integer
+    preset_id integer,
+    timeofoper timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -214,7 +216,8 @@ CREATE TABLE public.lr4_to_resp (
     id integer NOT NULL,
     respondent_id integer,
     result_list_id_lr4 integer,
-    preset_id integer
+    preset_id integer,
+    timeofoper timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -250,7 +253,8 @@ CREATE TABLE public.lr5_to_resp (
     id integer NOT NULL,
     respondent_id integer,
     result_list_id_lr5 integer,
-    preset_id integer
+    preset_id integer,
+    timeofoper timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -460,7 +464,8 @@ ALTER SEQUENCE public.pvk_id_seq OWNED BY public.pvk_lab1.id;
 
 CREATE TABLE public.results_list_lr4 (
     id integer NOT NULL,
-    result_list double precision[]
+    result_list double precision[],
+    timeofoper timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -494,7 +499,8 @@ ALTER SEQUENCE public.result_list_lr4_id_seq OWNED BY public.results_list_lr4.id
 
 CREATE TABLE public.results_list_lr2 (
     id integer NOT NULL,
-    result_list double precision[]
+    result_list double precision[],
+    timeofoper timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -528,7 +534,8 @@ ALTER SEQUENCE public.results_list_lr2_id_seq OWNED BY public.results_list_lr2.i
 
 CREATE TABLE public.results_list_lr3 (
     id integer NOT NULL,
-    result_list double precision[]
+    result_list double precision[],
+    timeofoper timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -562,7 +569,8 @@ ALTER SEQUENCE public.results_list_lr3_id_seq OWNED BY public.results_list_lr3.i
 
 CREATE TABLE public.results_list_lr5 (
     id integer NOT NULL,
-    result_list double precision[]
+    result_list double precision[],
+    timeofoper timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -664,10 +672,10 @@ ALTER TABLE ONLY public.criteria ALTER COLUMN criteria_id SET DEFAULT nextval('p
 
 
 --
--- Name: expert_profession_pvk_lab6 respondent_profession_id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: expert_profession_pvk_lab6 respondent_id; Type: DEFAULT; Schema: public; Owner: master
 --
 
-ALTER TABLE ONLY public.expert_profession_pvk_lab6 ALTER COLUMN respondent_profession_id SET DEFAULT nextval('public.expert_profession_pvk_lab6_respondent_profession_id_seq'::regclass);
+ALTER TABLE ONLY public.expert_profession_pvk_lab6 ALTER COLUMN respondent_id SET DEFAULT nextval('public.expert_profession_pvk_lab6_respondent_profession_id_seq'::regclass);
 
 
 --
@@ -787,7 +795,7 @@ COPY public.criteria (criteria_id, criteria_fields) FROM stdin;
 -- Data for Name: expert_profession_pvk_lab6; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.expert_profession_pvk_lab6 (respondent_profession_id, fields) FROM stdin;
+COPY public.expert_profession_pvk_lab6 (respondent_id, fields) FROM stdin;
 \.
 
 
@@ -833,15 +841,15 @@ COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id
 -- Data for Name: lr2_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id) FROM stdin;
-1	1	1	6	1
-2	1232473507	\N	10	1
-3	1232473507	\N	11	1
-4	1232473507	\N	12	2
-5	1232473507	\N	13	4
-6	1232473507	\N	14	5
-7	1232473507	\N	15	5
-8	1232473507	\N	16	3
+COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id, timeofoper) FROM stdin;
+1	1	1	6	1	2023-06-01 12:51:31.655244+03
+2	1232473507	\N	10	1	2023-06-01 12:51:31.655244+03
+3	1232473507	\N	11	1	2023-06-01 12:51:31.655244+03
+4	1232473507	\N	12	2	2023-06-01 12:51:31.655244+03
+5	1232473507	\N	13	4	2023-06-01 12:51:31.655244+03
+6	1232473507	\N	14	5	2023-06-01 12:51:31.655244+03
+7	1232473507	\N	15	5	2023-06-01 12:51:31.655244+03
+8	1232473507	\N	16	3	2023-06-01 12:51:31.655244+03
 \.
 
 
@@ -849,7 +857,7 @@ COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id) F
 -- Data for Name: lr3_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.lr3_to_resp (id, respondent_id, result_list_id_lr3, preset_id) FROM stdin;
+COPY public.lr3_to_resp (id, respondent_id, result_list_id_lr3, preset_id, timeofoper) FROM stdin;
 \.
 
 
@@ -857,7 +865,7 @@ COPY public.lr3_to_resp (id, respondent_id, result_list_id_lr3, preset_id) FROM 
 -- Data for Name: lr4_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.lr4_to_resp (id, respondent_id, result_list_id_lr4, preset_id) FROM stdin;
+COPY public.lr4_to_resp (id, respondent_id, result_list_id_lr4, preset_id, timeofoper) FROM stdin;
 \.
 
 
@@ -865,7 +873,17 @@ COPY public.lr4_to_resp (id, respondent_id, result_list_id_lr4, preset_id) FROM 
 -- Data for Name: lr5_to_resp; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id) FROM stdin;
+COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id, timeofoper) FROM stdin;
+1	1902235510	1	7	2023-06-01 12:51:39.588032+03
+2	1902235510	2	8	2023-06-01 12:51:39.588032+03
+3	1902235510	3	9	2023-06-01 12:51:39.588032+03
+4	1902235510	4	9	2023-06-01 12:51:39.588032+03
+5	1902235510	5	10	2023-06-01 12:51:39.588032+03
+6	1902235510	6	10	2023-06-01 12:51:39.588032+03
+7	1902235510	7	10	2023-06-01 12:51:39.588032+03
+8	1902235510	8	10	2023-06-01 12:51:39.588032+03
+9	1902235510	9	10	2023-06-01 12:51:39.588032+03
+10	1902235510	10	10	2023-06-01 12:51:39.588032+03
 \.
 
 
@@ -877,6 +895,19 @@ COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
 1	1902235510	7
 2	1902235510	8
 3	1902235510	11
+4	1902235510	1
+5	598787172	4
+6	598787172	5
+7	598787172	6
+8	598787172	7
+9	598787172	8
+10	598787172	9
+11	598787172	10
+12	598787172	11
+13	1902235510	1
+14	1902235510	6
+15	1902235510	9
+16	1902235510	10
 \.
 
 
@@ -1098,23 +1129,23 @@ COPY public.pvk_lab1 (id, name, description) FROM stdin;
 -- Data for Name: results_list_lr2; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.results_list_lr2 (id, result_list) FROM stdin;
-1	{500}
-2	{340}
-3	{650}
-4	{570}
-5	{520}
-6	{3,400,10,300}
-7	{3,560,12,210}
-8	{4,670,5,670}
-9	{5,340,8,900}
-10	{922.8,967.11}
-11	{375.8,62.37}
-12	{501.43,438.16}
-13	{2109.75,2499.67,769,543.77}
-14	{2296.6,1230.19,0,NaN}
-15	{1850.25,887.16,1883,1331.48}
-16	{1145.76,740.31,979,692.26}
+COPY public.results_list_lr2 (id, result_list, timeofoper) FROM stdin;
+1	{500}	2023-06-01 12:50:51.070129+03
+2	{340}	2023-06-01 12:50:51.070129+03
+3	{650}	2023-06-01 12:50:51.070129+03
+4	{570}	2023-06-01 12:50:51.070129+03
+5	{520}	2023-06-01 12:50:51.070129+03
+6	{3,400,10,300}	2023-06-01 12:50:51.070129+03
+7	{3,560,12,210}	2023-06-01 12:50:51.070129+03
+8	{4,670,5,670}	2023-06-01 12:50:51.070129+03
+9	{5,340,8,900}	2023-06-01 12:50:51.070129+03
+10	{922.8,967.11}	2023-06-01 12:50:51.070129+03
+11	{375.8,62.37}	2023-06-01 12:50:51.070129+03
+12	{501.43,438.16}	2023-06-01 12:50:51.070129+03
+13	{2109.75,2499.67,769,543.77}	2023-06-01 12:50:51.070129+03
+14	{2296.6,1230.19,0,NaN}	2023-06-01 12:50:51.070129+03
+15	{1850.25,887.16,1883,1331.48}	2023-06-01 12:50:51.070129+03
+16	{1145.76,740.31,979,692.26}	2023-06-01 12:50:51.070129+03
 \.
 
 
@@ -1122,7 +1153,7 @@ COPY public.results_list_lr2 (id, result_list) FROM stdin;
 -- Data for Name: results_list_lr3; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.results_list_lr3 (id, result_list) FROM stdin;
+COPY public.results_list_lr3 (id, result_list, timeofoper) FROM stdin;
 \.
 
 
@@ -1130,7 +1161,7 @@ COPY public.results_list_lr3 (id, result_list) FROM stdin;
 -- Data for Name: results_list_lr4; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.results_list_lr4 (id, result_list) FROM stdin;
+COPY public.results_list_lr4 (id, result_list, timeofoper) FROM stdin;
 \.
 
 
@@ -1138,7 +1169,17 @@ COPY public.results_list_lr4 (id, result_list) FROM stdin;
 -- Data for Name: results_list_lr5; Type: TABLE DATA; Schema: public; Owner: master
 --
 
-COPY public.results_list_lr5 (id, result_list) FROM stdin;
+COPY public.results_list_lr5 (id, result_list, timeofoper) FROM stdin;
+1	{3014.54,36.48}	2023-06-01 12:51:16.706318+03
+2	{25.71,30.91}	2023-06-01 12:51:16.706318+03
+3	{1399.14,1208.34}	2023-06-01 12:51:16.706318+03
+4	{1433.78,1209.93}	2023-06-01 12:51:16.706318+03
+5	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
+6	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
+7	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
+8	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
+9	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
+10	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
 \.
 
 
@@ -1238,14 +1279,14 @@ SELECT pg_catalog.setval('public.lr4_to_resp_id_seq', 1, false);
 -- Name: lr5_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 1, false);
+SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 10, true);
 
 
 --
 -- Name: preset_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 3, true);
+SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 16, true);
 
 
 --
@@ -1301,7 +1342,7 @@ SELECT pg_catalog.setval('public.results_list_lr3_id_seq', 1, false);
 -- Name: results_list_lr5_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
 --
 
-SELECT pg_catalog.setval('public.results_list_lr5_id_seq', 1, false);
+SELECT pg_catalog.setval('public.results_list_lr5_id_seq', 10, true);
 
 
 --
@@ -1317,14 +1358,6 @@ SELECT pg_catalog.setval('public.users_usr_id_seq', 15, true);
 
 ALTER TABLE ONLY public.criteria
     ADD CONSTRAINT criteria_pkey PRIMARY KEY (criteria_id);
-
-
---
--- Name: expert_profession_pvk_lab6 expert_profession_pvk_lab6_pkey; Type: CONSTRAINT; Schema: public; Owner: master
---
-
-ALTER TABLE ONLY public.expert_profession_pvk_lab6
-    ADD CONSTRAINT expert_profession_pvk_lab6_pkey PRIMARY KEY (respondent_profession_id);
 
 
 --
