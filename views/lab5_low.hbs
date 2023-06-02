@@ -213,7 +213,19 @@
             currentLevel++;
             generateWords();
             speakWords();
+            updateStats();
         }
+    }
+
+    function updateStats() {
+        document.getElementById("clicks").textContent = "Ответов: " + totalCorrectAnswers;
+        document.getElementById("misses").textContent = "Неправильных: " + (levelWords[selectedMode].reduce((a, b) => a + b, 0) - totalCorrectAnswers);
+
+        const globalMean = totalCorrectAnswers / totalTests * 100;  // Calculate mean
+        document.getElementById("avg").textContent = "Средний процент правильных ответов: " + globalMean.toFixed(2);
+
+        const globalStdDev = calculateStdDev(testsResults);  // Calculate standard deviation
+        document.getElementById("stdDev").textContent = "Стандартное отклонение: " + globalStdDev.toFixed(2);
     }
 
     function postResults() {

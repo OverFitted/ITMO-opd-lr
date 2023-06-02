@@ -8,7 +8,7 @@
                             Тест на зрительную память
                         </h3>
 
-                        {{!-- {{#if preset.show_stats}} --}}
+                        {{#if preset.show_stats}}
                         <div class="row justify-content-center">
                             <div id="stats" class="card col-4">
                                 <div class="text-lg-center card-body">
@@ -20,7 +20,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{!-- {{/if}} --}}
+                        {{/if}}
 
                         <div class="row justify-content-center align-items-center">
                             <div class="col-12 d-flex justify-content-center align-items-center mb-3">
@@ -56,7 +56,8 @@
         let startTime, endTime;
         let clickCount = 0, misses = 0;
         let reactionTimes = [];
-        let colorDict = {0: 'red', 1: 'green', 2: 'blue', 3: 'yellow', 4: 'purple'};
+        let colorDict = {0: 'white', 1: 'green', 2: 'blue', 3: 'yellow', 4: 'purple'};
+        let darkColorDict = {0: 'gray', 1: 'darkgreen', 2: 'darkblue', 3: 'goldenrod', 4: 'indigo'};
 
         let canvas = document.getElementById("testCanvas");
         let ctx = canvas.getContext("2d");
@@ -129,12 +130,14 @@
         }
 
         function updateStats() {
-            document.getElementById("clicks").innerText = "Кликов: " + clickCount;
-            document.getElementById("misses").innerText = "Промахов: " + misses;
-            let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
-            document.getElementById("avgTime").innerText = "Среднее время реакции: " + avgTime.toFixed(2);
-            let variance = reactionTimes.map((x) => Math.pow(x - avgTime, 2)).reduce((a, b) => a + b, 0) / reactionTimes.length;
-            document.getElementById("stdDev").innerText = "Стандартное отклонение: " + Math.sqrt(variance).toFixed(2);
+            {{#if preset.show_stats}}
+                document.getElementById("clicks").innerText = "Кликов: " + clickCount;
+                document.getElementById("misses").innerText = "Промахов: " + misses;
+                let avgTime = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+                document.getElementById("avgTime").innerText = "Среднее время реакции: " + avgTime.toFixed(2);
+                let variance = reactionTimes.map((x) => Math.pow(x - avgTime, 2)).reduce((a, b) => a + b, 0) / reactionTimes.length;
+                document.getElementById("stdDev").innerText = "Стандартное отклонение: " + Math.sqrt(variance).toFixed(2);
+            {{/if}}
         }
 
         function showSequence() {
@@ -177,6 +180,9 @@
 
             clickCount++;
             if (colorMatrix[i][j] == sequence[currentIndex]) {
+                ctx.fillStyle = darkColorDict[colorMatrix[i][j]];
+                ctx.fillRect(j * size + offsetX, i * size + offsetY, size, size);
+
                 currentIndex++;
                 endTime = performance.now();
                 reactionTimes.push(endTime - startTime);
@@ -206,6 +212,13 @@
                     startTime = performance.now();
                 }
             } else {
+                ctx.fillStyle = 'red';
+                ctx.fillRect(j * size + offsetX, i * size + offsetY, size, size);
+                setTimeout(function () {
+                    drawMatrix(colorMatrix);
+                }, 200);
+                currentIndex = 0;
+
                 misses++;
                 if (levelDistribution == "fair" && currentLevelIndex > 0) {
                     currentLevelIndex--;
