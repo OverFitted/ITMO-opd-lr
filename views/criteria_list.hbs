@@ -17,22 +17,16 @@
 		<div class="row">
 			<div class="col">
 				<div class="blocs-grid-container">
+					{{#each criteria}}
 					<div>
-						<label class="form-label text-start">
-							Крит 1
+						<label id="criteria-label-{{this.criteria_id}}" class="form-label text-start">
+							{{this.criteria_fields.name_criteria}}
 						</label>
 					</div>
 					<div class="text-lg-end">
-						<a href="../" class="btn btn-d btn-lg">Удалить</a>
+						<button id="del-button-{{this.criteria_id}}" class="btn btn-d btn-lg">Удалить</button>
 					</div>
-					<div>
-						<label class="form-label text-start">
-							Крит 2<br>
-						</label>
-					</div>
-					<div class="text-lg-end">
-						<a href="../" class="btn btn-d btn-lg">Удалить</a>
-					</div>
+					{{/each}}
 				</div>
 				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#criteriaModal">Добавить критерий</button>
 			</div>
@@ -53,14 +47,14 @@
 										Добавить критерии
 									</h3>
 								</div>
-								<div class="modal-body">
-									<div class="row">
-										<form data-clean-url-used="true" id="form_criteria">
+								<form method="POST" action="/user/add-criteria/">
+									<div class="modal-body">
+										<div class="row">
 											<div class="row">
 												<div class="row">
 													<div class="col form-group mb-3">
 														<label class="form-label">Название критерия</label>
-														<input id="name_criteria" class="form-control" required="">
+														<input id="name_criteria" name="name_criteria" class="form-control" required="">
 													</div>
 												</div>
 												<div class="row">
@@ -95,14 +89,14 @@
 											<input type="hidden" id="labSelection" name="labSelection" value="">
 											<input type="hidden" id="testSelection" name="testSelection" value="">
 
-											<div class="row" id="params-row" style="--bs-gutter-y: -1rem"></div>
-										</form>
+											<div class="row" id="params-row" style="--bs-gutter-y: 1rem"></div>
+										</div>
 									</div>
-								</div>
-								<div class="modal-footer">
-									<button data-bs-toggle="modal" data-bs-target="#criteriaModal" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Закрыть<br></button>
-									<button data-bs-toggle="modal" data-bs-target="#criteriaModal" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Сохранить</button>
-								</div>
+									<div class="modal-footer">
+										<button data-bs-toggle="modal" data-bs-target="#criteriaModal" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Закрыть<br></button>
+										<button type="submit" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Сохранить</button>
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -173,6 +167,7 @@
 							event.preventDefault();
 
 							const selectedOption = this.innerText;
+							paramsRow.innerHTML = '';
 
 							fetch(`/user/choose-criteria/${testNum}/${selectedOption}`, {
 								method: 'GET',
@@ -194,6 +189,7 @@
 
 										let newParamInput = document.createElement('input');
 										newParamInput.id = `parameter${index + 1}_criteria`;
+										newParamInput.name = `parameter${index + 1}_criteria`;
 										newParamInput.className = 'form-control';
 										newParamInput.readOnly = true;
 										newParamInput.value = param.param_name;
@@ -206,30 +202,47 @@
 										weightDiv.className = 'col-md-3 form-group mb-3';
 										weightDiv.innerHTML = `
                                             <label class="form-label">Вес ${index + 1}</label>
-                                            <input id="weight_param${index + 1}_criteria" class="form-control" type="number" required="">`;
+                                            <input id="weight_param${index + 1}_criteria" name="weight_param${index + 1}_criteria" class="form-control" type="number" required="">`;
 										newFieldsContainer.appendChild(weightDiv);
+
+										let directionDropdownId = `direction${index + 1}Dropdown`;
+										let directionHiddenInputId = `${directionDropdownId}Hidden`;
 
 										let directionDiv = document.createElement('div');
 										directionDiv.className = 'col-md-3 form-group mb-3';
 										directionDiv.innerHTML = `
-                                            <label class="form-label">Направление ${index + 1}</label>
-                                            <div class="dropdown">
-                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="directionButton${index + 1}" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    Выбрать направление
-                                                </button>
-                                                <ul class="dropdown-menu" aria-labelledby="directionButton${index + 1}">
-                                                    <li><a class="dropdown-item" href="#">Больше - лучше</a></li>
-                                                    <li><a class="dropdown-item" href="#">Меньше - лучше</a></li>
-                                                </ul>
-                                            </div>`;
+											<label class="form-label">Направление ${index + 1}</label>
+											<input name="${directionHiddenInputId}" id="${directionHiddenInputId}" type="hidden" value="">
+											<div class="dropdown">
+												<button class="btn btn-secondary dropdown-toggle" type="button" id="${directionDropdownId}" data-bs-toggle="dropdown" aria-expanded="false">
+													Выбрать направление
+												</button>
+												<ul class="dropdown-menu" aria-labelledby="${directionDropdownId}">
+													<li><a class="dropdown-item" href="#">Больше - лучше</a></li>
+													<li><a class="dropdown-item" href="#">Меньше - лучше</a></li>
+												</ul>
+											</div>`;
 										newFieldsContainer.appendChild(directionDiv);
+
+										let directionDropdownButton = directionDiv.querySelector(`#${directionDropdownId}`);
+										let directionHiddenInput = directionDiv.querySelector(`#${directionHiddenInputId}`);
+
+										directionDiv.querySelectorAll('.dropdown-item').forEach(item => {
+											item.addEventListener('click', function (event) {
+												event.preventDefault();
+
+												let selectedOption = this.innerText;
+												directionDropdownButton.innerText = selectedOption;
+												directionHiddenInput.value = selectedOption;
+											});
+										});
 
 										let sliceDiv = document.createElement('div');
 										sliceDiv.className = 'col-md-3 form-group mb-3';
 										sliceDiv.innerHTML = `
-											<label class="form-label">Срез ${index+1}</label>
-											<input id="slice${index+1}_criteria" class="form-control" type="range" min="${param.slice_range[0]}" max="${param.slice_range[1]}" value="${param.slice_range[0]}" step="0.1" oninput="slice${index+1}Output.value = this.value" required="">
-											<output id="slice${index+1}Output">${param.slice_range[0]}</output>`;
+											<label class="form-label">Срез ${index + 1}</label>
+											<input id="slice${index + 1}_criteria" name="slice${index + 1}_criteria" class="form-control" type="range" min="${param.slice_range[0]}" max="${param.slice_range[1]}" value="${param.slice_range[0]}" step="0.1" oninput="slice${index + 1}Output.value = this.value" required="">
+											<output id="slice${index + 1}Output">${param.slice_range[0]}</output>`;
 										newFieldsContainer.appendChild(sliceDiv);
 
 										paramsRow.appendChild(newFieldsContainer);

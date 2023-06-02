@@ -240,11 +240,16 @@ router.post("/change-data", (req, res, next) => {
     });
 })
 
-router.get("/criteria_list", (req, res, next) => {
+router.get("/criteria_list", async (req, res, next) => {
     res.status(200)
+
+    let criteria_raw = await CLIENT.query('select * from criteria;');
+    let criteria = criteria_raw.rows;
+
     res.render('criteria_list', {
         title: "Список критериев | без CHATGPT",
-        isLoggedIn: req.cookies.usr_id
+        isLoggedIn: req.cookies.usr_id,
+        criteria: criteria
     })
 })
 
@@ -262,4 +267,42 @@ router.get("/choose-criteria/:lab_num/:test_num", (req, res, next) => {
     res.json(testConfig);
 });
 
+router.post("/add-criteria/", async (req, res, next) => {
+    try {
+        let criteria = {
+            name_criteria: req.body.name_criteria,
+            lab_num: req.body.labSelection,
+            test_num: req.body.testSelection,
+            params: []
+        };
+
+        // Look for all parameters in the req.body
+        for (let i = 1; i <= Object.keys(req.body).length; i++) {
+            if (req.body[`parameter${i}_criteria`] && req.body[`weight_param${i}_criteria`] && req.body[`direction${i}DropdownHidden`] && req.body[`slice${i}_criteria`]) {
+                let param = {
+                    param_name: req.body[`parameter${i}_criteria`],
+                    param_weight: parseFloat(req.body[`weight_param${i}_criteria`]),
+                    param_slice: parseFloat(req.body[`slice${i}_criteria`]),
+                    param_direction: req.body[`direction${i}DropdownHidden`] === 'Больше - лучше'
+                };
+                criteria.params.push(param);
+            } else {
+                break;
+            }
+        }
+
+        const insertText = `INSERT INTO criteria(criteria_fields) VALUES ($1)`;
+        const insertValue = [JSON.stringify(criteria)];
+        await CLIENT.query(insertText, insertValue);
+        res.status(200).redirect("/user/criteria_list");
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router
+
+
+
