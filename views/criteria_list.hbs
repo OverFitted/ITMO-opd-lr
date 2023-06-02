@@ -92,13 +92,16 @@
 												</div>
 											</div>
 
+											<input type="hidden" id="labSelection" name="labSelection" value="">
+											<input type="hidden" id="testSelection" name="testSelection" value="">
+
 											<div class="row" id="params-row" style="--bs-gutter-y: -1rem"></div>
 										</form>
 									</div>
 								</div>
 								<div class="modal-footer">
-									<a href="../" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Закрыть<br></a>
-									<a href="../" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Сохранить</a>
+									<button data-bs-toggle="modal" data-bs-target="#criteriaModal" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Закрыть<br></button>
+									<button data-bs-toggle="modal" data-bs-target="#criteriaModal" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Сохранить</button>
 								</div>
 							</div>
 						</div>
@@ -111,6 +114,20 @@
 
 <script>
 	let testNum;
+	const labDropdownItems = document.querySelectorAll('#lab-menu .dropdown-item');
+	const labButton = document.querySelector('#labButton');
+	const testButton = document.querySelector('#testButton');
+	const labSelection = document.querySelector('#labSelection');
+	const testSelection = document.querySelector('#testSelection');
+
+	labDropdownItems.forEach(item => {
+		item.addEventListener('click', event => {
+			event.preventDefault();
+			let selection = event.target.textContent;
+			labButton.textContent = selection;
+			labSelection.value = selection;
+		});
+	});
 
 	document.querySelectorAll('#lab-menu a').forEach(item => {
 		item.addEventListener('click', function (event) {
@@ -121,6 +138,10 @@
 
 			let testDropdownMenu = document.querySelector('#testButton ~ .dropdown-menu');
 			testDropdownMenu.innerHTML = '';
+
+			let paramsRow = document.querySelector('#params-row');
+			paramsRow.innerHTML = '';
+			testButton.innerHTML = 'Выбрать тест';
 
 			fetch(`/user/choose-criteria/${selectedOption}`, {
 				method: 'GET',
@@ -136,10 +157,18 @@
 						testDropdownMenu.appendChild(newOption);
 					});
 
-					document.querySelectorAll('#test-menu a').forEach(item => {
-						let paramsRow = document.querySelector('#params-row');
-						paramsRow.innerHTML = '';
+					const testDropdownItems = document.querySelectorAll('#test-menu .dropdown-item');
 
+					testDropdownItems.forEach(item => {
+						item.addEventListener('click', event => {
+							event.preventDefault();
+							let selection = event.target.textContent;
+							testButton.textContent = selection;
+							testSelection.value = selection;
+						});
+					});
+
+					document.querySelectorAll('#test-menu a').forEach(item => {
 						item.addEventListener('click', function (event) {
 							event.preventDefault();
 
