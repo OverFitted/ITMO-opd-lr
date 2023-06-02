@@ -105,20 +105,26 @@
                                                             <div class="tab-content">
                                                                 {{#each rows}}
                                                                 <div class="tab-pane fade-tab-bs {{#if @first}} show active {{/if}}" id="nav-14005-content-{{this.id}}" role="tabpanel" aria-labelledby="nav-14005-content-{{this.id}}">
-                                                                    <div class="blocs-grid-container grid-bloc-8-style">
-                                                                        {{#each this.pvks}}
-                                                                        <div>
-                                                                            <p class="bento-box active-token">
-                                                                                {{this.name}}
-                                                                            </p>
+                                                                    {{#each this.pvks}}
+                                                                        <div class="row">
+<!--                                                                            Кнопка с модалью для пвк -->
+                                                                            <div class="col-4">
+                                                                                <button class="bento-box active-token" data-bs-toggle="modal" data-bs-target="#criteriaModal">
+                                                                                    {{this.name}}
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <p class="bento-box active-token">
+                                                                                    {{this.importance}}
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="col-4">
+                                                                                <p class="bento-box active-token">
+                                                                                    ewf
+                                                                                </p>
+                                                                            </div>
                                                                         </div>
-                                                                        <div>
-                                                                            <p class="bento-box active-token">
-                                                                                {{this.importance}}
-                                                                            </p>
-                                                                        </div>
-                                                                        {{/each}}
-                                                                    </div>
+                                                                    {{/each}}
                                                                 </div>
                                                                 {{/each}}
                                                             </div>
@@ -628,8 +634,83 @@
         </div>
     </div>
 </div>
-
+<div class="bloc l-bloc" id="bloc-2">
+    <div class="container bloc-lg">
+        <div class="row">
+            <div class="col text-start">
+                <div class="form-group mb-8">
+                    <div id="criteriaModal" class="modal modal-xl fade" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="mg-clear primary-text box-heading">
+                                        Добавление критерия для ПВК
+                                    </h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <form data-clean-url-used="true" id="form_criteria" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
+                                            <div class="row">
+                                                <div class="dropdown">
+                                                    <button type="button" id="add-criteria-btn" class="btn btn-primary">Выбрать критерий</button>
+                                                    <button type="button" id="delete-criteria-btn" class="btn btn-primary">Удалить критерий</button>
+                                                    <p></p>
+                                                    <div class="row">
+                                                        <div class="col-md-3 form-group mb-3 text-center">
+                                                            <label for="weight_param1_criteria" class="form-label">Вес</label>
+                                                            <div class="input-group">
+                                                                <button class="btn btn-secondary dropdown-toggle me-2" type="button" id="labButton" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
+                                                                <ul class="dropdown-menu" aria-labelledby="labButton">
+                                                                    <li><a class="dropdown-item" href="#">Критерий 1</a></li>
+                                                                    <li><a class="dropdown-item" href="#">Критерий 2</a></li>
+                                                                    <li><a class="dropdown-item" href="#">Критерий 3</a></li>
+                                                                    <li><a class="dropdown-item" href="#">Критерий 4</a></li>
+                                                                    <li><a class="dropdown-item" href="#">Критерий 5</a></li>
+                                                                </ul>
+                                                                <input id="weight_param1_criteria" class="form-control" type="number" required="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="buttons-container"></div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="../" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Закрыть<br></a>
+                                    <a href="../" class="btn btn-d btn-lg primary-btn box-btn fill-mob-btn">Сохранить</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    $(document).ready(function() {
+        $("#add-criteria-btn").click(function() {
+            const newButton = '<p></p>' +
+                    '<div class="row">' +
+                    '<div class="col-md-3 form-group mb-3 text-center">' +
+                    '<label for="weight_param1_criteria" class="form-label"></label>' +
+                    '<div class="input-group">' +
+                    '<button class="btn btn-secondary dropdown-toggle me-2" type="button" id="labButton" data-bs-toggle="dropdown" aria-expanded="false">Select</button>' +
+                    '<ul class="dropdown-menu" aria-labelledby="labButton">' +
+                    '<li><a class="dropdown-item" href="#">Критерий 1</a></li>' +
+                    '<li><a class="dropdown-item" href="#">Критерий 2</a></li>' +
+                    '<li><a class="dropdown-item" href="#">Критерий 3</a></li>' +
+                    '<li><a class="dropdown-item" href="#">Критерий 4</a></li>' +
+                    '<li><a class="dropdown-item" href="#">Критерий 5</a></li></ul>' +
+                    '<input id="weight_param1_criteria" class="form-control" type="number" required=""> </div> </div> </div>';
+            $("#buttons-container").append(newButton);
+        });
+        $("#delete-criteria-btn").click(function() {
+            $("#buttons-container").children().last().remove();
+        });
+    });
     let presetModal
     $(document).ready(() => {
         presetModal = new bootstrap.Modal(document.getElementById('addPresetModal'))
@@ -657,5 +738,4 @@
         });
     });
 </script>
-
 {{/if}}
