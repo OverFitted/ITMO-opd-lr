@@ -248,11 +248,18 @@ router.get("/criteria_list", (req, res, next) => {
     })
 })
 
-router.post('/choose-criteria', (req, res) => {
-    let option = req.body.option;
-    let newTestOptions = [];
+router.get("/choose-criteria/:lab_num", (req, res, next) => {
+    const labNum = parseInt(req.params.lab_num, 10);
+    const labConfig = criteriaConfig.find(item => item.lab_num === labNum);
+    res.json(labConfig);
+});
 
-    res.json({ testOptions: newTestOptions });
+router.get("/choose-criteria/:lab_num/:test_num", (req, res, next) => {
+    const labNum = parseInt(req.params.lab_num, 10);
+    const testNum = parseInt(req.params.test_num, 10);
+    const labConfig = criteriaConfig.find(item => item.lab_num === labNum);
+    const testConfig = labConfig.tests.find(item => item.test_num == testNum);
+    res.json(testConfig);
 });
 
 module.exports = router

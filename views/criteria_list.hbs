@@ -54,82 +54,45 @@
 									</h3>
 								</div>
 								<div class="modal-body">
-									<div>
-										<form data-clean-url-used="true" id="form_criteria" data-form-type="blocs-form" novalidate="" data-success-msg="Your message has been sent." data-fail-msg="Sorry it seems that our mail server is not responding, Sorry for the inconvenience!">
+									<div class="row">
+										<form data-clean-url-used="true" id="form_criteria">
 											<div class="row">
-												<div class="col form-group mb-3">
-													<label class="form-label">Название критерия</label>
-													<input id="name_criteria" class="form-control" required="">
+												<div class="row">
+													<div class="col form-group mb-3">
+														<label class="form-label">Название критерия</label>
+														<input id="name_criteria" class="form-control" required="">
+													</div>
 												</div>
-											</div>
-											<div class="row">
-												<label class="form-label">Номер лабораторной</label>
-												<div class="dropdown">
-													<button class="btn btn-secondary dropdown-toggle" type="button" id="labButton" data-bs-toggle="dropdown" aria-expanded="false">
-														Select
-													</button>
-													<ul class="dropdown-menu" aria-labelledby="labButton">
-														<li><a class="dropdown-item" href="#">2</a></li>
-														<li><a class="dropdown-item" href="#">3</a></li>
-														<li><a class="dropdown-item" href="#">4</a></li>
-														<li><a class="dropdown-item" href="#">5</a></li>
-														<li><a class="dropdown-item" href="#">6</a></li>
-														<li><a class="dropdown-item" href="#">7</a></li>
-														<li><a class="dropdown-item" href="#">8</a></li>
-													</ul>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col form-group mb-3">
-													<label class="form-label">Номер теста</label>
-													<input id="test_criteria" class="form-control" type="number" required="">
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-md-3 form-group mb-3">
-													<label class="form-label">Параметр 1</label>
-													<input id="parameter1_criteria" class="form-control" value="Sample Parameter 1" readonly>
-												</div>
-												<div class="col-md-3 form-group mb-3">
-													<label class="form-label">Вес 1</label>
-													<input id="weight_param1_criteria" class="form-control" type="number" required="">
-												</div>
-												<div class="col-md-3 form-group mb-3">
+												<div class="row">
+													<label class="form-label">Номер лабораторной</label>
 													<div class="dropdown">
-														<button class="btn btn-secondary dropdown-toggle" type="button" id="direction1Button" data-bs-toggle="dropdown" aria-expanded="false">
-															Направление 1
+														<button class="btn btn-secondary dropdown-toggle" type="button" id="labButton" data-bs-toggle="dropdown" aria-expanded="false">
+															Выбрать лабораторную
 														</button>
-														<ul class="dropdown-menu" aria-labelledby="direction1Button">
-															<li><a class="dropdown-item" href="#">Больше - лучше</a></li>
-															<li><a class="dropdown-item" href="#">Меньше - лучше</a></li>
+														<ul class="dropdown-menu" id="lab-menu" aria-labelledby="labButton">
+															<li><a class="dropdown-item" href="#">2</a></li>
+															<li><a class="dropdown-item" href="#">3</a></li>
+															<li><a class="dropdown-item" href="#">4</a></li>
+															<li><a class="dropdown-item" href="#">5</a></li>
+															<li><a class="dropdown-item" href="#">6</a></li>
+															<li><a class="dropdown-item" href="#">7</a></li>
+															<li><a class="dropdown-item" href="#">8</a></li>
 														</ul>
 													</div>
 												</div>
-												<div class="col-md-3 form-group mb-3">
-													<label class="form-label">Срез 1</label>
-													<input id="slice1_criteria" class="form-control" type="range" required="">
+												<div class="row">
+													<label class="form-label">Номер теста</label>
+													<div class="dropdown">
+														<button class="btn btn-secondary dropdown-toggle" type="button" id="testButton" data-bs-toggle="dropdown" aria-expanded="false">
+															Выбрать тест
+														</button>
+														<ul class="dropdown-menu" id="test-menu" aria-labelledby="testButton">
+														</ul>
+													</div>
 												</div>
 											</div>
 
-											<div class="row">
-												<div class="col-md-3 form-group mb-3">
-													<label class="form-label">Параметр 2</label>
-													<input id="parameter2_criteria" class="form-control" value="Sample Parameter 2" readonly>
-												</div>
-												<div class="col-md-3 form-group mb-3">
-													<label class="form-label">Вес 2</label>
-													<input id="weight_param2_criteria" class="form-control" type="number" required="">
-												</div>
-												<div class="col-md-3 form-group mb-3">
-													<label class="form-label">Направление 2</label>
-													<input id="direction2_criteria" type="text" class="form-control">
-												</div>
-												<div class="col-md-3 form-group mb-3">
-													<label class="form-label">Срез 2</label>
-													<input id="slice1_criteria" class="form-control" type="range" required="">
-												</div>
-											</div>
+											<div class="row" id="params-row" style="--bs-gutter-y: -1rem"></div>
 										</form>
 									</div>
 								</div>
@@ -147,33 +110,107 @@
 </div>
 
 <script>
-	document.querySelectorAll('.dropdown-menu a').forEach(item => {
+	let testNum;
+
+	document.querySelectorAll('#lab-menu a').forEach(item => {
 		item.addEventListener('click', function (event) {
 			event.preventDefault();
 
 			const selectedOption = this.innerText;
-			console.log(selectedOption);
+			testNum = selectedOption;
 
-			fetch('/user/choose-criteria', {
-				method: 'POST',
+			let testDropdownMenu = document.querySelector('#testButton ~ .dropdown-menu');
+			testDropdownMenu.innerHTML = '';
+
+			fetch(`/user/choose-criteria/${selectedOption}`, {
+				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ option: selectedOption }),
 			}).then(response => response.json())
-				.then(data => {
-					if (this.parentElement.parentElement.previousElementSibling.id === 'labButton') {
-						let testDropdownMenu = document.querySelector('#testButton ~ .dropdown-menu');
-						testDropdownMenu.innerHTML = '';
+				.then(labConfigData => {
+					labConfigData.tests.forEach(option => {
+						let test_num = option.test_num;
+						let newOption = document.createElement('li');
+						newOption.innerHTML = `<a class="dropdown-item" href="#">${test_num}</a>`;
+						testDropdownMenu.appendChild(newOption);
+					});
 
-						data.testOptions.forEach(option => {
-							let newOption = document.createElement('li');
-							newOption.innerHTML = `<a class="dropdown-item" href="#">${option}</a>`;
-							testDropdownMenu.appendChild(newOption);
+					document.querySelectorAll('#test-menu a').forEach(item => {
+						let paramsRow = document.querySelector('#params-row');
+						paramsRow.innerHTML = '';
+
+						item.addEventListener('click', function (event) {
+							event.preventDefault();
+
+							const selectedOption = this.innerText;
+
+							fetch(`/user/choose-criteria/${testNum}/${selectedOption}`, {
+								method: 'GET',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+							}).then(response => response.json())
+								.then(testConfigData => {
+									testConfigData.params.forEach((param, index) => {
+										let newFieldsContainer = document.createElement('div');
+										newFieldsContainer.className = 'row';
+
+										let newParamLabelDiv = document.createElement('div');
+										newParamLabelDiv.className = 'col-md-3 form-group mb-3';
+
+										let newParamLabel = document.createElement('label');
+										newParamLabel.className = 'form-label';
+										newParamLabel.innerText = param.param_name;
+
+										let newParamInput = document.createElement('input');
+										newParamInput.id = `parameter${index + 1}_criteria`;
+										newParamInput.className = 'form-control';
+										newParamInput.readOnly = true;
+										newParamInput.value = param.param_name;
+
+										newParamLabelDiv.appendChild(newParamLabel);
+										newParamLabelDiv.appendChild(newParamInput);
+										newFieldsContainer.appendChild(newParamLabelDiv);
+
+										let weightDiv = document.createElement('div');
+										weightDiv.className = 'col-md-3 form-group mb-3';
+										weightDiv.innerHTML = `
+                                            <label class="form-label">Вес ${index + 1}</label>
+                                            <input id="weight_param${index + 1}_criteria" class="form-control" type="number" required="">`;
+										newFieldsContainer.appendChild(weightDiv);
+
+										let directionDiv = document.createElement('div');
+										directionDiv.className = 'col-md-3 form-group mb-3';
+										directionDiv.innerHTML = `
+                                            <label class="form-label">Направление ${index + 1}</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="directionButton${index + 1}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Выбрать направление
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="directionButton${index + 1}">
+                                                    <li><a class="dropdown-item" href="#">Больше - лучше</a></li>
+                                                    <li><a class="dropdown-item" href="#">Меньше - лучше</a></li>
+                                                </ul>
+                                            </div>`;
+										newFieldsContainer.appendChild(directionDiv);
+
+										let sliceDiv = document.createElement('div');
+										sliceDiv.className = 'col-md-3 form-group mb-3';
+										sliceDiv.innerHTML = `
+											<label class="form-label">Срез ${index+1}</label>
+											<input id="slice${index+1}_criteria" class="form-control" type="range" min="${param.slice_range[0]}" max="${param.slice_range[1]}" value="${param.slice_range[0]}" step="0.1" oninput="slice${index+1}Output.value = this.value" required="">
+											<output id="slice${index+1}Output">${param.slice_range[0]}</output>`;
+										newFieldsContainer.appendChild(sliceDiv);
+
+										paramsRow.appendChild(newFieldsContainer);
+									});
+								})
+								.catch(error => console.error('Error:', error));
 						});
-					}
+					});
 				})
 				.catch(error => console.error('Error:', error));
-		});
+		})
 	});
 </script>

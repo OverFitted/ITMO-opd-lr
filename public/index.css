@@ -13204,8 +13204,8 @@ a {
 	background-color: var(--swatch-var-3849);
 	width: 100%;
 	position: relative;
-	padding: 40px 40px 40px 40px;
-	border-radius: 30px 30px 30px 30px;
+	padding: 15px 15px 15px 15px;
+	border-radius: 20px 20px 20px 20px;
 }
 
 .mini-heading {
@@ -13661,7 +13661,7 @@ a {
 	}
 
 	.bento-box {
-		padding: 30px 30px 30px 30px;
+		padding: 10px 10px 10px 10px;
 	}
 
 }
@@ -13672,7 +13672,7 @@ a {
 	}
 
 	.bento-box {
-		padding: 30px 30px 30px 30px;
+		padding: 10px 10px 10px 10px;
 	}
 
 	.box-heading {
@@ -13702,7 +13702,7 @@ a {
 	}
 
 	.bento-box {
-		padding: 20px 20px 20px 20px;
+		padding: 7px 7px 7px 7px;
 	}
 
 	.box-info {
