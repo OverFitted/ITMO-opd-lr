@@ -64,8 +64,8 @@
 
     let testRunning = false;
     let presetTime = {{preset.runtime}}
-    let speed = {{preset.acceleration_koef}};
-    let acceleration = {{preset.speed_koef}};
+    let speed = {{preset.acceleration_koef}} / 100;
+    let acceleration = {{preset.speed_koef}} / 100;
     let maxspeed = .3
 
     let circles = [{

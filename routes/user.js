@@ -62,6 +62,7 @@ router.get('/', async (req, res, next) => {
         const resp_res_lr5_raw = await CLIENT.query(`SELECT lr5_to_resp.respondent_id, lr5_to_resp.preset_id, results_list_lr5.result_list, results_list_lr5.timeofoper, test_name.test_name, presets.test_in_lab_id FROM lr5_to_resp JOIN results_list_lr5 ON lr5_to_resp.result_list_id_lr5 = results_list_lr5.id JOIN presets ON lr5_to_resp.preset_id = presets.preset_id JOIN test_name ON presets.test_in_lab_id = test_name.test_id AND test_name.lab_id = 5;`);
         const users = await CLIENT.query("select * from users");
         const result = await CLIENT.query(`select * from expert_profession_quality_lab1 where expert_id = ${req.cookies.usr_id}`);
+        const criteria_presets = await CLIENT.query("select * from criteria_preset");
         const user = await User.userById(req.cookies.usr_id);
         const groupedPresets = await getPresets();
 
@@ -161,7 +162,8 @@ router.get('/', async (req, res, next) => {
             resp_res_lr5_memory,
             resp_res_lr5_brain,
             users: users.rows,
-            presets: groupedPresets
+            presets: groupedPresets,
+            criteria_presets: criteria_presets.rows
         })
     } catch (err) {
         next(err);
@@ -191,9 +193,31 @@ router.get("/presets", async (req, res, next) => {
 });
 
 router.post("/assign-test", async (req, res) => {
-    const { usr_id, preset } = req.body;
+    const { usr_id, preset_id } = req.body;
     try {
-        await CLIENT.query('INSERT INTO preset_to_resp(user_id, preset_id) VALUES($1, $2)', [usr_id, preset]);
+        await CLIENT.query('INSERT INTO preset_to_resp(user_id, preset_id) VALUES($1, $2)', [usr_id, preset_id]);
+        res.status(200).end();
+    } catch (err) {
+        console.error('Error querying database:', err);
+        res.status(500).send('Server error');
+    }
+});
+
+router.post("/assign-criteria", async (req, res) => {
+    const { usr_id, preset_id } = req.body;
+    try {
+        await CLIENT.query(`DELETE FROM preset_to_resp WHERE user_id=${usr_id}`);
+        await CLIENT.query('DELETE FROM resp_to_crit_list where id_respond = $1', [usr_id]);
+        await CLIENT.query('INSERT INTO resp_to_crit_list(id_respond, id_criteria) VALUES($1, $2)', [usr_id, preset_id]);
+        const preset = (await CLIENT.query(`SELECT id, preset_params FROM criteria_preset WHERE id = ${preset_id}`)).rows[0];
+
+        for (let index = 0; index < preset["preset_params"].length; index++) {
+            const param = preset["preset_params"][index];
+            const criteria = (await CLIENT.query(`SELECT * FROM criteria WHERE criteria_id = ${param["field_id"]}`)).rows[0];
+            const preset_num = criteria["criteria_fields"]["preset_num"];
+            await CLIENT.query('INSERT INTO preset_to_resp(user_id, preset_id) VALUES($1, $2)', [usr_id, preset_num]);
+        }
+
         res.status(200).end();
     } catch (err) {
         console.error('Error querying database:', err);
@@ -203,7 +227,7 @@ router.post("/assign-test", async (req, res) => {
 
 router.post("/add-preset", async (req, res) => {
     const preset = req.body;
-    const params = {...preset};
+    const params = { ...preset };
     delete params["lab_num"]
     delete params["test_num"]
 
@@ -259,11 +283,32 @@ router.get("/choose-criteria/:lab_num", (req, res, next) => {
     res.json(labConfig);
 });
 
-router.get("/choose-criteria/:lab_num/:test_num", (req, res, next) => {
+router.get("/choose-criteria/:lab_num/:test_num", async (req, res, next) => {
     const labNum = parseInt(req.params.lab_num, 10);
     const testNum = parseInt(req.params.test_num, 10);
     const labConfig = criteriaConfig.find(item => item.lab_num === labNum);
     const testConfig = labConfig.tests.find(item => item.test_num == testNum);
+    const presets = await CLIENT.query(`select * from presets where lab_id=${labNum} and test_in_lab_id=${testNum}`)
+    testConfig["presets"] = presets.rows
+    /*
+        [
+            {
+                preset_id: 12,
+                lab_id: 3,
+                test_in_lab_id: 1,
+                params: {
+                    preset_name: '3.1',
+                    runtime: '20',
+                    show_stats: 'true',
+                    show_time: 'false',
+                    speed_koef: '1',
+                    acceleration_koef: '2'
+                },
+                preset_name: '3.1'
+            }
+        ]
+    */
+
     res.json(testConfig);
 });
 
@@ -273,10 +318,10 @@ router.post("/add-criteria/", async (req, res, next) => {
             name_criteria: req.body.name_criteria,
             lab_num: req.body.labSelection,
             test_num: req.body.testSelection,
+            preset_num: req.body.presetSelection,
             params: []
         };
 
-        // Look for all parameters in the req.body
         for (let i = 1; i <= Object.keys(req.body).length; i++) {
             if (req.body[`parameter${i}_criteria`] && req.body[`weight_param${i}_criteria`] && req.body[`direction${i}DropdownHidden`] && req.body[`slice${i}_criteria`]) {
                 let param = {
@@ -303,6 +348,3 @@ router.post("/add-criteria/", async (req, res, next) => {
 });
 
 module.exports = router
-
-
-

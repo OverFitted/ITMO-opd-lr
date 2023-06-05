@@ -6,16 +6,657 @@
                 "test_num": 1,
                 "params": [
                     {
-                        "param_name": "mean",
-                        "db_index": [0],
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
                         "formula": "{0}",
-                        "slice_range": [0, 500]
+                        "slice_range": [
+                            0,
+                            750
+                        ]
                     },
                     {
-                        "param_name": "z-value",
-                        "db_index": [0, 1],
-                        "formula": "({0} + {1}) / 2",
-                        "slice_range": [0, 1]
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 2,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 3,
+                "params": [
+                    {
+                        "param_name": "Среднее positive",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Среднее negative",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение positive",
+                        "db_index": [
+                            2
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение negative",
+                        "db_index": [
+                            3
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "Custom CV",
+                        "db_index": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "formula": "(({2} - {3}) / ({0} - {1})) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    },
+                    {
+                        "param_name": "Custom Precision",
+                        "db_index": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "formula": "(({2} - {3}) / ({0} + {1})) * 100",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 4,
+                "params": [
+                    {
+                        "param_name": "Среднее positive",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Среднее negative",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение positive",
+                        "db_index": [
+                            2
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение negative",
+                        "db_index": [
+                            3
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "Custom CV",
+                        "db_index": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "formula": "(({2} - {3}) / ({0} - {1})) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    },
+                    {
+                        "param_name": "Custom Precision",
+                        "db_index": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "formula": "(({2} - {3}) / ({0} + {1})) * 100",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "lab_num": 3,
+        "tests": [
+            {
+                "test_num": 1,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 2,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "lab_num": 4,
+        "tests": [
+            {
+                "test_num": 1,
+                "params": [
+                    {
+                        "param_name": "clicks",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "misses",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            550
+                        ]
+                    },
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            2
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            3
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            2,
+                            3
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 2,
+                "params": [
+                    {
+                        "param_name": "Попаданий",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Промахов",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            550
+                        ]
+                    },
+                    {
+                        "param_name": "Hit percentage",
+                        "db_index": [
+                            2
+                        ],
+                        "formula": "{0} * 100",
+                        "slice_range": [
+                            0,
+                            100
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "lab_num": 5,
+        "tests": [
+            {
+                "test_num": 1,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 2,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 3,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 4,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 5,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
+                    }
+                ]
+            },
+            {
+                "test_num": 6,
+                "params": [
+                    {
+                        "param_name": "Среднее",
+                        "db_index": [
+                            0
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            750
+                        ]
+                    },
+                    {
+                        "param_name": "Стандартное отклонение",
+                        "db_index": [
+                            1
+                        ],
+                        "formula": "{0}",
+                        "slice_range": [
+                            0,
+                            250
+                        ]
+                    },
+                    {
+                        "param_name": "CV",
+                        "db_index": [
+                            0,
+                            1
+                        ],
+                        "formula": "({1} / {0}) * 100",
+                        "slice_range": [
+                            0,
+                            150
+                        ]
                     }
                 ]
             }

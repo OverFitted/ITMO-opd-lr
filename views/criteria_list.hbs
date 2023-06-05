@@ -58,36 +58,51 @@
 													</div>
 												</div>
 												<div class="row">
-													<label class="form-label">Номер лабораторной</label>
-													<div class="dropdown">
-														<button class="btn btn-secondary dropdown-toggle" type="button" id="labButton" data-bs-toggle="dropdown" aria-expanded="false">
-															Выбрать лабораторную
-														</button>
-														<ul class="dropdown-menu" id="lab-menu" aria-labelledby="labButton">
-															<li><a class="dropdown-item" href="#">2</a></li>
-															<li><a class="dropdown-item" href="#">3</a></li>
-															<li><a class="dropdown-item" href="#">4</a></li>
-															<li><a class="dropdown-item" href="#">5</a></li>
-															<li><a class="dropdown-item" href="#">6</a></li>
-															<li><a class="dropdown-item" href="#">7</a></li>
-															<li><a class="dropdown-item" href="#">8</a></li>
-														</ul>
+													<div class="col-4">
+														<label class="form-label">Номер лабораторной</label>
+														<div class="dropdown">
+															<button class="btn btn-secondary dropdown-toggle" type="button" id="labButton" data-bs-toggle="dropdown" aria-expanded="false">
+																Выбрать лабораторную
+															</button>
+															<ul class="dropdown-menu" id="lab-menu" aria-labelledby="labButton">
+																<li><a class="dropdown-item" href="#">2</a></li>
+																<li><a class="dropdown-item" href="#">3</a></li>
+																<li><a class="dropdown-item" href="#">4</a></li>
+																<li><a class="dropdown-item" href="#">5</a></li>
+																<li><a class="dropdown-item" href="#">6</a></li>
+																<li><a class="dropdown-item" href="#">7</a></li>
+																<li><a class="dropdown-item" href="#">8</a></li>
+															</ul>
+														</div>
 													</div>
-												</div>
-												<div class="row">
-													<label class="form-label">Номер теста</label>
-													<div class="dropdown">
-														<button class="btn btn-secondary dropdown-toggle" type="button" id="testButton" data-bs-toggle="dropdown" aria-expanded="false">
-															Выбрать тест
-														</button>
-														<ul class="dropdown-menu" id="test-menu" aria-labelledby="testButton">
-														</ul>
+
+													<div class="col-4">
+														<label class="form-label">Номер теста</label>
+														<div class="dropdown">
+															<button class="btn btn-secondary dropdown-toggle" type="button" id="testButton" data-bs-toggle="dropdown" aria-expanded="false">
+																Выбрать тест
+															</button>
+															<ul class="dropdown-menu" id="test-menu" aria-labelledby="testButton">
+															</ul>
+														</div>
+													</div>
+
+													<div class="col-4">
+														<label class="form-label">Пресет теста</label>
+														<div class="dropdown">
+															<button class="btn btn-secondary dropdown-toggle" type="button" id="presetButton" data-bs-toggle="dropdown" aria-expanded="false">
+																Выбрать пресет
+															</button>
+															<ul class="dropdown-menu" id="preset-menu" aria-labelledby="presetButton">
+															</ul>
+														</div>
 													</div>
 												</div>
 											</div>
 
 											<input type="hidden" id="labSelection" name="labSelection" value="">
 											<input type="hidden" id="testSelection" name="testSelection" value="">
+											<input type="hidden" id="presetSelection" name="presetSelection" value="">
 
 											<div class="row" id="params-row" style="--bs-gutter-y: 1rem"></div>
 										</div>
@@ -111,8 +126,10 @@
 	const labDropdownItems = document.querySelectorAll('#lab-menu .dropdown-item');
 	const labButton = document.querySelector('#labButton');
 	const testButton = document.querySelector('#testButton');
+	const presetButton = document.querySelector('#presetButton');
 	const labSelection = document.querySelector('#labSelection');
 	const testSelection = document.querySelector('#testSelection');
+	const presetSelection = document.querySelector('#presetSelection');
 
 	labDropdownItems.forEach(item => {
 		item.addEventListener('click', event => {
@@ -128,14 +145,19 @@
 			event.preventDefault();
 
 			const selectedOption = this.innerText;
+			let testDropdownMenu = document.querySelector('#testButton ~ .dropdown-menu');
+			let presetDropdownMenu = document.querySelector('#presetButton ~ .dropdown-menu');
+
 			testNum = selectedOption;
 
-			let testDropdownMenu = document.querySelector('#testButton ~ .dropdown-menu');
 			testDropdownMenu.innerHTML = '';
+			presetDropdownMenu.innerHTML = '';
+
+			testButton.innerHTML = 'Выбрать тест';
+			presetButton.innerHTML = 'Выбрать пресет';
 
 			let paramsRow = document.querySelector('#params-row');
 			paramsRow.innerHTML = '';
-			testButton.innerHTML = 'Выбрать тест';
 
 			fetch(`/user/choose-criteria/${selectedOption}`, {
 				method: 'GET',
@@ -176,6 +198,25 @@
 								},
 							}).then(response => response.json())
 								.then(testConfigData => {
+									let presetDropdownMenu = document.querySelector('#presetButton ~ .dropdown-menu');
+									presetDropdownMenu.innerHTML = '';
+									testConfigData.presets.forEach((preset, index) => {
+										let preset_name = preset.preset_name;
+										let newOption = document.createElement('li');
+										newOption.innerHTML = `<a class="dropdown-item" href="#">${preset_name}</a>`;
+										presetDropdownMenu.appendChild(newOption);
+									})
+
+									const presetDropdownItems = document.querySelectorAll('#preset-menu .dropdown-item');
+									presetDropdownItems.forEach(item => {
+										item.addEventListener('click', event => {
+											event.preventDefault();
+											let selection = event.target.textContent;
+											presetButton.textContent = selection;
+											presetSelection.value = selection;
+										});
+									});
+
 									testConfigData.params.forEach((param, index) => {
 										let newFieldsContainer = document.createElement('div');
 										newFieldsContainer.className = 'row';

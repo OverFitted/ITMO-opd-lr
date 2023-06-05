@@ -1,0 +1,156 @@
+<form id="profession-form" method="post" action="assign-criteria">
+    <div class="row">
+        <h1 class="text-center mt-4">Название пресета</h1>
+        <input
+            id="name"
+            name="name"
+            class="form-control mb-4"
+            type="text"
+            required=""
+        />
+    </div>
+
+    <div id="profs">
+        {{#each profs}}
+            <div class="mb-4">
+                <div class="row">
+                    <h3 class="mt-4 mb-4">{{this.name}}</h3>
+                    <p>{{this.description}}</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>ПВК</h2>
+                        <div id="pvks" class="list-group">
+                            {{#each this.pvks}}
+                                <div class="list-group-item" data-pvk="pvk_{{../this.id}}_{{this.id}}">{{this.name}}</div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h2>Выбранные критерии</h2>
+                        <div id="pvk-fields" class="list-group">
+                            {{#each this.pvks}}
+                                <div class="list-group-item droppable-placeholder"></div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <h2>Критерии для выбора</h2>
+                        <div id="fields" class="list-group">
+                            {{#each ../criteria}}
+                                <div class="list-group-item draggable-item" data-field="field_{{../this.id}}_{{this.criteria_id}}">
+                                    {{this.criteria_fields.name_criteria}}
+                                </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        function makeDraggable(element) {
+            element.draggable({
+                helper: 'clone',
+                revert: 'invalid',
+                start: function(event, ui) {
+                    $(this).data('dropped', false);
+                },
+                stop: function(event, ui) {
+                    if (!$(this).data('dropped')) {
+                        $(this).show();
+                    }
+                }
+            });
+        }
+
+        function makeDroppable(element) {
+            element.droppable({
+                accept: ".draggable-item",
+                drop: function (event, ui) {
+                    var droppedItem = $(ui.draggable).clone();
+                    droppedItem.removeClass('draggable-item');
+                    droppedItem.addClass('dropped-item');
+                    droppedItem.addClass('text-center');
+                    makeDraggable(droppedItem);
+
+                    $(this).empty();
+                    $(this).append(droppedItem);
+
+                    $(ui.draggable).data('dropped', true);
+                }
+            });
+        }
+
+        makeDraggable($(".draggable-item"));
+        makeDroppable($(".droppable-placeholder"));
+
+        $("#profession-form").on("submit", function () {
+            let pvks = {};
+
+            $("#pvk-fields .droppable-placeholder").each(function (i) {
+                let pvkName = $("#pvks .list-group-item").eq(i).data("pvk");
+                let fieldName = $(this).children('.dropped-item').data("field");
+
+                if (pvkName && fieldName) {
+                    pvks[pvkName] = fieldName;
+                }
+            });
+
+            for (let pvk in pvks) {
+                $(this).append('<input type="hidden" name="' + pvk + '" value="' + pvks[pvk] + '">');
+            }
+        });
+
+        $("#profession-form").on("submit", function (e) {
+            e.preventDefault();
+            let pvks = {};
+
+            $("#pvk-fields .droppable-placeholder").each(function (i) {
+                let pvkName = $("#pvks .list-group-item").eq(i).data("pvk");
+                let fieldName = $(this).children('.dropped-item').data("field");
+
+                if (pvkName && fieldName) {
+                    pvks[pvkName] = fieldName;
+                }
+            });
+
+            for (let pvk in pvks) {
+                $(this).append('<input type="hidden" name="' + pvk + '" value="' + pvks[pvk] + '">');
+            }
+
+            this.submit();
+        });
+    });
+</script>
+
+<style>
+    .draggable-item {
+        cursor: move;
+    }
+
+    .dropped-item {
+        width: 100%;
+    }
+
+    .droppable-placeholder {
+        border: 1px dashed #ddd;
+        min-height: 40px;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+</style>

@@ -58,8 +58,8 @@
     let hits = 0;
     let misses = 0;
     let hitThreshold = 0.3;
-    let acceleration = {{preset.acceleration_koef}};
-    let speed = {{preset.speed_koef}};
+    let acceleration = {{preset.acceleration_koef}} / 100;
+    let speed = {{preset.speed_koef}} / 100;
     let maxspeed = .3
 
     function drawCircle() {

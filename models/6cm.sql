@@ -1738,6 +1738,38 @@ GRANT ALL ON SCHEMA public TO graevsky;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
+create table
+    criteria_preset(
+        id serial primary key,
+        id_expert int,
+        preset_name text,
+        preset_params json
+    );
+
+create table
+    resp_to_crit_list(
+        id serial primary key,
+        id_criteria int,
+        id_respond int
+    );
+
+insert into
+    test_name(lab_id, test_id, test_name)
+values (2, 1, 'Тест на свет'), (2, 2, 'Тест на звук'), (2, 3, 'Разные цвета'), (2, 4, 'Звуковой сигнал'), (2, 5, 'Сложение в уме');
 --
 -- PostgreSQL database dump complete
 --
+
+DO $$
+DECLARE
+    t_record record;
+    c_record record;
+BEGIN
+    FOR t_record IN (SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public')
+    LOOP
+        FOR c_record IN (SELECT column_name FROM information_schema.columns WHERE table_schema = t_record.table_schema AND table_name = t_record.table_name AND data_type IN ('integer', 'double precision', 'numeric'))
+        LOOP
+            EXECUTE format('UPDATE %I.%I SET %I = COALESCE(%I, 0);', t_record.table_schema, t_record.table_name, c_record.column_name, c_record.column_name);
+        END LOOP;
+    END LOOP;
+END $$;

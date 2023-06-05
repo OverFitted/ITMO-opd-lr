@@ -8,26 +8,24 @@ const fs = require('fs');
 
 const raven_answers = fs.readFileSync('./public/raven_answers.json', 'utf8');
 
-router.get('/lab1', (req, res, next) => {
+router.get('/lab1', async (req, res, next) => {
     res.status(200)
 
     top_table_query = "WITH ranked_pvk AS (SELECT profession_id, pvk_id, ROW_NUMBER() OVER (PARTITION BY profession_id ORDER BY COUNT(*) DESC) AS rank FROM expert_profession_quality_lab1 GROUP BY profession_id, pvk_id) SELECT rp.profession_id, p.name, rp.pvk_id, pv.name FROM ranked_pvk AS rp JOIN professions_lab1 AS p ON rp.profession_id = p.id JOIN pvk_lab1 AS pv ON rp.pvk_id = pv.id WHERE rp.rank <= 5 ORDER BY rp.profession_id, rp.rank;"
 
-    CLIENT.query(top_table_query).then((top_table) => {
-        CLIENT.query('select * from professions_lab1').then((profs) => {
-            CLIENT.query(`select * from users where is_expert='t'`).then((result) => {
-                for (let i = 0; i < profs.rows.length; i++) {
-                    profs.rows[i]["top_table"] = top_table.rows.filter(x => x.profession_id === profs.rows[i].id)
-                }
+    top_table = await CLIENT.query(top_table_query)
+    profs = await CLIENT.query('select * from professions_lab1')
+    experts = await CLIENT.query(`select * from users where is_expert='t'`)
 
-                res.render('lab1', {
-                    title: "Лаба 1 | без CHATGPT",
-                    experts: result.rows,
-                    isLoggedIn: req.cookies.usr_id,
-                    profs: profs.rows,
-                })
-            })
-        })
+    for (let i = 0; i < profs.rows.length; i++) {
+        profs.rows[i]["top_table"] = top_table.rows.filter(x => x.profession_id === profs.rows[i].id)
+    }
+
+    res.render('lab1', {
+        title: "Лаба 1 | без CHATGPT",
+        experts: experts.rows,
+        isLoggedIn: req.cookies.usr_id,
+        profs: profs.rows,
     })
 })
 
@@ -652,6 +650,96 @@ router.post('/lab5', (req, res, next) => {
             user.sendResultFifth(results)
         }
     });
+})
+
+router.get('/lab6', async (req, res, next) => {
+    res.status(200)
+
+    top_table_query = "WITH ranked_pvk AS (SELECT profession_id, pvk_id, ROW_NUMBER() OVER (PARTITION BY profession_id ORDER BY COUNT(*) DESC) AS rank FROM expert_profession_quality_lab1 GROUP BY profession_id, pvk_id) SELECT rp.profession_id, p.name, rp.pvk_id, pv.name FROM ranked_pvk AS rp JOIN professions_lab1 AS p ON rp.profession_id = p.id JOIN pvk_lab1 AS pv ON rp.pvk_id = pv.id WHERE rp.rank <= 5 ORDER BY rp.profession_id, rp.rank;"
+
+    top_table = await CLIENT.query(top_table_query)
+    profs = await CLIENT.query('select * from professions_lab1')
+    experts = await CLIENT.query(`select * from users where is_expert='t'`)
+
+    for (let i = 0; i < profs.rows.length; i++) {
+        profs.rows[i]["top_table"] = top_table.rows.filter(x => x.profession_id === profs.rows[i].id)
+    }
+
+    res.render('lab6', {
+        title: "Лаба 6 | без CHATGPT",
+        experts: experts.rows,
+        isLoggedIn: req.cookies.usr_id,
+        profs: profs.rows,
+    })
+})
+
+router.post('/lab6', (req, res, next) => {
+    res.status(200)
+    res.redirect(`/labs/lab6/criteria`)
+})
+
+router.get("/lab6/criteria", async (req, res, next) => {
+    res.status(200)
+
+    const result = await CLIENT.query(`select * from expert_profession_quality_lab1`);
+    const pvk_lab1 = await CLIENT.query('select * from pvk_lab1');
+    const profs = await CLIENT.query('select * from professions_lab1');
+    const criteria = await CLIENT.query('select * from criteria');
+
+    const criteria_rows = criteria.rows;
+    const pvk_lab1_rows = pvk_lab1.rows;
+    const rows = result.rows;
+    let prof_rows = profs.rows;
+
+    for (let i = 0; i < prof_rows.length; i++) {
+        prof_rows[i]["pvks"] = rows.filter(x => x["profession_id"] === prof_rows[i]["id"]);
+        for (let j = 0; j < prof_rows[i]["pvks"].length; j++) {
+            prof_rows[i]["pvks"][j]["name"] = pvk_lab1_rows.find(x => x["id"] === prof_rows[i]["pvks"][j]["pvk_id"])["name"]
+        }
+    }
+
+    res.render('criteria_pvk', {
+        title: "Выбор критериев | без CHATGPT",
+        profs: prof_rows,
+        isLoggedIn: req.cookies.usr_id,
+        selectedLanguage: req.query.selectedLanguage,
+        criteria: criteria_rows
+    });
+})
+
+router.post("/lab6/assign-criteria", async (req, res, next) => {
+    if (!req.body || Object.keys(req.body).length === 0) {
+        return res.status(400).send('Request body is empty');
+    }
+
+    let output = {
+        preset_name: req.body.name,
+        preset_params: []
+    };
+
+    for (const key in req.body) {
+        if (key !== 'name') {
+            let parts = key.split('_');
+            let profession_id = parseInt(parts[1]);
+            let pvk_id = parseInt(parts[2]);
+            let field_id = parseInt(req.body[key][0].split('_')[2]);
+
+            output.preset_params.push({
+                profession_id: profession_id,
+                pvk_id: pvk_id,
+                field_id: field_id
+            });
+        }
+    }
+
+    const query = {
+        text: 'INSERT INTO criteria_preset(id_expert, preset_name, preset_params) VALUES($1, $2, $3)',
+        values: [req.cookies.usr_id, output.preset_name, JSON.stringify(output.preset_params)],
+    }
+
+    await CLIENT.query(query)
+
+    res.status(200).redirect("/");
 })
 
 module.exports = router
