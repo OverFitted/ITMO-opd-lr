@@ -367,7 +367,7 @@ router.get("/check_profs", async (req, res, next) => {
                 param["formula"] = configParams[index]["formula"];
             });
 
-            preset_data.add(JSON.stringify({criteria_id, preset_num, lab_num, params}));
+            preset_data.add(JSON.stringify({ criteria_id, preset_num, lab_num, params }));
         }
 
         preset_data = Array.from(preset_data).map(JSON.parse);
@@ -393,21 +393,22 @@ router.get("/check_profs", async (req, res, next) => {
                     const result = eval(param.formula.format(...values));
                     const inRange = param.param_direction ? result >= param.param_slice : result <= param.param_slice;
                     const score = inRange ? param.param_weight : 0;
-                    return { [param.param_name]: {criteria_id, result, inRange, score}};
+                    const maxScore = param.param_weight;
+                    return { [param.param_name]: { maxScore, criteria_id, result, inRange, score } };
                 });
-
                 let totalScore = calculated_results.reduce((total, param) => total + Object.values(param)[0].score, 0);
+                let maxScore = calculated_results.reduce((max, param) => max + Object.values(param)[0].maxScore, 0);
 
-                results_for_preset.push({score: totalScore, criteria_id: preset_data[index]["criteria_id"], results: calculated_results});
+                results_for_preset.push({ maxScore, score: totalScore, criteria_id: preset_data[index]["criteria_id"], results: calculated_results });
             }
 
             results_for_preset.sort((a, b) => b.score - a.score);
             let best_result_for_preset = results_for_preset[0];
-
             all_results[preset_data[index]["criteria_id"]] = best_result_for_preset;
         }
 
         let professionScores = {}
+        let professionMaxScores = {}
         for (let index = 0; index < preset["preset_params"].length; index++) {
             const param = preset["preset_params"][index];
             const criteria_id = param["field_id"];
@@ -417,12 +418,24 @@ router.get("/check_profs", async (req, res, next) => {
 
             if (!(profession_id in professionScores)) {
                 professionScores[profession_id] = 0;
+                professionMaxScores[profession_id] = 0;
             }
 
             professionScores[profession_id] += criteria_score.score * pvk_importance;
+            professionMaxScores[profession_id] += criteria_score.maxScore * pvk_importance;
         }
 
-        res.status(200).json(professionScores);
+        let professionScoresPercentage = {}
+        for (let profession_id in professionScores) {
+            professionScoresPercentage[profession_id] = (professionScores[profession_id] / professionMaxScores[profession_id]) * 100;
+        }
+
+        let totalScore = Object.values(professionScores).reduce((a, b) => a + b, 0);
+        for (let profession_id in professionScores) {
+            professionScores[profession_id] = (professionScores[profession_id] / totalScore) * 100;
+        }
+
+        res.status(200).json([professionScores, professionScoresPercentage]);
     } catch (err) {
         console.error('Error querying database:', err);
         res.status(500).send('Server error');
