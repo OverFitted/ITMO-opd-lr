@@ -302,7 +302,7 @@ router.get("/choose-criteria/:lab_num/:test_num", async (req, res, next) => {
     const labNum = parseInt(req.params.lab_num, 10);
     const testNum = parseInt(req.params.test_num, 10);
     const labConfig = criteriaConfig.find(item => item.lab_num === labNum);
-    const testConfig = labConfig.tests.find(item => item.test_num == testNum);
+    const testConfig = labConfig.tests.find(item => item.test_num === testNum);
     const presets = await CLIENT.query(`select * from presets where lab_id=${labNum} and test_in_lab_id=${testNum}`)
     testConfig["presets"] = presets.rows
 
@@ -347,6 +347,7 @@ router.post("/add-criteria/", async (req, res, next) => {
 router.get("/check_profs", async (req, res, next) => {
     const usr_id = req.cookies.usr_id;
     try {
+        const pvk_importance_table = (await CLIENT.query(`select * from expert_profession_quality_lab1`)).rows;
         const preset_id = (await CLIENT.query('SELECT * FROM resp_to_crit_list WHERE id_respond = $1', [usr_id])).rows[0]["id_criteria"];
         const preset = (await CLIENT.query(`SELECT id, preset_params FROM criteria_preset WHERE id = ${preset_id}`)).rows[0];
 
@@ -411,13 +412,14 @@ router.get("/check_profs", async (req, res, next) => {
             const param = preset["preset_params"][index];
             const criteria_id = param["field_id"];
             const profession_id = param["profession_id"];
-            const criteria_score = all_results[criteria_id]
+            const criteria_score = all_results[criteria_id];
+            const pvk_importance = pvk_importance_table.find(x => x["pvk_id"] === param["pvk_id"])["importance"]
 
             if (!(profession_id in professionScores)) {
                 professionScores[profession_id] = 0;
             }
 
-            professionScores[profession_id] += criteria_score.score;
+            professionScores[profession_id] += criteria_score.score * pvk_importance;
         }
 
         res.status(200).json(professionScores);

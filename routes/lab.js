@@ -697,7 +697,6 @@ router.get("/lab6/criteria", async (req, res, next) => {
             prof_rows[i]["pvks"][j]["name"] = pvk_lab1_rows.find(x => x["id"] === prof_rows[i]["pvks"][j]["pvk_id"])["name"]
         }
     }
-
     res.render('criteria_pvk', {
         title: "Выбор критериев | без CHATGPT",
         profs: prof_rows,
