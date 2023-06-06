@@ -350,6 +350,10 @@ router.get("/check_profs", async (req, res, next) => {
         const pvk_importance_table = (await CLIENT.query(`select * from expert_profession_quality_lab1`)).rows;
         const preset_id = (await CLIENT.query('SELECT * FROM resp_to_crit_list WHERE id_respond = $1', [usr_id])).rows[0]["id_criteria"];
         const preset = (await CLIENT.query(`SELECT id, preset_params FROM criteria_preset WHERE id = ${preset_id}`)).rows[0];
+        const professionNames = (await CLIENT.query(`SELECT * FROM professions_lab1`)).rows.reduce((obj, row) => {
+            obj[row.id] = row.name;
+            return obj;
+        }, {});
 
         let preset_data = new Set();
         for (let index = 0; index < preset["preset_params"].length; index++) {
@@ -407,8 +411,8 @@ router.get("/check_profs", async (req, res, next) => {
             all_results[preset_data[index]["criteria_id"]] = best_result_for_preset;
         }
 
-        let professionScores = {}
-        let professionMaxScores = {}
+        let professionScores = Object.keys(professionNames).reduce((obj, id) => ({...obj, [professionNames[id]]: 0}), {});
+        let professionMaxScores = Object.keys(professionNames).reduce((obj, id) => ({...obj, [professionNames[id]]: 0}), {});
         for (let index = 0; index < preset["preset_params"].length; index++) {
             const param = preset["preset_params"][index];
             const criteria_id = param["field_id"];
@@ -416,23 +420,23 @@ router.get("/check_profs", async (req, res, next) => {
             const criteria_score = all_results[criteria_id];
             const pvk_importance = pvk_importance_table.find(x => x["pvk_id"] === param["pvk_id"])["importance"]
 
-            if (!(profession_id in professionScores)) {
-                professionScores[profession_id] = 0;
-                professionMaxScores[profession_id] = 0;
+            if (!(professionNames[profession_id] in professionScores)) {
+                professionScores[professionNames[profession_id]] = 0;
+                professionMaxScores[professionNames[profession_id]] = 0;
             }
 
-            professionScores[profession_id] += criteria_score.score * pvk_importance;
-            professionMaxScores[profession_id] += criteria_score.maxScore * pvk_importance;
+            professionScores[professionNames[profession_id]] += criteria_score.score * pvk_importance;
+            professionMaxScores[professionNames[profession_id]] += criteria_score.maxScore * pvk_importance;
         }
 
         let professionScoresPercentage = {}
-        for (let profession_id in professionScores) {
-            professionScoresPercentage[profession_id] = (professionScores[profession_id] / professionMaxScores[profession_id]) * 100;
+        for (let profession_name in professionScores) {
+            professionScoresPercentage[profession_name] = (professionScores[profession_name] / professionMaxScores[profession_name]) * 100;
         }
 
         let totalScore = Object.values(professionScores).reduce((a, b) => a + b, 0);
-        for (let profession_id in professionScores) {
-            professionScores[profession_id] = (professionScores[profession_id] / totalScore) * 100;
+        for (let profession_name in professionScores) {
+            professionScores[profession_name] = (professionScores[profession_name] / totalScore) * 100;
         }
 
         res.status(200).json([professionScores, professionScoresPercentage]);

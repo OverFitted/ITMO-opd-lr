@@ -393,6 +393,23 @@
                                     <div class="row d-flex justify-content-center align-items-center">
                                         <button class="btn btn-primary" onclick="checkProfs();">Посмотреть совместимость</button>
                                     </div>
+                                    <div class="modal fade" id="chartsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header auto" style="margin: auto">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Совместимость с профессиями</h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-6 offset-3 text-center">
+                                                            <div id="pie-chart"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" id="radial-charts-row"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -811,11 +828,60 @@
             var usr_id = $(this).attr('id').split('-')[1];
             $('#modal-' + usr_id).modal('show');
         });
-
-        function checkProfs() {
-            
-        }
     })
+
+    function checkProfs() {
+        fetch('/user/check_profs', {
+            method: 'get',
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector("#radial-charts-row").innerHTML = "";
+
+            const professions = Object.keys(data[0]);
+            const scores = Object.values(data[0]);
+            const percentages = Object.values(data[1]);
+
+            var pieChart = new ApexCharts(document.querySelector("#pie-chart"), {
+                chart: {
+                    type: 'pie'
+                },
+                series: scores,
+                labels: professions
+            });
+            pieChart.render();
+
+            professions.forEach((profession, i) => {
+                const chartDiv = document.createElement('div');
+                chartDiv.id = `radial-chart-${i+1}`;
+                chartDiv.className = 'col-lg-4';
+                document.querySelector("#radial-charts-row").appendChild(chartDiv);
+
+                var radialChart = new ApexCharts(document.querySelector(`#radial-chart-${i+1}`), {
+                    chart: {
+                        type: 'radialBar'
+                    },
+                    series: [percentages[i].toFixed(2)],
+                    plotOptions: {
+                        radialBar: {
+                            dataLabels: {
+                                total: {
+                                    show: true,
+                                    label: profession
+                                }
+                            }
+                        }
+                    }
+                });
+                radialChart.render();
+            });
+
+            $('#chartsModal').modal('show');
+        })
+        .catch(err => {
+            console.error('Error:', err);
+        });
+    }
 </script>
 
 {{/if}}
