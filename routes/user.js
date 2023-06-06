@@ -10,6 +10,21 @@ const presetsConfig = JSON.parse(presetsConfigJson);
 const criteriaConfigJson = fs.readFileSync('models/criteria.json', 'utf8');
 const criteriaConfig = JSON.parse(criteriaConfigJson);
 
+String.prototype.format = function () {
+    let args = arguments;
+    return this.replace(/{(\d+)}/g, function (match, number) {
+        return typeof args[number] != 'undefined' ? args[number] : match;
+    });
+};
+
+async function getParams(lab_num, test_num) {
+    lab_num = parseInt(lab_num)
+    test_num = parseInt(test_num)
+    let lab = criteriaConfig.find(lab => lab.lab_num === lab_num);
+    let test = lab.tests.find(test => test.test_num === test_num);
+    return test.params;
+}
+
 async function getPresets() {
     try {
         const result = await CLIENT.query('SELECT * FROM presets');
@@ -290,24 +305,6 @@ router.get("/choose-criteria/:lab_num/:test_num", async (req, res, next) => {
     const testConfig = labConfig.tests.find(item => item.test_num == testNum);
     const presets = await CLIENT.query(`select * from presets where lab_id=${labNum} and test_in_lab_id=${testNum}`)
     testConfig["presets"] = presets.rows
-    /*
-        [
-            {
-                preset_id: 12,
-                lab_id: 3,
-                test_in_lab_id: 1,
-                params: {
-                    preset_name: '3.1',
-                    runtime: '20',
-                    show_stats: 'true',
-                    show_time: 'false',
-                    speed_koef: '1',
-                    acceleration_koef: '2'
-                },
-                preset_name: '3.1'
-            }
-        ]
-    */
 
     res.json(testConfig);
 });
@@ -328,7 +325,7 @@ router.post("/add-criteria/", async (req, res, next) => {
                     param_name: req.body[`parameter${i}_criteria`],
                     param_weight: parseFloat(req.body[`weight_param${i}_criteria`]),
                     param_slice: parseFloat(req.body[`slice${i}_criteria`]),
-                    param_direction: req.body[`direction${i}DropdownHidden`] === 'Больше - лучше'
+                    param_direction: req.body[`direction${i}DropdownHidden`].toLowerCase().includes('больше')
                 };
                 criteria.params.push(param);
             } else {
@@ -344,6 +341,89 @@ router.post("/add-criteria/", async (req, res, next) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
+    }
+});
+
+router.get("/check_profs", async (req, res, next) => {
+    const usr_id = req.cookies.usr_id;
+    try {
+        const preset_id = (await CLIENT.query('SELECT * FROM resp_to_crit_list WHERE id_respond = $1', [usr_id])).rows[0]["id_criteria"];
+        const preset = (await CLIENT.query(`SELECT id, preset_params FROM criteria_preset WHERE id = ${preset_id}`)).rows[0];
+
+        let preset_data = new Set();
+        for (let index = 0; index < preset["preset_params"].length; index++) {
+            const param = preset["preset_params"][index];
+            const criteria_id = param["field_id"];
+            const criteria = (await CLIENT.query(`SELECT * FROM criteria WHERE criteria_id = ${criteria_id}`)).rows[0];
+            const preset_num = criteria["criteria_fields"]["preset_num"];
+            const lab_num = criteria["criteria_fields"]["lab_num"];
+            const test_num = criteria["criteria_fields"]["test_num"];
+            const params = criteria["criteria_fields"]["params"];
+            const configParams = await getParams(lab_num, test_num);
+
+            params.forEach((param, index) => {
+                param["db_index"] = configParams[index]["db_index"];
+                param["formula"] = configParams[index]["formula"];
+            });
+
+            preset_data.add(JSON.stringify({criteria_id, preset_num, lab_num, params}));
+        }
+
+        preset_data = Array.from(preset_data).map(JSON.parse);
+
+        let all_results = {};
+        for (let index = 0; index < preset_data.length; index++) {
+            const query = `select * from lr${preset_data[index].lab_num}_to_resp where respondent_id=${usr_id} and preset_id=${preset_data[index].preset_num}`;
+            const lr_result_connections = (await CLIENT.query(query)).rows;
+
+            let results_for_preset = [];
+            for (let j = 0; j < lr_result_connections.length; j++) {
+                const result_list_id = lr_result_connections[j]['result_list_id_lr' + preset_data[index].lab_num];
+                const query = `select * from results_list_lr${preset_data[index].lab_num} where id=${result_list_id}`;
+                const results_list = (await CLIENT.query(query)).rows[0];
+                if (!results_list) {
+                    res.end();
+                    return;
+                }
+
+                let calculated_results = preset_data[index].params.map(param => {
+                    const criteria_id = preset_data[index]["criteria_id"];
+                    const values = param.db_index.map(index => results_list.result_list[index]);
+                    const result = eval(param.formula.format(...values));
+                    const inRange = param.param_direction ? result >= param.param_slice : result <= param.param_slice;
+                    const score = inRange ? param.param_weight : 0;
+                    return { [param.param_name]: {criteria_id, result, inRange, score}};
+                });
+
+                let totalScore = calculated_results.reduce((total, param) => total + Object.values(param)[0].score, 0);
+
+                results_for_preset.push({score: totalScore, criteria_id: preset_data[index]["criteria_id"], results: calculated_results});
+            }
+
+            results_for_preset.sort((a, b) => b.score - a.score);
+            let best_result_for_preset = results_for_preset[0];
+
+            all_results[preset_data[index]["criteria_id"]] = best_result_for_preset;
+        }
+
+        let professionScores = {}
+        for (let index = 0; index < preset["preset_params"].length; index++) {
+            const param = preset["preset_params"][index];
+            const criteria_id = param["field_id"];
+            const profession_id = param["profession_id"];
+            const criteria_score = all_results[criteria_id]
+
+            if (!(profession_id in professionScores)) {
+                professionScores[profession_id] = 0;
+            }
+
+            professionScores[profession_id] += criteria_score.score;
+        }
+
+        res.status(200).json(professionScores);
+    } catch (err) {
+        console.error('Error querying database:', err);
+        res.status(500).send('Server error');
     }
 });
 

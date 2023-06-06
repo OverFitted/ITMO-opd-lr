@@ -58,8 +58,8 @@
     let hits = 0;
     let misses = 0;
     let hitThreshold = 75;
-    let acceleration = {{ preset.acceleration_koef }} * 100;
-    let speed = {{ preset.speed_koef }} * 300;
+    let acceleration = {{ preset.acceleration_koef }};
+    let speed = {{ preset.speed_koef }} * 3;
     let maxspeed = 35;
 
     function drawRect() {

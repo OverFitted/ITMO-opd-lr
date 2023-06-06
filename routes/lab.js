@@ -655,7 +655,7 @@ router.post('/lab5', (req, res, next) => {
 router.get('/lab6', async (req, res, next) => {
     res.status(200)
 
-    top_table_query = "WITH ranked_pvk AS (SELECT profession_id, pvk_id, ROW_NUMBER() OVER (PARTITION BY profession_id ORDER BY COUNT(*) DESC) AS rank FROM expert_profession_quality_lab1 GROUP BY profession_id, pvk_id) SELECT rp.profession_id, p.name, rp.pvk_id, pv.name FROM ranked_pvk AS rp JOIN professions_lab1 AS p ON rp.profession_id = p.id JOIN pvk_lab1 AS pv ON rp.pvk_id = pv.id WHERE rp.rank <= 5 ORDER BY rp.profession_id, rp.rank;"
+    top_table_query = "WITH ranked_pvk AS (SELECT profession_id, pvk_id, ROW_NUMBER() OVER (PARTITION BY profession_id ORDER BY COUNT(*) DESC) AS rank FROM expert_profession_quality_lab1 GROUP BY profession_id, pvk_id) SELECT rp.profession_id, p.name, rp.pvk_id, pv.name FROM ranked_pvk AS rp JOIN professions_lab1 AS p ON rp.profession_id = p.id JOIN pvk_lab1 AS pv ON rp.pvk_id = pv.id ORDER BY rp.profession_id, rp.rank;"
 
     top_table = await CLIENT.query(top_table_query)
     profs = await CLIENT.query('select * from professions_lab1')
