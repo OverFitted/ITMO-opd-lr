@@ -493,8 +493,8 @@ router.get("/check_profs", async (req, res, next) => {
             all_results[preset_data[index]["criteria_id"]] = best_result_for_preset;
         }
 
-        let professionScores = Object.keys(professionNames).reduce((obj, id) => ({...obj, [professionNames[id]]: 0}), {});
-        let professionMaxScores = Object.keys(professionNames).reduce((obj, id) => ({...obj, [professionNames[id]]: 0}), {});
+        let professionScores = Object.keys(professionNames).reduce((obj, id) => ({ ...obj, [professionNames[id]]: 0 }), {});
+        let professionMaxScores = Object.keys(professionNames).reduce((obj, id) => ({ ...obj, [professionNames[id]]: 0 }), {});
         for (let index = 0; index < preset["preset_params"].length; index++) {
             const param = preset["preset_params"][index];
             const criteria_id = param["field_id"];
@@ -538,7 +538,7 @@ router.get("/check_all_profs", async (req, res, next) => {
         const usersData = {};
         const users = (await CLIENT.query('select * from users')).rows;
         for (let user of users) {
-            try{
+            try {
                 const usr_id = user.usr_id;
                 const preset_id = (await CLIENT.query('SELECT * FROM resp_to_crit_list WHERE id_respond = $1', [usr_id])).rows[0]["id_criteria"];
                 const preset = (await CLIENT.query(`SELECT id, preset_params FROM criteria_preset WHERE id = ${preset_id}`)).rows[0];
@@ -599,8 +599,8 @@ router.get("/check_all_profs", async (req, res, next) => {
                     all_results[preset_data[index]["criteria_id"]] = best_result_for_preset;
                 }
 
-                let professionScores = Object.keys(professionNames).reduce((obj, id) => ({...obj, [professionNames[id]]: 0}), {});
-                let professionMaxScores = Object.keys(professionNames).reduce((obj, id) => ({...obj, [professionNames[id]]: 0}), {});
+                let professionScores = Object.keys(professionNames).reduce((obj, id) => ({ ...obj, [professionNames[id]]: 0 }), {});
+                let professionMaxScores = Object.keys(professionNames).reduce((obj, id) => ({ ...obj, [professionNames[id]]: 0 }), {});
                 for (let index = 0; index < preset["preset_params"].length; index++) {
                     const param = preset["preset_params"][index];
                     const criteria_id = param["field_id"];
@@ -661,13 +661,13 @@ router.get("/check_all_profs", async (req, res, next) => {
         let leastPopular = professionsArray[professionsArray.length - 1].profession;
 
         let workbook = new ExcelJS.Workbook();
-        let worksheet = workbook.addWorksheet('Data');
+        let worksheet = workbook.addWorksheet('Профессии');
 
         worksheet.columns = [
-            {header: 'Название профессии', key: 'profession', width: 25},
-            {header: 'User ID', key: 'user_id', width: 10},
-            {header: 'Процент совместимости с профессией', key: 'compatibility', width: 35},
-            {header: 'Процент совместимости между профессиями', key: 'intercompatibility', width: 35}
+            { header: 'Название профессии', key: 'profession', width: 25 },
+            { header: 'User ID', key: 'user_id', width: 10 },
+            { header: 'Процент совместимости с профессией', key: 'intercompatibility', width: 35 },
+            { header: 'Процент совместимости между профессиями', key: 'compatibility', width: 35 }
         ];
 
         Object.keys(usersData).forEach(userID => {
@@ -688,11 +688,11 @@ router.get("/check_all_profs", async (req, res, next) => {
         worksheet.getCell('F2').value = 'Самая непопулярная профессия';
         worksheet.getCell('G2').value = leastPopular;
 
-        await workbook.xlsx.writeFile('temp/data.xlsx');
+        await workbook.xlsx.writeFile('temp/Без ChatGPT Профессии.xlsx');
 
-        res.download('temp/data.xlsx', (err) => {
+        res.download('temp/Без ChatGPT Профессии.xlsx', (err) => {
             if (err) throw err;
-            fs.unlinkSync('temp/data.xlsx');
+            fs.unlinkSync('temp/Без ChatGPT Профессии.xlsx');
         });
     } catch (err) {
         console.error('Error querying database:', err);
@@ -703,14 +703,14 @@ router.get("/check_all_profs", async (req, res, next) => {
 router.get("/check_all_pvks", async (req, res, next) => {
     try {
         const pvk_importance_table = (await CLIENT.query(`select * from expert_profession_quality_lab1`)).rows;
-        const professionNames = (await CLIENT.query(`SELECT * FROM professions_lab1`)).rows.reduce((obj, row) => {
+        const pvkNames = (await CLIENT.query(`SELECT * FROM pvk_lab1`)).rows.reduce((obj, row) => {
             obj[row.id] = row.name;
             return obj;
         }, {});
         const usersData = {};
         const users = (await CLIENT.query('select * from users')).rows;
         for (let user of users) {
-            try{
+            try {
                 const usr_id = user.usr_id;
                 const preset_id = (await CLIENT.query('SELECT * FROM resp_to_crit_list WHERE id_respond = $1', [usr_id])).rows[0]["id_criteria"];
                 const preset = (await CLIENT.query(`SELECT id, preset_params FROM criteria_preset WHERE id = ${preset_id}`)).rows[0];
@@ -771,42 +771,75 @@ router.get("/check_all_pvks", async (req, res, next) => {
                     all_results[preset_data[index]["criteria_id"]] = best_result_for_preset;
                 }
 
-                let pvkScores = Object.keys(pvkNames).reduce((obj, id) => ({...obj, [pvkNames[id]]: 0}), {});
-                let pvkMaxScores = Object.keys(pvkNames).reduce((obj, id) => ({...obj, [pvkNames[id]]: 0}), {});
+                let pvkScores = Object.keys(pvkNames).reduce((obj, id) => ({ ...obj, [pvkNames[id]]: 0 }), {});
+                let pvkMaxScores = Object.keys(pvkNames).reduce((obj, id) => ({ ...obj, [pvkNames[id]]: 0 }), {});
                 for (let index = 0; index < preset["preset_params"].length; index++) {
                     const param = preset["preset_params"][index];
                     const pvk_id = param["pvk_id"];
                     const criteria_id = param["field_id"];
-                    const profession_id = param["profession_id"];
                     const criteria_score = all_results[criteria_id];
                     const pvk_importance = pvk_importance_table.find(x => x["pvk_id"] === param["pvk_id"])["importance"]
 
-                    if (!(professionNames[profession_id] in professionScores)) {
-                        professionScores[professionNames[profession_id]] = 0;
-                        professionMaxScores[professionNames[profession_id]] = 0;
+                    if (!(pvkNames[pvk_id] in pvkScores)) {
+                        pvkScores[pvkNames[pvk_id]] = 0;
+                        pvkMaxScores[pvkNames[pvk_id]] = 0;
                     }
 
-                    professionScores[professionNames[profession_id]] += criteria_score.score * pvk_importance;
-                    professionMaxScores[professionNames[profession_id]] += criteria_score.maxScore * pvk_importance;
+                    pvkScores[pvkNames[pvk_id]] += criteria_score.score * pvk_importance;
+                    pvkMaxScores[pvkNames[pvk_id]] += criteria_score.maxScore * pvk_importance;
                 }
 
-                let professionScoresPercentage = {}
-                for (let profession_name in professionScores) {
-                    professionScoresPercentage[profession_name] = (professionScores[profession_name] / professionMaxScores[profession_name]) * 100;
+                let pvkScoresPercentage = {}
+                for (let pvk_name in pvkScores) {
+                    pvkScoresPercentage[pvk_name] = (pvkScores[pvk_name] / pvkMaxScores[pvk_name]) * 100;
                 }
 
-                let totalScore = Object.values(professionScores).reduce((a, b) => a + b, 0);
-                for (let profession_name in professionScores) {
-                    professionScores[profession_name] = (professionScores[profession_name] / totalScore) * 100;
+                let totalScore = Object.values(pvkScores).reduce((a, b) => a + b, 0);
+                for (let pvk_name in pvkScores) {
+                    pvkScores[pvk_name] = (pvkScores[pvk_name] / totalScore) * 100;
                 }
 
-                usersData[usr_id] = [professionScores, professionScoresPercentage];
+                for (let pvk_name in pvkScores) {
+                    if (pvkScoresPercentage[pvk_name] === null || isNaN(pvkScoresPercentage[pvk_name]) || !isFinite(pvkScoresPercentage[pvk_name])) {
+                        delete pvkScores[pvk_name];
+                        delete pvkScoresPercentage[pvk_name];
+                    }
+                }
+
+                usersData[usr_id] = [pvkScores, pvkScoresPercentage];
             } catch (err) {
                 continue;
             }
         }
 
-        res.status(200).json(usersData);
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('ПВК');
+
+        worksheet.columns = [
+            { header: 'Название ПВК', key: 'pvk', width: 10 },
+            { header: 'user_id', key: 'user_id', width: 10 },
+            { header: 'Процент совместимости с ПВК', key: 'intercompatibility', width: 10 },
+            { header: 'Процент совместимости между ПВК', key: 'compatibility', width: 10 }
+        ];
+
+        Object.keys(usersData).forEach((userId) => {
+            let pvks = Object.keys(usersData[userId][0]);
+            pvks.forEach(profession => {
+                worksheet.addRow({
+                    'pvk': profession,
+                    'user_id': userId,
+                    'compatibility': usersData[userId][0][profession],
+                    'intercompatibility': usersData[userId][1] ? usersData[userId][1][profession] : 'N/A'
+                });
+            });
+        });
+
+        await workbook.xlsx.writeFile('temp/Без ChatGPT ПВК.xlsx');
+
+        res.download('temp/Без ChatGPT ПВК.xlsx', (err) => {
+            if (err) throw err;
+            fs.unlinkSync('temp/Без ChatGPT ПВК.xlsx');
+        });
     } catch (err) {
         console.error('Error querying database:', err);
         res.status(500).send('Server error');
