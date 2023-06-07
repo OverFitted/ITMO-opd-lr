@@ -907,7 +907,7 @@
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'data.xlsx';
+            a.download = 'Без ChatGPT Профессии.xlsx';
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -916,14 +916,14 @@
         }
     }
 
-    function exportDataPVKs() {
+    async function exportDataPVKs() {
         try {
             const response = await fetch('/user/check_all_pvks');
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'data.xlsx';
+            a.download = 'Без ChatGPT ПВК.xlsx';
             document.body.appendChild(a);
             a.click();
             a.remove();
