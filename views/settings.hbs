@@ -902,22 +902,34 @@
 
     async function exportDataUsers() {
         try {
-        const response = await fetch('/user/check_all_profs');
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'data.xlsx';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+            const response = await fetch('/user/check_all_profs');
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
         } catch (err) {
-        console.error('Error: ', err);
+            console.error('Error: ', err);
         }
     }
 
     function exportDataPVKs() {
-
+        try {
+            const response = await fetch('/user/check_all_pvks');
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (err) {
+            console.error('Error: ', err);
+        }
     }
 </script>
 
