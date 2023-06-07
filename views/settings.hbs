@@ -847,6 +847,21 @@
         });
     })
 
+    function showAlert(message) {
+        const alertElement = document.createElement('div');
+        alertElement.innerHTML = `
+            <div class="alert alert-danger alert-dismissible fade show fixed-top m-3 text-center" role="alert" style="position: absolute; top: 0; right: 0; z-index: 9999">
+                ${message}
+            </div>
+        `;
+
+        document.body.appendChild(alertElement);
+
+        setTimeout(() => {
+            $(alertElement).alert('close');
+        }, 3000);
+    }
+
     function checkProfs() {
         fetch('/user/check_profs', {
             method: 'get',
@@ -897,6 +912,7 @@
         })
         .catch(err => {
             console.error('Error:', err);
+            showAlert('Не назначен пресет критериев или не все тесты пройдены');
         });
     }
 

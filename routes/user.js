@@ -464,7 +464,6 @@ router.get("/check_profs", async (req, res, next) => {
             for (let j = 0; j < lr_result_connections.length; j++) {
                 const result_list_id = lr_result_connections[j]['result_list_id_lr' + preset_data[index].lab_num];
                 const query = `select * from results_list_lr${preset_data[index].lab_num} where id=${result_list_id}`;
-                console.log(query)
                 const results_list = (await CLIENT.query(query)).rows[0];
                 if (!results_list) {
                     res.end();
@@ -485,8 +484,6 @@ router.get("/check_profs", async (req, res, next) => {
 
                 results_for_preset.push({ maxScore, score: totalScore, criteria_id: preset_data[index]["criteria_id"], results: calculated_results });
             }
-
-            console.log("WOWOWOWOWOWOW")
 
             results_for_preset.sort((a, b) => b.score - a.score);
             let best_result_for_preset = results_for_preset[0];
