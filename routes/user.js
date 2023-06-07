@@ -1,3 +1,4 @@
+const ExcelJS = require('exceljs');
 const User = require('../models/user');
 const { Router } = require('express')
 const CLIENT = require("../models/connector");
@@ -309,13 +310,48 @@ router.get("/choose-criteria/:lab_num/:test_num", async (req, res, next) => {
     res.json(testConfig);
 });
 
+router.post("/del-criteria/", async (req, res, next) => {
+    if (!req.body || Object.keys(req.body).length === 0) {
+        return res.status(400).send('Request body is empty');
+    }
+
+    const query = {
+        text: 'DELETE FROM criteria WHERE criteria_id = $1',
+        values: [req.body.criteria_id],
+    }
+
+    await CLIENT.query(query)
+    res.status(200).redirect("/user/criteria_list");
+})
+
+router.get("/get-criteria/:criteria_id", async (req, res, next) => {
+    if (!req.params || Object.keys(req.params).length === 0) {
+        return res.status(400).send('Request params is empty');
+    }
+
+    const criteria_id = req.params.criteria_id;
+    const criteria = (await CLIENT.query(`SELECT * FROM criteria WHERE criteria_id = ${criteria_id}`)).rows[0];
+    const labNum = criteria.criteria_fields.lab_num;
+    const testNum = criteria.criteria_fields.test_num;
+    const labConfig = criteriaConfig.find(item => item.lab_num === parseInt(labNum));
+    const testConfig = labConfig.tests.find(item => item.test_num === parseInt(testNum));
+
+    for (let index = 0; index < Math.min(testConfig.params.length, criteria.criteria_fields.params.length); index++) {
+        const element = testConfig.params[index];
+        criteria.criteria_fields.params[index]["slice_range"] = element["slice_range"]
+    }
+
+    res.status(200).json(criteria);
+})
+
 router.post("/add-criteria/", async (req, res, next) => {
     try {
+        const preset_num = (await CLIENT.query("select * from presets;")).rows.find((item => item.params.preset_name === req.body.presetSelection)).preset_id
         let criteria = {
             name_criteria: req.body.name_criteria,
             lab_num: req.body.labSelection,
             test_num: req.body.testSelection,
-            preset_num: req.body.presetSelection,
+            preset_num: preset_num,
             params: []
         };
 
@@ -343,6 +379,49 @@ router.post("/add-criteria/", async (req, res, next) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+router.post("/edit-criteria/:criteria_id", async (req, res, next) => {
+    try {
+        if (!req.params || Object.keys(req.params).length === 0) {
+            return res.status(400).send('Request params is empty');
+        }
+
+        const criteria_id = req.params.criteria_id;
+
+        const preset_num = (await CLIENT.query("select * from presets;")).rows.find((item => item.params.preset_name === req.body.presetSelection)).preset_id
+        let criteria = {
+            name_criteria: req.body.name_criteria,
+            lab_num: req.body.labSelection,
+            test_num: req.body.testSelection,
+            preset_num: preset_num,
+            params: []
+        };
+
+        for (let i = 1; i <= Object.keys(req.body).length; i++) {
+            if (req.body[`parameter${i}_criteria`] && req.body[`weight_param${i}_criteria`] && req.body[`direction${i}DropdownHidden`] && req.body[`slice${i}_criteria`]) {
+                let param = {
+                    param_name: req.body[`parameter${i}_criteria`],
+                    param_weight: parseFloat(req.body[`weight_param${i}_criteria`]),
+                    param_slice: parseFloat(req.body[`slice${i}_criteria`]),
+                    param_direction: req.body[`direction${i}DropdownHidden`].toLowerCase().includes('больше')
+                };
+                criteria.params.push(param);
+            } else {
+                break;
+            }
+        }
+
+        await CLIENT.query(`DELETE FROM criteria WHERE criteria_id = ${criteria_id}`);
+        const insertText = `INSERT INTO criteria(criteria_id, criteria_fields) VALUES ($1, $2)`;
+        const insertValue = [criteria_id, JSON.stringify(criteria)];
+        await CLIENT.query(insertText, insertValue);
+        res.status(200).redirect("/user/criteria_list");
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+})
 
 router.get("/check_profs", async (req, res, next) => {
     const usr_id = req.cookies.usr_id;
@@ -385,6 +464,7 @@ router.get("/check_profs", async (req, res, next) => {
             for (let j = 0; j < lr_result_connections.length; j++) {
                 const result_list_id = lr_result_connections[j]['result_list_id_lr' + preset_data[index].lab_num];
                 const query = `select * from results_list_lr${preset_data[index].lab_num} where id=${result_list_id}`;
+                console.log(query)
                 const results_list = (await CLIENT.query(query)).rows[0];
                 if (!results_list) {
                     res.end();
@@ -405,6 +485,8 @@ router.get("/check_profs", async (req, res, next) => {
 
                 results_for_preset.push({ maxScore, score: totalScore, criteria_id: preset_data[index]["criteria_id"], results: calculated_results });
             }
+
+            console.log("WOWOWOWOWOWOW")
 
             results_for_preset.sort((a, b) => b.score - a.score);
             let best_result_for_preset = results_for_preset[0];
@@ -440,6 +522,291 @@ router.get("/check_profs", async (req, res, next) => {
         }
 
         res.status(200).json([professionScores, professionScoresPercentage]);
+    } catch (err) {
+        console.error('Error querying database:', err);
+        res.status(500).send('Server error');
+    }
+});
+
+router.get("/check_all_profs", async (req, res, next) => {
+    try {
+        const pvk_importance_table = (await CLIENT.query(`select * from expert_profession_quality_lab1`)).rows;
+        const professionNames = (await CLIENT.query(`SELECT * FROM professions_lab1`)).rows.reduce((obj, row) => {
+            obj[row.id] = row.name;
+            return obj;
+        }, {});
+        const usersData = {};
+        const users = (await CLIENT.query('select * from users')).rows;
+        for (let user of users) {
+            try{
+                const usr_id = user.usr_id;
+                const preset_id = (await CLIENT.query('SELECT * FROM resp_to_crit_list WHERE id_respond = $1', [usr_id])).rows[0]["id_criteria"];
+                const preset = (await CLIENT.query(`SELECT id, preset_params FROM criteria_preset WHERE id = ${preset_id}`)).rows[0];
+
+                let preset_data = new Set();
+                for (let index = 0; index < preset["preset_params"].length; index++) {
+                    const param = preset["preset_params"][index];
+                    const criteria_id = param["field_id"];
+                    const criteria = (await CLIENT.query(`SELECT * FROM criteria WHERE criteria_id = ${criteria_id}`)).rows[0];
+                    const preset_num = criteria["criteria_fields"]["preset_num"];
+                    const lab_num = criteria["criteria_fields"]["lab_num"];
+                    const test_num = criteria["criteria_fields"]["test_num"];
+                    const params = criteria["criteria_fields"]["params"];
+                    const configParams = await getParams(lab_num, test_num);
+
+                    params.forEach((param, index) => {
+                        param["db_index"] = configParams[index]["db_index"];
+                        param["formula"] = configParams[index]["formula"];
+                    });
+
+                    preset_data.add(JSON.stringify({ criteria_id, preset_num, lab_num, params }));
+                }
+
+                preset_data = Array.from(preset_data).map(JSON.parse);
+
+                let all_results = {};
+                for (let index = 0; index < preset_data.length; index++) {
+                    const query = `select * from lr${preset_data[index].lab_num}_to_resp where respondent_id=${usr_id} and preset_id=${preset_data[index].preset_num}`;
+                    const lr_result_connections = (await CLIENT.query(query)).rows;
+
+                    let results_for_preset = [];
+                    for (let j = 0; j < lr_result_connections.length; j++) {
+                        const result_list_id = lr_result_connections[j]['result_list_id_lr' + preset_data[index].lab_num];
+                        const query = `select * from results_list_lr${preset_data[index].lab_num} where id=${result_list_id}`;
+                        const results_list = (await CLIENT.query(query)).rows[0];
+                        if (!results_list) {
+                            res.end();
+                            return;
+                        }
+
+                        let calculated_results = preset_data[index].params.map(param => {
+                            const criteria_id = preset_data[index]["criteria_id"];
+                            const values = param.db_index.map(index => results_list.result_list[index]);
+                            const result = eval(param.formula.format(...values));
+                            const inRange = param.param_direction ? result >= param.param_slice : result <= param.param_slice;
+                            const score = inRange ? param.param_weight : 0;
+                            const maxScore = param.param_weight;
+                            return { [param.param_name]: { maxScore, criteria_id, result, inRange, score } };
+                        });
+                        let totalScore = calculated_results.reduce((total, param) => total + Object.values(param)[0].score, 0);
+                        let maxScore = calculated_results.reduce((max, param) => max + Object.values(param)[0].maxScore, 0);
+
+                        results_for_preset.push({ maxScore, score: totalScore, criteria_id: preset_data[index]["criteria_id"], results: calculated_results });
+                    }
+
+                    results_for_preset.sort((a, b) => b.score - a.score);
+                    let best_result_for_preset = results_for_preset[0];
+                    all_results[preset_data[index]["criteria_id"]] = best_result_for_preset;
+                }
+
+                let professionScores = Object.keys(professionNames).reduce((obj, id) => ({...obj, [professionNames[id]]: 0}), {});
+                let professionMaxScores = Object.keys(professionNames).reduce((obj, id) => ({...obj, [professionNames[id]]: 0}), {});
+                for (let index = 0; index < preset["preset_params"].length; index++) {
+                    const param = preset["preset_params"][index];
+                    const criteria_id = param["field_id"];
+                    const profession_id = param["profession_id"];
+                    const criteria_score = all_results[criteria_id];
+                    const pvk_importance = pvk_importance_table.find(x => x["pvk_id"] === param["pvk_id"])["importance"]
+
+                    if (!(professionNames[profession_id] in professionScores)) {
+                        professionScores[professionNames[profession_id]] = 0;
+                        professionMaxScores[professionNames[profession_id]] = 0;
+                    }
+
+                    professionScores[professionNames[profession_id]] += criteria_score.score * pvk_importance;
+                    professionMaxScores[professionNames[profession_id]] += criteria_score.maxScore * pvk_importance;
+                }
+
+                let professionScoresPercentage = {}
+                for (let profession_name in professionScores) {
+                    professionScoresPercentage[profession_name] = (professionScores[profession_name] / professionMaxScores[profession_name]) * 100;
+                }
+
+                let totalScore = Object.values(professionScores).reduce((a, b) => a + b, 0);
+                for (let profession_name in professionScores) {
+                    professionScores[profession_name] = (professionScores[profession_name] / totalScore) * 100;
+                }
+
+                usersData[usr_id] = [professionScores, professionScoresPercentage];
+            } catch (err) {
+                continue;
+            }
+        }
+
+        let professionCount = {};
+
+        Object.keys(usersData).forEach(userID => {
+            let professions = Object.keys(usersData[userID][0]);
+            professions.forEach(profession => {
+                if (professionCount[profession]) {
+                    professionCount[profession].count += 1;
+                    professionCount[profession].total += usersData[userID][0][profession];
+                } else {
+                    professionCount[profession] = { count: 1, total: usersData[userID][0][profession] };
+                }
+            });
+        });
+
+        Object.keys(professionCount).forEach(profession => {
+            professionCount[profession].popularity = professionCount[profession].total / professionCount[profession].count;
+        });
+
+        let professionsArray = Object.keys(professionCount).map(profession => ({
+            profession,
+            popularity: professionCount[profession].popularity
+        }));
+
+        professionsArray.sort((a, b) => b.popularity - a.popularity);
+        let mostPopular = professionsArray[0].profession;
+        let leastPopular = professionsArray[professionsArray.length - 1].profession;
+
+        let workbook = new ExcelJS.Workbook();
+        let worksheet = workbook.addWorksheet('Data');
+
+        worksheet.columns = [
+            {header: 'Название профессии', key: 'profession', width: 25},
+            {header: 'User ID', key: 'user_id', width: 10},
+            {header: 'Процент совместимости с профессией', key: 'compatibility', width: 35},
+            {header: 'Процент совместимости между профессиями', key: 'intercompatibility', width: 35}
+        ];
+
+        Object.keys(usersData).forEach(userID => {
+            let professions = Object.keys(usersData[userID][0]);
+            professions.forEach(profession => {
+                worksheet.addRow({
+                    'profession': profession,
+                    'user_id': userID,
+                    'compatibility': usersData[userID][0][profession],
+                    'intercompatibility': usersData[userID][1] ? usersData[userID][1][profession] : 'N/A'
+                });
+            });
+        });
+
+        worksheet.getCell('F1').value = 'Самая популярная профессия';
+        worksheet.getCell('G1').value = mostPopular;
+
+        worksheet.getCell('F2').value = 'Самая непопулярная профессия';
+        worksheet.getCell('G2').value = leastPopular;
+
+        await workbook.xlsx.writeFile('temp/data.xlsx');
+
+        res.download('temp/data.xlsx', (err) => {
+            if (err) throw err;
+            fs.unlinkSync('temp/data.xlsx');
+        });
+    } catch (err) {
+        console.error('Error querying database:', err);
+        res.status(500).send('Server error');
+    }
+});
+
+router.get("/check_all_pvks", async (req, res, next) => {
+    try {
+        const pvk_importance_table = (await CLIENT.query(`select * from expert_profession_quality_lab1`)).rows;
+        const professionNames = (await CLIENT.query(`SELECT * FROM professions_lab1`)).rows.reduce((obj, row) => {
+            obj[row.id] = row.name;
+            return obj;
+        }, {});
+        const usersData = {};
+        const users = (await CLIENT.query('select * from users')).rows;
+        for (let user of users) {
+            try{
+                const usr_id = user.usr_id;
+                const preset_id = (await CLIENT.query('SELECT * FROM resp_to_crit_list WHERE id_respond = $1', [usr_id])).rows[0]["id_criteria"];
+                const preset = (await CLIENT.query(`SELECT id, preset_params FROM criteria_preset WHERE id = ${preset_id}`)).rows[0];
+
+                let preset_data = new Set();
+                for (let index = 0; index < preset["preset_params"].length; index++) {
+                    const param = preset["preset_params"][index];
+                    const criteria_id = param["field_id"];
+                    const criteria = (await CLIENT.query(`SELECT * FROM criteria WHERE criteria_id = ${criteria_id}`)).rows[0];
+                    const preset_num = criteria["criteria_fields"]["preset_num"];
+                    const lab_num = criteria["criteria_fields"]["lab_num"];
+                    const test_num = criteria["criteria_fields"]["test_num"];
+                    const params = criteria["criteria_fields"]["params"];
+                    const configParams = await getParams(lab_num, test_num);
+
+                    params.forEach((param, index) => {
+                        param["db_index"] = configParams[index]["db_index"];
+                        param["formula"] = configParams[index]["formula"];
+                    });
+
+                    preset_data.add(JSON.stringify({ criteria_id, preset_num, lab_num, params }));
+                }
+
+                preset_data = Array.from(preset_data).map(JSON.parse);
+
+                let all_results = {};
+                for (let index = 0; index < preset_data.length; index++) {
+                    const query = `select * from lr${preset_data[index].lab_num}_to_resp where respondent_id=${usr_id} and preset_id=${preset_data[index].preset_num}`;
+                    const lr_result_connections = (await CLIENT.query(query)).rows;
+
+                    let results_for_preset = [];
+                    for (let j = 0; j < lr_result_connections.length; j++) {
+                        const result_list_id = lr_result_connections[j]['result_list_id_lr' + preset_data[index].lab_num];
+                        const query = `select * from results_list_lr${preset_data[index].lab_num} where id=${result_list_id}`;
+                        const results_list = (await CLIENT.query(query)).rows[0];
+                        if (!results_list) {
+                            res.end();
+                            return;
+                        }
+
+                        let calculated_results = preset_data[index].params.map(param => {
+                            const criteria_id = preset_data[index]["criteria_id"];
+                            const values = param.db_index.map(index => results_list.result_list[index]);
+                            const result = eval(param.formula.format(...values));
+                            const inRange = param.param_direction ? result >= param.param_slice : result <= param.param_slice;
+                            const score = inRange ? param.param_weight : 0;
+                            const maxScore = param.param_weight;
+                            return { [param.param_name]: { maxScore, criteria_id, result, inRange, score } };
+                        });
+                        let totalScore = calculated_results.reduce((total, param) => total + Object.values(param)[0].score, 0);
+                        let maxScore = calculated_results.reduce((max, param) => max + Object.values(param)[0].maxScore, 0);
+
+                        results_for_preset.push({ maxScore, score: totalScore, criteria_id: preset_data[index]["criteria_id"], results: calculated_results });
+                    }
+
+                    results_for_preset.sort((a, b) => b.score - a.score);
+                    let best_result_for_preset = results_for_preset[0];
+                    all_results[preset_data[index]["criteria_id"]] = best_result_for_preset;
+                }
+
+                let pvkScores = Object.keys(pvkNames).reduce((obj, id) => ({...obj, [pvkNames[id]]: 0}), {});
+                let pvkMaxScores = Object.keys(pvkNames).reduce((obj, id) => ({...obj, [pvkNames[id]]: 0}), {});
+                for (let index = 0; index < preset["preset_params"].length; index++) {
+                    const param = preset["preset_params"][index];
+                    const pvk_id = param["pvk_id"];
+                    const criteria_id = param["field_id"];
+                    const profession_id = param["profession_id"];
+                    const criteria_score = all_results[criteria_id];
+                    const pvk_importance = pvk_importance_table.find(x => x["pvk_id"] === param["pvk_id"])["importance"]
+
+                    if (!(professionNames[profession_id] in professionScores)) {
+                        professionScores[professionNames[profession_id]] = 0;
+                        professionMaxScores[professionNames[profession_id]] = 0;
+                    }
+
+                    professionScores[professionNames[profession_id]] += criteria_score.score * pvk_importance;
+                    professionMaxScores[professionNames[profession_id]] += criteria_score.maxScore * pvk_importance;
+                }
+
+                let professionScoresPercentage = {}
+                for (let profession_name in professionScores) {
+                    professionScoresPercentage[profession_name] = (professionScores[profession_name] / professionMaxScores[profession_name]) * 100;
+                }
+
+                let totalScore = Object.values(professionScores).reduce((a, b) => a + b, 0);
+                for (let profession_name in professionScores) {
+                    professionScores[profession_name] = (professionScores[profession_name] / totalScore) * 100;
+                }
+
+                usersData[usr_id] = [professionScores, professionScoresPercentage];
+            } catch (err) {
+                continue;
+            }
+        }
+
+        res.status(200).json(usersData);
     } catch (err) {
         console.error('Error querying database:', err);
         res.status(500).send('Server error');

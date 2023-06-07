@@ -764,6 +764,23 @@
                                     <button class="btn btn-primary" onclick="window.location.href = '/user/criteria_list';">Настроить критерии</button>
                                 </div>
                             </div>
+                             <div class="pb-lg-3">
+                                <div>
+                                    <div class="row mb-lg-3">
+                                        <div class="text-lg-center col-lg-12">
+                                            <h3 class="primary-text box-heading text-lg-center">
+                                                Данные<br>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row d-flex justify-content-center align-items-center mb-3">
+                                    <button class="btn btn-primary" onclick="exportDataUsers();">Экспорт данных по всем пользователям</button>
+                                </div>
+                                <div class="row d-flex justify-content-center align-items-center">
+                                    <button class="btn btn-primary" onclick="exportDataPVKs();">Экспорт данных по всем ПВК</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -881,6 +898,26 @@
         .catch(err => {
             console.error('Error:', err);
         });
+    }
+
+    async function exportDataUsers() {
+        try {
+        const response = await fetch('/user/check_all_profs');
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        } catch (err) {
+        console.error('Error: ', err);
+        }
+    }
+
+    function exportDataPVKs() {
+
     }
 </script>
 

@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.7 (Homebrew)
--- Dumped by pg_dump version 14.7 (Homebrew)
+-- Dumped from database version 15.2
+-- Dumped by pg_dump version 15.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,12 +16,21 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: schema_name; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA schema_name;
+
+
+ALTER SCHEMA schema_name OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: criteria; Type: TABLE; Schema: public; Owner: master
+-- Name: criteria; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.criteria (
@@ -30,10 +39,10 @@ CREATE TABLE public.criteria (
 );
 
 
-ALTER TABLE public.criteria OWNER TO master;
+ALTER TABLE public.criteria OWNER TO postgres;
 
 --
--- Name: criteria_criteria_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: criteria_criteria_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.criteria_criteria_id_seq
@@ -45,17 +54,53 @@ CREATE SEQUENCE public.criteria_criteria_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.criteria_criteria_id_seq OWNER TO master;
+ALTER TABLE public.criteria_criteria_id_seq OWNER TO postgres;
 
 --
--- Name: criteria_criteria_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: criteria_criteria_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.criteria_criteria_id_seq OWNED BY public.criteria.criteria_id;
 
 
 --
--- Name: expert_profession_pvk_lab6; Type: TABLE; Schema: public; Owner: master
+-- Name: criteria_preset; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.criteria_preset (
+    id integer NOT NULL,
+    id_expert integer,
+    preset_name text,
+    preset_params json
+);
+
+
+ALTER TABLE public.criteria_preset OWNER TO postgres;
+
+--
+-- Name: criteria_preset_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.criteria_preset_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.criteria_preset_id_seq OWNER TO postgres;
+
+--
+-- Name: criteria_preset_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.criteria_preset_id_seq OWNED BY public.criteria_preset.id;
+
+
+--
+-- Name: expert_profession_pvk_lab6; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.expert_profession_pvk_lab6 (
@@ -64,10 +109,10 @@ CREATE TABLE public.expert_profession_pvk_lab6 (
 );
 
 
-ALTER TABLE public.expert_profession_pvk_lab6 OWNER TO master;
+ALTER TABLE public.expert_profession_pvk_lab6 OWNER TO postgres;
 
 --
--- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq
@@ -79,17 +124,17 @@ CREATE SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNER TO master;
+ALTER TABLE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNER TO postgres;
 
 --
--- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.expert_profession_pvk_lab6_respondent_profession_id_seq OWNED BY public.expert_profession_pvk_lab6.respondent_id;
 
 
 --
--- Name: expert_profession_quality_lab1; Type: TABLE; Schema: public; Owner: graevsky
+-- Name: expert_profession_quality_lab1; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.expert_profession_quality_lab1 (
@@ -102,10 +147,10 @@ CREATE TABLE public.expert_profession_quality_lab1 (
 );
 
 
-ALTER TABLE public.expert_profession_quality_lab1 OWNER TO graevsky;
+ALTER TABLE public.expert_profession_quality_lab1 OWNER TO postgres;
 
 --
--- Name: expert_profession_quality_id_seq; Type: SEQUENCE; Schema: public; Owner: graevsky
+-- Name: expert_profession_quality_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.expert_profession_quality_id_seq
@@ -117,17 +162,17 @@ CREATE SEQUENCE public.expert_profession_quality_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.expert_profession_quality_id_seq OWNER TO graevsky;
+ALTER TABLE public.expert_profession_quality_id_seq OWNER TO postgres;
 
 --
--- Name: expert_profession_quality_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: graevsky
+-- Name: expert_profession_quality_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.expert_profession_quality_id_seq OWNED BY public.expert_profession_quality_lab1.id;
 
 
 --
--- Name: lr2_to_resp; Type: TABLE; Schema: public; Owner: master
+-- Name: lr2_to_resp; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.lr2_to_resp (
@@ -140,17 +185,17 @@ CREATE TABLE public.lr2_to_resp (
 );
 
 
-ALTER TABLE public.lr2_to_resp OWNER TO master;
+ALTER TABLE public.lr2_to_resp OWNER TO postgres;
 
 --
--- Name: COLUMN lr2_to_resp.test_id; Type: COMMENT; Schema: public; Owner: master
+-- Name: COLUMN lr2_to_resp.test_id; Type: COMMENT; Schema: public; Owner: postgres
 --
 
 COMMENT ON COLUMN public.lr2_to_resp.test_id IS 'num of the test';
 
 
 --
--- Name: lr2_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: lr2_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.lr2_to_resp_id_seq
@@ -162,17 +207,17 @@ CREATE SEQUENCE public.lr2_to_resp_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.lr2_to_resp_id_seq OWNER TO master;
+ALTER TABLE public.lr2_to_resp_id_seq OWNER TO postgres;
 
 --
--- Name: lr2_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: lr2_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.lr2_to_resp_id_seq OWNED BY public.lr2_to_resp.id;
 
 
 --
--- Name: lr3_to_resp; Type: TABLE; Schema: public; Owner: master
+-- Name: lr3_to_resp; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.lr3_to_resp (
@@ -184,10 +229,10 @@ CREATE TABLE public.lr3_to_resp (
 );
 
 
-ALTER TABLE public.lr3_to_resp OWNER TO master;
+ALTER TABLE public.lr3_to_resp OWNER TO postgres;
 
 --
--- Name: lr3_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: lr3_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.lr3_to_resp_id_seq
@@ -199,17 +244,17 @@ CREATE SEQUENCE public.lr3_to_resp_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.lr3_to_resp_id_seq OWNER TO master;
+ALTER TABLE public.lr3_to_resp_id_seq OWNER TO postgres;
 
 --
--- Name: lr3_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: lr3_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.lr3_to_resp_id_seq OWNED BY public.lr3_to_resp.id;
 
 
 --
--- Name: lr4_to_resp; Type: TABLE; Schema: public; Owner: master
+-- Name: lr4_to_resp; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.lr4_to_resp (
@@ -221,10 +266,10 @@ CREATE TABLE public.lr4_to_resp (
 );
 
 
-ALTER TABLE public.lr4_to_resp OWNER TO master;
+ALTER TABLE public.lr4_to_resp OWNER TO postgres;
 
 --
--- Name: lr4_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.lr4_to_resp_id_seq
@@ -236,17 +281,17 @@ CREATE SEQUENCE public.lr4_to_resp_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.lr4_to_resp_id_seq OWNER TO master;
+ALTER TABLE public.lr4_to_resp_id_seq OWNER TO postgres;
 
 --
--- Name: lr4_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.lr4_to_resp_id_seq OWNED BY public.lr4_to_resp.id;
 
 
 --
--- Name: lr5_to_resp; Type: TABLE; Schema: public; Owner: master
+-- Name: lr5_to_resp; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.lr5_to_resp (
@@ -258,10 +303,10 @@ CREATE TABLE public.lr5_to_resp (
 );
 
 
-ALTER TABLE public.lr5_to_resp OWNER TO master;
+ALTER TABLE public.lr5_to_resp OWNER TO postgres;
 
 --
--- Name: lr5_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.lr5_to_resp_id_seq
@@ -273,17 +318,17 @@ CREATE SEQUENCE public.lr5_to_resp_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.lr5_to_resp_id_seq OWNER TO master;
+ALTER TABLE public.lr5_to_resp_id_seq OWNER TO postgres;
 
 --
--- Name: lr5_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.lr5_to_resp_id_seq OWNED BY public.lr5_to_resp.id;
 
 
 --
--- Name: preset_to_resp; Type: TABLE; Schema: public; Owner: master
+-- Name: preset_to_resp; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.preset_to_resp (
@@ -293,10 +338,10 @@ CREATE TABLE public.preset_to_resp (
 );
 
 
-ALTER TABLE public.preset_to_resp OWNER TO master;
+ALTER TABLE public.preset_to_resp OWNER TO postgres;
 
 --
--- Name: preset_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.preset_to_resp_id_seq
@@ -308,17 +353,17 @@ CREATE SEQUENCE public.preset_to_resp_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.preset_to_resp_id_seq OWNER TO master;
+ALTER TABLE public.preset_to_resp_id_seq OWNER TO postgres;
 
 --
--- Name: preset_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.preset_to_resp_id_seq OWNED BY public.preset_to_resp.id;
 
 
 --
--- Name: presets; Type: TABLE; Schema: public; Owner: master
+-- Name: presets; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.presets (
@@ -330,10 +375,10 @@ CREATE TABLE public.presets (
 );
 
 
-ALTER TABLE public.presets OWNER TO master;
+ALTER TABLE public.presets OWNER TO postgres;
 
 --
--- Name: presets_preset_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: presets_preset_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.presets_preset_id_seq
@@ -345,17 +390,17 @@ CREATE SEQUENCE public.presets_preset_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.presets_preset_id_seq OWNER TO master;
+ALTER TABLE public.presets_preset_id_seq OWNER TO postgres;
 
 --
--- Name: presets_preset_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: presets_preset_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.presets_preset_id_seq OWNED BY public.presets.preset_id;
 
 
 --
--- Name: professions_lab1; Type: TABLE; Schema: public; Owner: graevsky
+-- Name: professions_lab1; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.professions_lab1 (
@@ -365,10 +410,10 @@ CREATE TABLE public.professions_lab1 (
 );
 
 
-ALTER TABLE public.professions_lab1 OWNER TO graevsky;
+ALTER TABLE public.professions_lab1 OWNER TO postgres;
 
 --
--- Name: professions_id_seq; Type: SEQUENCE; Schema: public; Owner: graevsky
+-- Name: professions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.professions_id_seq
@@ -380,17 +425,17 @@ CREATE SEQUENCE public.professions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.professions_id_seq OWNER TO graevsky;
+ALTER TABLE public.professions_id_seq OWNER TO postgres;
 
 --
--- Name: professions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: graevsky
+-- Name: professions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.professions_id_seq OWNED BY public.professions_lab1.id;
 
 
 --
--- Name: pvk_criteria_list; Type: TABLE; Schema: public; Owner: master
+-- Name: pvk_criteria_list; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.pvk_criteria_list (
@@ -399,10 +444,10 @@ CREATE TABLE public.pvk_criteria_list (
 );
 
 
-ALTER TABLE public.pvk_criteria_list OWNER TO master;
+ALTER TABLE public.pvk_criteria_list OWNER TO postgres;
 
 --
--- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.pvk_criteria_list_list_id_seq
@@ -414,17 +459,17 @@ CREATE SEQUENCE public.pvk_criteria_list_list_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.pvk_criteria_list_list_id_seq OWNER TO master;
+ALTER TABLE public.pvk_criteria_list_list_id_seq OWNER TO postgres;
 
 --
--- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.pvk_criteria_list_list_id_seq OWNED BY public.pvk_criteria_list.list_id;
 
 
 --
--- Name: pvk_lab1; Type: TABLE; Schema: public; Owner: graevsky
+-- Name: pvk_lab1; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.pvk_lab1 (
@@ -434,10 +479,10 @@ CREATE TABLE public.pvk_lab1 (
 );
 
 
-ALTER TABLE public.pvk_lab1 OWNER TO graevsky;
+ALTER TABLE public.pvk_lab1 OWNER TO postgres;
 
 --
--- Name: pvk_id_seq; Type: SEQUENCE; Schema: public; Owner: graevsky
+-- Name: pvk_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.pvk_id_seq
@@ -449,17 +494,52 @@ CREATE SEQUENCE public.pvk_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.pvk_id_seq OWNER TO graevsky;
+ALTER TABLE public.pvk_id_seq OWNER TO postgres;
 
 --
--- Name: pvk_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: graevsky
+-- Name: pvk_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.pvk_id_seq OWNED BY public.pvk_lab1.id;
 
 
 --
--- Name: results_list_lr4; Type: TABLE; Schema: public; Owner: master
+-- Name: resp_to_crit_list; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.resp_to_crit_list (
+    id integer NOT NULL,
+    id_criteria integer,
+    id_respond integer
+);
+
+
+ALTER TABLE public.resp_to_crit_list OWNER TO postgres;
+
+--
+-- Name: resp_to_crit_list_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.resp_to_crit_list_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.resp_to_crit_list_id_seq OWNER TO postgres;
+
+--
+-- Name: resp_to_crit_list_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.resp_to_crit_list_id_seq OWNED BY public.resp_to_crit_list.id;
+
+
+--
+-- Name: results_list_lr4; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.results_list_lr4 (
@@ -469,10 +549,10 @@ CREATE TABLE public.results_list_lr4 (
 );
 
 
-ALTER TABLE public.results_list_lr4 OWNER TO master;
+ALTER TABLE public.results_list_lr4 OWNER TO postgres;
 
 --
--- Name: result_list_lr4_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.result_list_lr4_id_seq
@@ -484,17 +564,50 @@ CREATE SEQUENCE public.result_list_lr4_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.result_list_lr4_id_seq OWNER TO master;
+ALTER TABLE public.result_list_lr4_id_seq OWNER TO postgres;
 
 --
--- Name: result_list_lr4_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.result_list_lr4_id_seq OWNED BY public.results_list_lr4.id;
 
 
 --
--- Name: results_list_lr2; Type: TABLE; Schema: public; Owner: master
+-- Name: results_list_lr1; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.results_list_lr1 (
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.results_list_lr1 OWNER TO postgres;
+
+--
+-- Name: results_list_lr1_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.results_list_lr1_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.results_list_lr1_id_seq OWNER TO postgres;
+
+--
+-- Name: results_list_lr1_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.results_list_lr1_id_seq OWNED BY public.results_list_lr1.id;
+
+
+--
+-- Name: results_list_lr2; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.results_list_lr2 (
@@ -504,10 +617,10 @@ CREATE TABLE public.results_list_lr2 (
 );
 
 
-ALTER TABLE public.results_list_lr2 OWNER TO master;
+ALTER TABLE public.results_list_lr2 OWNER TO postgres;
 
 --
--- Name: results_list_lr2_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: results_list_lr2_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.results_list_lr2_id_seq
@@ -519,17 +632,17 @@ CREATE SEQUENCE public.results_list_lr2_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.results_list_lr2_id_seq OWNER TO master;
+ALTER TABLE public.results_list_lr2_id_seq OWNER TO postgres;
 
 --
--- Name: results_list_lr2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: results_list_lr2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.results_list_lr2_id_seq OWNED BY public.results_list_lr2.id;
 
 
 --
--- Name: results_list_lr3; Type: TABLE; Schema: public; Owner: master
+-- Name: results_list_lr3; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.results_list_lr3 (
@@ -539,10 +652,10 @@ CREATE TABLE public.results_list_lr3 (
 );
 
 
-ALTER TABLE public.results_list_lr3 OWNER TO master;
+ALTER TABLE public.results_list_lr3 OWNER TO postgres;
 
 --
--- Name: results_list_lr3_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: results_list_lr3_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.results_list_lr3_id_seq
@@ -554,17 +667,17 @@ CREATE SEQUENCE public.results_list_lr3_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.results_list_lr3_id_seq OWNER TO master;
+ALTER TABLE public.results_list_lr3_id_seq OWNER TO postgres;
 
 --
--- Name: results_list_lr3_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: results_list_lr3_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.results_list_lr3_id_seq OWNED BY public.results_list_lr3.id;
 
 
 --
--- Name: results_list_lr5; Type: TABLE; Schema: public; Owner: master
+-- Name: results_list_lr5; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.results_list_lr5 (
@@ -574,10 +687,10 @@ CREATE TABLE public.results_list_lr5 (
 );
 
 
-ALTER TABLE public.results_list_lr5 OWNER TO master;
+ALTER TABLE public.results_list_lr5 OWNER TO postgres;
 
 --
--- Name: results_list_lr5_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.results_list_lr5_id_seq
@@ -589,17 +702,17 @@ CREATE SEQUENCE public.results_list_lr5_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.results_list_lr5_id_seq OWNER TO master;
+ALTER TABLE public.results_list_lr5_id_seq OWNER TO postgres;
 
 --
--- Name: results_list_lr5_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.results_list_lr5_id_seq OWNED BY public.results_list_lr5.id;
 
 
 --
--- Name: test_name; Type: TABLE; Schema: public; Owner: master
+-- Name: test_name; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.test_name (
@@ -609,10 +722,10 @@ CREATE TABLE public.test_name (
 );
 
 
-ALTER TABLE public.test_name OWNER TO master;
+ALTER TABLE public.test_name OWNER TO postgres;
 
 --
--- Name: test_name_lr2; Type: TABLE; Schema: public; Owner: master
+-- Name: test_name_lr2; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.test_name_lr2 (
@@ -621,10 +734,10 @@ CREATE TABLE public.test_name_lr2 (
 );
 
 
-ALTER TABLE public.test_name_lr2 OWNER TO master;
+ALTER TABLE public.test_name_lr2 OWNER TO postgres;
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: master
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.users (
@@ -640,10 +753,10 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO master;
+ALTER TABLE public.users OWNER TO postgres;
 
 --
--- Name: users_usr_id_seq; Type: SEQUENCE; Schema: public; Owner: master
+-- Name: users_usr_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.users_usr_id_seq
@@ -655,144 +768,177 @@ CREATE SEQUENCE public.users_usr_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_usr_id_seq OWNER TO master;
+ALTER TABLE public.users_usr_id_seq OWNER TO postgres;
 
 --
--- Name: users_usr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: master
+-- Name: users_usr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.users_usr_id_seq OWNED BY public.users.usr_id;
 
 
 --
--- Name: criteria criteria_id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: criteria criteria_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.criteria ALTER COLUMN criteria_id SET DEFAULT nextval('public.criteria_criteria_id_seq'::regclass);
 
 
 --
--- Name: expert_profession_pvk_lab6 respondent_id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: criteria_preset id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.criteria_preset ALTER COLUMN id SET DEFAULT nextval('public.criteria_preset_id_seq'::regclass);
+
+
+--
+-- Name: expert_profession_pvk_lab6 respondent_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.expert_profession_pvk_lab6 ALTER COLUMN respondent_id SET DEFAULT nextval('public.expert_profession_pvk_lab6_respondent_profession_id_seq'::regclass);
 
 
 --
--- Name: expert_profession_quality_lab1 id; Type: DEFAULT; Schema: public; Owner: graevsky
+-- Name: expert_profession_quality_lab1 id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1 ALTER COLUMN id SET DEFAULT nextval('public.expert_profession_quality_id_seq'::regclass);
 
 
 --
--- Name: lr2_to_resp id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: lr2_to_resp id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr2_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr2_to_resp_id_seq'::regclass);
 
 
 --
--- Name: lr3_to_resp id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: lr3_to_resp id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr3_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr3_to_resp_id_seq'::regclass);
 
 
 --
--- Name: lr4_to_resp id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: lr4_to_resp id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr4_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr4_to_resp_id_seq'::regclass);
 
 
 --
--- Name: lr5_to_resp id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: lr5_to_resp id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr5_to_resp ALTER COLUMN id SET DEFAULT nextval('public.lr5_to_resp_id_seq'::regclass);
 
 
 --
--- Name: preset_to_resp id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: preset_to_resp id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.preset_to_resp ALTER COLUMN id SET DEFAULT nextval('public.preset_to_resp_id_seq'::regclass);
 
 
 --
--- Name: presets preset_id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: presets preset_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.presets ALTER COLUMN preset_id SET DEFAULT nextval('public.presets_preset_id_seq'::regclass);
 
 
 --
--- Name: professions_lab1 id; Type: DEFAULT; Schema: public; Owner: graevsky
+-- Name: professions_lab1 id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.professions_lab1 ALTER COLUMN id SET DEFAULT nextval('public.professions_id_seq'::regclass);
 
 
 --
--- Name: pvk_criteria_list list_id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: pvk_criteria_list list_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pvk_criteria_list ALTER COLUMN list_id SET DEFAULT nextval('public.pvk_criteria_list_list_id_seq'::regclass);
 
 
 --
--- Name: pvk_lab1 id; Type: DEFAULT; Schema: public; Owner: graevsky
+-- Name: pvk_lab1 id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pvk_lab1 ALTER COLUMN id SET DEFAULT nextval('public.pvk_id_seq'::regclass);
 
 
 --
--- Name: results_list_lr2 id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: resp_to_crit_list id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.resp_to_crit_list ALTER COLUMN id SET DEFAULT nextval('public.resp_to_crit_list_id_seq'::regclass);
+
+
+--
+-- Name: results_list_lr1 id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.results_list_lr1 ALTER COLUMN id SET DEFAULT nextval('public.results_list_lr1_id_seq'::regclass);
+
+
+--
+-- Name: results_list_lr2 id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.results_list_lr2 ALTER COLUMN id SET DEFAULT nextval('public.results_list_lr2_id_seq'::regclass);
 
 
 --
--- Name: results_list_lr3 id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: results_list_lr3 id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.results_list_lr3 ALTER COLUMN id SET DEFAULT nextval('public.results_list_lr3_id_seq'::regclass);
 
 
 --
--- Name: results_list_lr4 id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: results_list_lr4 id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.results_list_lr4 ALTER COLUMN id SET DEFAULT nextval('public.result_list_lr4_id_seq'::regclass);
 
 
 --
--- Name: results_list_lr5 id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: results_list_lr5 id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.results_list_lr5 ALTER COLUMN id SET DEFAULT nextval('public.results_list_lr5_id_seq'::regclass);
 
 
 --
--- Name: users usr_id; Type: DEFAULT; Schema: public; Owner: master
+-- Name: users usr_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN usr_id SET DEFAULT nextval('public.users_usr_id_seq'::regclass);
 
 
 --
--- Data for Name: criteria; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: criteria; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.criteria (criteria_id, criteria_fields) FROM stdin;
+2	{"params": [{"param_name": "Среднее", "param_slice": 622.2, "param_weight": 1, "param_direction": false}, {"param_name": "Стандартное отклонение", "param_slice": 75.3, "param_weight": 1, "param_direction": false}, {"param_name": "CV", "param_slice": 75.1, "param_weight": 2, "param_direction": false}], "lab_num": "3", "test_num": "1", "preset_num": "12", "name_criteria": "Критерий 3.1"}
+3	{"params": [{"param_name": "Среднее", "param_slice": 625.9, "param_weight": 1, "param_direction": false}, {"param_name": "Стандартное отклонение", "param_slice": 144.4, "param_weight": 1, "param_direction": false}], "lab_num": "3", "test_num": "2", "preset_num": "13", "name_criteria": "Критерий 3.2"}
+4	{"name_criteria":"4.2","lab_num":"4","test_num":"2","preset_num":11,"params":[{"param_name":"Попаданий","param_weight":1,"param_slice":129.6,"param_direction":true},{"param_name":"Промахов","param_weight":1,"param_slice":550,"param_direction":false},{"param_name":"Hit percentage","param_weight":2,"param_slice":47.9,"param_direction":true}]}
 \.
 
 
 --
--- Data for Name: expert_profession_pvk_lab6; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: criteria_preset; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.criteria_preset (id, id_expert, preset_name, preset_params) FROM stdin;
+3	4	Пресет №1	[{"profession_id":1,"pvk_id":23,"field_id":2},{"profession_id":1,"pvk_id":24,"field_id":3},{"profession_id":1,"pvk_id":25,"field_id":3},{"profession_id":1,"pvk_id":26,"field_id":3},{"profession_id":1,"pvk_id":27,"field_id":4},{"profession_id":1,"pvk_id":28,"field_id":2},{"profession_id":1,"pvk_id":29,"field_id":2},{"profession_id":1,"pvk_id":30,"field_id":3},{"profession_id":1,"pvk_id":31,"field_id":3},{"profession_id":1,"pvk_id":32,"field_id":3},{"profession_id":2,"pvk_id":5,"field_id":2},{"profession_id":2,"pvk_id":7,"field_id":2},{"profession_id":2,"pvk_id":8,"field_id":2},{"profession_id":2,"pvk_id":11,"field_id":2},{"profession_id":2,"pvk_id":13,"field_id":4},{"profession_id":2,"pvk_id":15,"field_id":4},{"profession_id":2,"pvk_id":17,"field_id":2},{"profession_id":2,"pvk_id":19,"field_id":3},{"profession_id":2,"pvk_id":21,"field_id":2},{"profession_id":2,"pvk_id":23,"field_id":4},{"profession_id":3,"pvk_id":5,"field_id":2},{"profession_id":3,"pvk_id":6,"field_id":4},{"profession_id":3,"pvk_id":7,"field_id":3},{"profession_id":3,"pvk_id":8,"field_id":3},{"profession_id":3,"pvk_id":9,"field_id":3},{"profession_id":3,"pvk_id":10,"field_id":4},{"profession_id":3,"pvk_id":11,"field_id":4},{"profession_id":3,"pvk_id":12,"field_id":4},{"profession_id":3,"pvk_id":13,"field_id":2},{"profession_id":3,"pvk_id":71,"field_id":4}]
+\.
+
+
+--
+-- Data for Name: expert_profession_pvk_lab6; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.expert_profession_pvk_lab6 (respondent_id, fields) FROM stdin;
@@ -800,7 +946,7 @@ COPY public.expert_profession_pvk_lab6 (respondent_id, fields) FROM stdin;
 
 
 --
--- Data for Name: expert_profession_quality_lab1; Type: TABLE DATA; Schema: public; Owner: graevsky
+-- Data for Name: expert_profession_quality_lab1; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id, importance) FROM stdin;
@@ -838,39 +984,36 @@ COPY public.expert_profession_quality_lab1 (id, expert_id, profession_id, pvk_id
 
 
 --
--- Data for Name: lr2_to_resp; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: lr2_to_resp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.lr2_to_resp (id, respondent_id, expert_id, result_id_lr2, test_id, timeofoper) FROM stdin;
-1	1	1	6	1	2023-06-01 12:51:31.655244+03
-2	1232473507	\N	10	1	2023-06-01 12:51:31.655244+03
-3	1232473507	\N	11	1	2023-06-01 12:51:31.655244+03
-4	1232473507	\N	12	2	2023-06-01 12:51:31.655244+03
-5	1232473507	\N	13	4	2023-06-01 12:51:31.655244+03
-6	1232473507	\N	14	5	2023-06-01 12:51:31.655244+03
-7	1232473507	\N	15	5	2023-06-01 12:51:31.655244+03
-8	1232473507	\N	16	3	2023-06-01 12:51:31.655244+03
 \.
 
 
 --
--- Data for Name: lr3_to_resp; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: lr3_to_resp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.lr3_to_resp (id, respondent_id, result_list_id_lr3, preset_id, timeofoper) FROM stdin;
+1	4	1	12	2023-06-05 16:28:33.802553+03
+2	4	2	12	2023-06-05 16:29:02.785829+03
+3	4	3	13	2023-06-06 13:37:15.516621+03
+4	4	4	13	2023-06-06 13:37:15.517683+03
 \.
 
 
 --
--- Data for Name: lr4_to_resp; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: lr4_to_resp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.lr4_to_resp (id, respondent_id, result_list_id_lr4, preset_id, timeofoper) FROM stdin;
+1	4	1	11	2023-06-06 13:42:52.386436+03
 \.
 
 
 --
--- Data for Name: lr5_to_resp; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: lr5_to_resp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id, timeofoper) FROM stdin;
@@ -884,14 +1027,45 @@ COPY public.lr5_to_resp (id, respondent_id, result_list_id_lr5, preset_id, timeo
 8	1902235510	8	10	2023-06-01 12:51:39.588032+03
 9	1902235510	9	10	2023-06-01 12:51:39.588032+03
 10	1902235510	10	10	2023-06-01 12:51:39.588032+03
+11	4	11	7	2023-06-02 16:15:08.653603+03
 \.
 
 
 --
--- Data for Name: preset_to_resp; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: preset_to_resp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
+115	4	12
+116	4	13
+117	4	13
+118	4	13
+119	4	11
+120	4	12
+121	4	12
+122	4	13
+123	4	13
+124	4	13
+125	4	12
+126	4	12
+127	4	12
+128	4	12
+129	4	11
+130	4	11
+131	4	12
+132	4	13
+133	4	12
+134	4	11
+135	4	12
+136	4	11
+137	4	13
+138	4	13
+139	4	13
+140	4	11
+141	4	11
+142	4	11
+143	4	12
+144	4	11
 1	1902235510	7
 2	1902235510	8
 3	1902235510	11
@@ -912,7 +1086,7 @@ COPY public.preset_to_resp (id, user_id, preset_id) FROM stdin;
 
 
 --
--- Data for Name: presets; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: presets; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.presets (preset_id, lab_id, test_in_lab_id, params, preset_name) FROM stdin;
@@ -925,11 +1099,13 @@ COPY public.presets (preset_id, lab_id, test_in_lab_id, params, preset_name) FRO
 9	5	5	{"preset_name":"watermelon5","show_stats":"true","show_time":"true","num_levels":"3","level_distribution":"random"}	watermelon5
 10	5	6	{"preset_name":"macbook6","show_stats":"true","show_time":"true","num_levels":"3","level_distribution":"fair"}	macbook6
 11	4	2	{"preset_name":"RDO","runtime":"300","show_stats":"true","show_time":"true","speed_koef":"1","acceleration_koef":"2"}	RDO
+12	3	1	{"preset_name":"3.1","runtime":"20","show_stats":"true","show_time":"false","speed_koef":"1","acceleration_koef":"2"}	3.1
+13	3	2	{"preset_name":"3.2","runtime":"50","show_stats":"true","show_time":"false","speed_koef":"1","acceleration_koef":"2"}	3.2
 \.
 
 
 --
--- Data for Name: professions_lab1; Type: TABLE DATA; Schema: public; Owner: graevsky
+-- Data for Name: professions_lab1; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.professions_lab1 (id, name, description) FROM stdin;
@@ -940,7 +1116,7 @@ COPY public.professions_lab1 (id, name, description) FROM stdin;
 
 
 --
--- Data for Name: pvk_criteria_list; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: pvk_criteria_list; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.pvk_criteria_list (list_id, criteria_list_for_pvk) FROM stdin;
@@ -948,7 +1124,7 @@ COPY public.pvk_criteria_list (list_id, criteria_list_for_pvk) FROM stdin;
 
 
 --
--- Data for Name: pvk_lab1; Type: TABLE DATA; Schema: public; Owner: graevsky
+-- Data for Name: pvk_lab1; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.pvk_lab1 (id, name, description) FROM stdin;
@@ -961,6 +1137,7 @@ COPY public.pvk_lab1 (id, name, description) FROM stdin;
 10	Самостоятельность	
 11	Пунктуальность, педантичность	
 12	Дисциплинированность	
+79	Зрительная долговременная память на лица	
 13	Аккуратность в работе	
 14	Организованность, самодисциплина	
 15	Старательность, исполнительность	
@@ -1026,7 +1203,6 @@ COPY public.pvk_lab1 (id, name, description) FROM stdin;
 76	Абстрактность	Объектные свойства мышления:абстрктаные образы и понятия
 77	Вербальность	Объектные свойства мышления:устная и письменная речь
 78	Калькулятивность	Объектные свойства мышления:цифровой материал
-79	Зрительная долговременная память на лица	
 80	Зрительная долговременная память на образы предметного мира	
 81	Зрительная долговременная память на условные обозначения	
 82	Зрительная долговременная память на цифры, даты	
@@ -1126,7 +1302,24 @@ COPY public.pvk_lab1 (id, name, description) FROM stdin;
 
 
 --
--- Data for Name: results_list_lr2; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: resp_to_crit_list; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.resp_to_crit_list (id, id_criteria, id_respond) FROM stdin;
+17	3	4
+\.
+
+
+--
+-- Data for Name: results_list_lr1; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.results_list_lr1 (id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: results_list_lr2; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.results_list_lr2 (id, result_list, timeofoper) FROM stdin;
@@ -1146,27 +1339,35 @@ COPY public.results_list_lr2 (id, result_list, timeofoper) FROM stdin;
 14	{2296.6,1230.19,0,NaN}	2023-06-01 12:50:51.070129+03
 15	{1850.25,887.16,1883,1331.48}	2023-06-01 12:50:51.070129+03
 16	{1145.76,740.31,979,692.26}	2023-06-01 12:50:51.070129+03
+17	{344.7,56.46}	2023-06-04 13:48:18.845515+03
+18	{290.67,61.16}	2023-06-05 16:19:03.304107+03
+19	{667.43,191.27,0,NaN}	2023-06-05 16:21:28.266368+03
 \.
 
 
 --
--- Data for Name: results_list_lr3; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: results_list_lr3; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.results_list_lr3 (id, result_list, timeofoper) FROM stdin;
+1	{3.94,1.63}	2023-06-05 16:28:33.801447+03
+2	{3.78,1.61}	2023-06-05 16:29:02.785215+03
+3	{1296.4,3536.38}	2023-06-06 13:37:15.502457+03
+4	{1296.4,3536.38}	2023-06-06 13:37:15.516269+03
 \.
 
 
 --
--- Data for Name: results_list_lr4; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: results_list_lr4; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.results_list_lr4 (id, result_list, timeofoper) FROM stdin;
+1	{7757,11708,39.85}	2023-06-06 13:42:52.385125+03
 \.
 
 
 --
--- Data for Name: results_list_lr5; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: results_list_lr5; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.results_list_lr5 (id, result_list, timeofoper) FROM stdin;
@@ -1180,11 +1381,12 @@ COPY public.results_list_lr5 (id, result_list, timeofoper) FROM stdin;
 8	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
 9	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
 10	{3630.71,3024.92}	2023-06-01 12:51:16.706318+03
+11	{846.39,15.55}	2023-06-02 16:15:08.652242+03
 \.
 
 
 --
--- Data for Name: test_name; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: test_name; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.test_name (lab_id, test_id, test_name) FROM stdin;
@@ -1198,11 +1400,16 @@ COPY public.test_name (lab_id, test_id, test_name) FROM stdin;
 5	5	Анализ, сравнение
 5	6	Дедукция, абстракция
 5	4	Звуковая память
+2	1	Тест на свет
+2	2	Тест на звук
+2	3	Разные цвета
+2	4	Звуковой сигнал
+2	5	Сложение в уме
 \.
 
 
 --
--- Data for Name: test_name_lr2; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: test_name_lr2; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.test_name_lr2 (test_id, test_name) FROM stdin;
@@ -1215,7 +1422,7 @@ COPY public.test_name_lr2 (test_id, test_name) FROM stdin;
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: master
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert, gender) FROM stdin;
@@ -1234,126 +1441,147 @@ COPY public.users (usr_id, name, surname, usrname, passwd, email, age, is_expert
 
 
 --
--- Name: criteria_criteria_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: criteria_criteria_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.criteria_criteria_id_seq', 1, false);
+SELECT pg_catalog.setval('public.criteria_criteria_id_seq', 13, true);
 
 
 --
--- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: criteria_preset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.criteria_preset_id_seq', 3, true);
+
+
+--
+-- Name: expert_profession_pvk_lab6_respondent_profession_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.expert_profession_pvk_lab6_respondent_profession_id_seq', 1, false);
 
 
 --
--- Name: expert_profession_quality_id_seq; Type: SEQUENCE SET; Schema: public; Owner: graevsky
+-- Name: expert_profession_quality_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.expert_profession_quality_id_seq', 54, true);
 
 
 --
--- Name: lr2_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: lr2_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 8, true);
-
-
---
--- Name: lr3_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
---
-
-SELECT pg_catalog.setval('public.lr3_to_resp_id_seq', 1, false);
+SELECT pg_catalog.setval('public.lr2_to_resp_id_seq', 11, true);
 
 
 --
--- Name: lr4_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: lr3_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.lr4_to_resp_id_seq', 1, false);
-
-
---
--- Name: lr5_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
---
-
-SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 10, true);
+SELECT pg_catalog.setval('public.lr3_to_resp_id_seq', 4, true);
 
 
 --
--- Name: preset_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: lr4_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 16, true);
-
-
---
--- Name: presets_preset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
---
-
-SELECT pg_catalog.setval('public.presets_preset_id_seq', 11, true);
+SELECT pg_catalog.setval('public.lr4_to_resp_id_seq', 1, true);
 
 
 --
--- Name: professions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: graevsky
+-- Name: lr5_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.lr5_to_resp_id_seq', 11, true);
+
+
+--
+-- Name: preset_to_resp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.preset_to_resp_id_seq', 144, true);
+
+
+--
+-- Name: presets_preset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.presets_preset_id_seq', 13, true);
+
+
+--
+-- Name: professions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.professions_id_seq', 15, true);
 
 
 --
--- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: pvk_criteria_list_list_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.pvk_criteria_list_list_id_seq', 1, false);
 
 
 --
--- Name: pvk_id_seq; Type: SEQUENCE SET; Schema: public; Owner: graevsky
+-- Name: pvk_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.pvk_id_seq', 179, true);
 
 
 --
--- Name: result_list_lr4_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: resp_to_crit_list_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.result_list_lr4_id_seq', 1, false);
-
-
---
--- Name: results_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
---
-
-SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 16, true);
+SELECT pg_catalog.setval('public.resp_to_crit_list_id_seq', 17, true);
 
 
 --
--- Name: results_list_lr3_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: result_list_lr4_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.results_list_lr3_id_seq', 1, false);
-
-
---
--- Name: results_list_lr5_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
---
-
-SELECT pg_catalog.setval('public.results_list_lr5_id_seq', 10, true);
+SELECT pg_catalog.setval('public.result_list_lr4_id_seq', 1, true);
 
 
 --
--- Name: users_usr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: master
+-- Name: results_list_lr1_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.results_list_lr1_id_seq', 1, false);
+
+
+--
+-- Name: results_list_lr2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.results_list_lr2_id_seq', 19, true);
+
+
+--
+-- Name: results_list_lr3_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.results_list_lr3_id_seq', 4, true);
+
+
+--
+-- Name: results_list_lr5_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.results_list_lr5_id_seq', 11, true);
+
+
+--
+-- Name: users_usr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.users_usr_id_seq', 15, true);
 
 
 --
--- Name: criteria criteria_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: criteria criteria_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.criteria
@@ -1361,7 +1589,15 @@ ALTER TABLE ONLY public.criteria
 
 
 --
--- Name: expert_profession_quality_lab1 expert_profession_quality_pkey; Type: CONSTRAINT; Schema: public; Owner: graevsky
+-- Name: criteria_preset criteria_preset_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.criteria_preset
+    ADD CONSTRAINT criteria_preset_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: expert_profession_quality_lab1 expert_profession_quality_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1
@@ -1369,7 +1605,7 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
--- Name: lr2_to_resp lr2_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: lr2_to_resp lr2_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr2_to_resp
@@ -1377,7 +1613,7 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 
 --
--- Name: lr3_to_resp lr3_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: lr3_to_resp lr3_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr3_to_resp
@@ -1385,7 +1621,7 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 
 --
--- Name: lr4_to_resp lr4_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: lr4_to_resp lr4_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr4_to_resp
@@ -1393,7 +1629,7 @@ ALTER TABLE ONLY public.lr4_to_resp
 
 
 --
--- Name: lr5_to_resp lr5_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: lr5_to_resp lr5_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr5_to_resp
@@ -1401,7 +1637,7 @@ ALTER TABLE ONLY public.lr5_to_resp
 
 
 --
--- Name: test_name pk_test_and_lab_id; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: test_name pk_test_and_lab_id; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.test_name
@@ -1409,7 +1645,7 @@ ALTER TABLE ONLY public.test_name
 
 
 --
--- Name: preset_to_resp preset_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: preset_to_resp preset_to_resp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.preset_to_resp
@@ -1417,7 +1653,7 @@ ALTER TABLE ONLY public.preset_to_resp
 
 
 --
--- Name: presets presets_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: presets presets_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.presets
@@ -1425,7 +1661,7 @@ ALTER TABLE ONLY public.presets
 
 
 --
--- Name: professions_lab1 professions_pkey; Type: CONSTRAINT; Schema: public; Owner: graevsky
+-- Name: professions_lab1 professions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.professions_lab1
@@ -1433,7 +1669,7 @@ ALTER TABLE ONLY public.professions_lab1
 
 
 --
--- Name: pvk_criteria_list pvk_criteria_list_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: pvk_criteria_list pvk_criteria_list_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pvk_criteria_list
@@ -1441,7 +1677,7 @@ ALTER TABLE ONLY public.pvk_criteria_list
 
 
 --
--- Name: pvk_lab1 pvk_pkey; Type: CONSTRAINT; Schema: public; Owner: graevsky
+-- Name: pvk_lab1 pvk_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pvk_lab1
@@ -1449,7 +1685,15 @@ ALTER TABLE ONLY public.pvk_lab1
 
 
 --
--- Name: results_list_lr4 result_list_lr4_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: resp_to_crit_list resp_to_crit_list_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.resp_to_crit_list
+    ADD CONSTRAINT resp_to_crit_list_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: results_list_lr4 result_list_lr4_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.results_list_lr4
@@ -1457,7 +1701,15 @@ ALTER TABLE ONLY public.results_list_lr4
 
 
 --
--- Name: results_list_lr2 results_list_lr2_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: results_list_lr1 results_list_lr1_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.results_list_lr1
+    ADD CONSTRAINT results_list_lr1_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: results_list_lr2 results_list_lr2_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.results_list_lr2
@@ -1465,7 +1717,7 @@ ALTER TABLE ONLY public.results_list_lr2
 
 
 --
--- Name: results_list_lr3 results_list_lr3_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: results_list_lr3 results_list_lr3_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.results_list_lr3
@@ -1473,7 +1725,7 @@ ALTER TABLE ONLY public.results_list_lr3
 
 
 --
--- Name: results_list_lr5 results_list_lr5_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: results_list_lr5 results_list_lr5_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.results_list_lr5
@@ -1481,7 +1733,7 @@ ALTER TABLE ONLY public.results_list_lr5
 
 
 --
--- Name: test_name_lr2 unique_id; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: test_name_lr2 unique_id; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.test_name_lr2
@@ -1489,7 +1741,7 @@ ALTER TABLE ONLY public.test_name_lr2
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: master
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
@@ -1497,105 +1749,105 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: fki_fk_id_to_name; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fk_id_to_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fk_id_to_name ON public.test_name_lr2 USING btree (test_id);
 
 
 --
--- Name: fki_fk_lab_id; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fk_lab_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fk_lab_id ON public.test_name USING btree (lab_id);
 
 
 --
--- Name: fki_fkey_exp; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fkey_exp; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_exp ON public.lr2_to_resp USING btree (expert_id);
 
 
 --
--- Name: fki_fkey_expert; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fkey_expert; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_expert ON public.lr2_to_resp USING btree (expert_id);
 
 
 --
--- Name: fki_fkey_expert_id; Type: INDEX; Schema: public; Owner: graevsky
+-- Name: fki_fkey_expert_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_expert_id ON public.expert_profession_quality_lab1 USING btree (expert_id);
 
 
 --
--- Name: fki_fkey_lab_id_test_name; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fkey_lab_id_test_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_lab_id_test_name ON public.presets USING btree (lab_id);
 
 
 --
--- Name: fki_fkey_params_list_lr3; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fkey_params_list_lr3; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_params_list_lr3 ON public.lr3_to_resp USING btree (preset_id);
 
 
 --
--- Name: fki_fkey_preset_id; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fkey_preset_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_preset_id ON public.lr4_to_resp USING btree (preset_id);
 
 
 --
--- Name: fki_fkey_resp; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fkey_resp; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_resp ON public.lr2_to_resp USING btree (respondent_id);
 
 
 --
--- Name: fki_fkey_result_list_lr3; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fkey_result_list_lr3; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_result_list_lr3 ON public.lr3_to_resp USING btree (result_list_id_lr3);
 
 
 --
--- Name: fki_fkey_results; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_fkey_results; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_fkey_results ON public.lr2_to_resp USING btree (result_id_lr2);
 
 
 --
--- Name: fki_g; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_g; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_g ON public.lr3_to_resp USING btree (respondent_id);
 
 
 --
--- Name: fki_h; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_h; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX fki_h ON public.lr3_to_resp USING btree (result_list_id_lr3);
 
 
 --
--- Name: fki_а; Type: INDEX; Schema: public; Owner: master
+-- Name: fki_а; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX "fki_а" ON public.lr3_to_resp USING btree (id);
 
 
 --
--- Name: expert_profession_quality_lab1 expert_profession_quality_profession_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: graevsky
+-- Name: expert_profession_quality_lab1 expert_profession_quality_profession_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1
@@ -1603,7 +1855,7 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
--- Name: expert_profession_quality_lab1 expert_profession_quality_pvk_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: graevsky
+-- Name: expert_profession_quality_lab1 expert_profession_quality_pvk_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1
@@ -1611,7 +1863,7 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
--- Name: lr5_to_resp fk_prest_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr5_to_resp fk_prest_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr5_to_resp
@@ -1619,7 +1871,7 @@ ALTER TABLE ONLY public.lr5_to_resp
 
 
 --
--- Name: preset_to_resp fk_resp_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: preset_to_resp fk_resp_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.preset_to_resp
@@ -1627,7 +1879,7 @@ ALTER TABLE ONLY public.preset_to_resp
 
 
 --
--- Name: lr5_to_resp fk_respondent_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr5_to_resp fk_respondent_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr5_to_resp
@@ -1635,7 +1887,7 @@ ALTER TABLE ONLY public.lr5_to_resp
 
 
 --
--- Name: lr5_to_resp fk_result_list; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr5_to_resp fk_result_list; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr5_to_resp
@@ -1643,7 +1895,7 @@ ALTER TABLE ONLY public.lr5_to_resp
 
 
 --
--- Name: lr2_to_resp fk_test_id_to_name; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr2_to_resp fk_test_id_to_name; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr2_to_resp
@@ -1651,7 +1903,7 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 
 --
--- Name: lr2_to_resp fkey_exp; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr2_to_resp fkey_exp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr2_to_resp
@@ -1659,7 +1911,7 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 
 --
--- Name: expert_profession_quality_lab1 fkey_expert_id; Type: FK CONSTRAINT; Schema: public; Owner: graevsky
+-- Name: expert_profession_quality_lab1 fkey_expert_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.expert_profession_quality_lab1
@@ -1667,7 +1919,7 @@ ALTER TABLE ONLY public.expert_profession_quality_lab1
 
 
 --
--- Name: lr4_to_resp fkey_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr4_to_resp fkey_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr4_to_resp
@@ -1675,7 +1927,7 @@ ALTER TABLE ONLY public.lr4_to_resp
 
 
 --
--- Name: lr3_to_resp fkey_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr3_to_resp fkey_preset_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr3_to_resp
@@ -1683,7 +1935,7 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 
 --
--- Name: lr2_to_resp fkey_resp; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr2_to_resp fkey_resp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr2_to_resp
@@ -1691,7 +1943,7 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 
 --
--- Name: lr3_to_resp fkey_resp; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr3_to_resp fkey_resp; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr3_to_resp
@@ -1699,7 +1951,7 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 
 --
--- Name: lr3_to_resp fkey_result_list_lr3; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr3_to_resp fkey_result_list_lr3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr3_to_resp
@@ -1707,7 +1959,7 @@ ALTER TABLE ONLY public.lr3_to_resp
 
 
 --
--- Name: lr2_to_resp fkey_results; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr2_to_resp fkey_results; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr2_to_resp
@@ -1715,7 +1967,7 @@ ALTER TABLE ONLY public.lr2_to_resp
 
 
 --
--- Name: lr4_to_resp lr4_to_resp_respondent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr4_to_resp lr4_to_resp_respondent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr4_to_resp
@@ -1723,7 +1975,7 @@ ALTER TABLE ONLY public.lr4_to_resp
 
 
 --
--- Name: lr4_to_resp lr4_to_resp_result_list_id_lr4_fkey; Type: FK CONSTRAINT; Schema: public; Owner: master
+-- Name: lr4_to_resp lr4_to_resp_result_list_id_lr4_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.lr4_to_resp
@@ -1731,45 +1983,22 @@ ALTER TABLE ONLY public.lr4_to_resp
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: master
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: pg_database_owner
 --
 
-GRANT ALL ON SCHEMA public TO graevsky;
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO PUBLIC;
+GRANT ALL ON SCHEMA public TO postgres;
 
 
-create table
-    criteria_preset(
-        id serial primary key,
-        id_expert int,
-        preset_name text,
-        preset_params json
-    );
+--
+-- Name: SCHEMA schema_name; Type: ACL; Schema: -; Owner: postgres
+--
 
-create table
-    resp_to_crit_list(
-        id serial primary key,
-        id_criteria int,
-        id_respond int
-    );
+GRANT ALL ON SCHEMA schema_name TO PUBLIC;
 
-insert into
-    test_name(lab_id, test_id, test_name)
-values (2, 1, 'Тест на свет'), (2, 2, 'Тест на звук'), (2, 3, 'Разные цвета'), (2, 4, 'Звуковой сигнал'), (2, 5, 'Сложение в уме');
+
 --
 -- PostgreSQL database dump complete
 --
 
-DO $$
-DECLARE
-    t_record record;
-    c_record record;
-BEGIN
-    FOR t_record IN (SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public')
-    LOOP
-        FOR c_record IN (SELECT column_name FROM information_schema.columns WHERE table_schema = t_record.table_schema AND table_name = t_record.table_name AND data_type IN ('integer', 'double precision', 'numeric'))
-        LOOP
-            EXECUTE format('UPDATE %I.%I SET %I = COALESCE(%I, 0);', t_record.table_schema, t_record.table_name, c_record.column_name, c_record.column_name);
-        END LOOP;
-    END LOOP;
-END $$;

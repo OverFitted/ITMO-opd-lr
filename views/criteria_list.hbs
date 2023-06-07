@@ -16,20 +16,23 @@
 	<div class="container bloc-lg">
 		<div class="row">
 			<div class="col">
-				<div class="blocs-grid-container">
-					{{#each criteria}}
-					<div>
+				{{#each criteria}}
+				<div class="row mb-4">
+					<div class="col-9">
 						<label id="criteria-label-{{this.criteria_id}}" class="form-label text-start">
 							{{this.criteria_fields.name_criteria}}
 						</label>
 					</div>
-					<div class="text-lg-end">
-						<button id="del-button-{{this.criteria_id}}" class="btn btn-d btn-lg">Удалить</button>
+					<div class="col-2">
+						<button onclick="editCriteria({{this.criteria_id}})" class="btn btn-secondary btn-md">Редактировать</button>
 					</div>
-					{{/each}}
+					<div class="col-1">
+						<button onclick="delCriteria({{this.criteria_id}}, this)" class="btn btn-danger btn-md">Удалить</button>
+					</div>
 				</div>
-				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#criteriaModal">Добавить критерий</button>
+				{{/each}}
 			</div>
+			<button type="button" class="btn btn-primary" onclick="modalTextH3.innerHTML = 'Добавить критерий'; modalForm.action = '/user/add-criteria/'" data-bs-toggle="modal" data-bs-target="#criteriaModal">Добавить критерий</button>
 		</div>
 	</div>
 </div>
@@ -43,11 +46,11 @@
 						<div class="modal-dialog modal-dialog-centered" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h3 class="mg-clear primary-text box-heading">
-										Добавить критерии
+									<h3 id="modal-text" class="mg-clear primary-text box-heading">
+										Добавить критерий
 									</h3>
 								</div>
-								<form method="POST" action="/user/add-criteria/">
+								<form method="POST" id="modal-form" action="/user/add-criteria/">
 									<div class="modal-body">
 										<div class="row">
 											<div class="row">
@@ -69,9 +72,6 @@
 																<li><a class="dropdown-item" href="#">3</a></li>
 																<li><a class="dropdown-item" href="#">4</a></li>
 																<li><a class="dropdown-item" href="#">5</a></li>
-																<li><a class="dropdown-item" href="#">6</a></li>
-																<li><a class="dropdown-item" href="#">7</a></li>
-																<li><a class="dropdown-item" href="#">8</a></li>
 															</ul>
 														</div>
 													</div>
@@ -130,6 +130,179 @@
 	const labSelection = document.querySelector('#labSelection');
 	const testSelection = document.querySelector('#testSelection');
 	const presetSelection = document.querySelector('#presetSelection');
+	const modalTextH3 = document.querySelector('#modal-text')
+	const modalForm = document.querySelector('#modal-form')
+
+	function delCriteria(criteria_id, buttonElement) {
+		data = { criteria_id };
+
+		fetch(`/user/del-criteria/`, {
+			method: 'post',
+			body: JSON.stringify(data),
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		})
+			.then(response => {
+				console.log('Success:', response);
+				buttonElement.parentElement.parentElement.remove();
+			})
+			.catch(error => console.error('Error:', error));
+	}
+
+	async function editCriteria(criteria_id) {
+		let res = await fetch(`/user/get-criteria/${criteria_id}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		})
+
+		let criteriaData = await res.json();
+		console.log(criteriaData)
+		let paramsRow = document.querySelector('#params-row');
+		let labSelection = document.querySelector('#labSelection');
+		let testSelection = document.querySelector('#testSelection');
+		let presetSelection = document.querySelector('#presetSelection');
+		let nameCriteria = document.querySelector('#name_criteria');
+
+		modalTextH3.innerHTML = 'Изменить критерий';
+		modalForm.action = `/user/edit-criteria/${criteria_id}`
+
+		labSelection.value = criteriaData.criteria_fields.lab_num;
+		testSelection.value = criteriaData.criteria_fields.test_num;
+		presetSelection.value = criteriaData.criteria_fields.preset_num;
+		nameCriteria.value = criteriaData.criteria_fields.name_criteria;
+
+		paramsRow.innerHTML = '';
+		criteriaData.criteria_fields.params.forEach((param, index) => {
+			let newFieldsContainer = document.createElement('div');
+			newFieldsContainer.className = 'row';
+
+			let newParamDiv = document.createElement('div');
+			newParamDiv.className = 'col-md-3 form-group mb-3';
+
+			let newParamLabel = document.createElement('label');
+			newParamLabel.className = 'form-label';
+			newParamLabel.innerText = param.param_name;
+
+			let newParamInput = document.createElement('input');
+			newParamInput.id = `parameter${index + 1}_criteria`;
+			newParamInput.name = `parameter${index + 1}_criteria`;
+			newParamInput.className = 'form-control';
+			newParamInput.readOnly = true;
+			newParamInput.value = param.param_name;
+
+			newParamDiv.appendChild(newParamLabel);
+			newParamDiv.appendChild(newParamInput);
+			newFieldsContainer.appendChild(newParamDiv);
+
+			let weightDiv = document.createElement('div');
+			weightDiv.className = 'col-md-3 form-group mb-3';
+
+			let weightLabel = document.createElement('label');
+			weightLabel.className = 'form-label';
+			weightLabel.innerText = 'Вес ' + (index + 1);
+
+			let weightInput = document.createElement('input');
+			weightInput.id = `weight_param${index + 1}_criteria`;
+			weightInput.name = `weight_param${index + 1}_criteria`;
+			weightInput.className = 'form-control';
+			weightInput.type = 'number';
+			weightInput.required = true;
+			weightInput.value = param.param_weight;
+
+			weightDiv.appendChild(weightLabel);
+			weightDiv.appendChild(weightInput);
+			newFieldsContainer.appendChild(weightDiv);
+
+			let directionDiv = document.createElement('div');
+			directionDiv.className = 'col-md-3 form-group mb-3';
+
+			let directionLabel = document.createElement('label');
+			directionLabel.className = 'form-label';
+			directionLabel.innerText = 'Направление ' + (index + 1);
+
+			let directionInputHidden = document.createElement('input');
+			directionInputHidden.name = `direction${index + 1}DropdownHidden`;
+			directionInputHidden.id = `direction${index + 1}DropdownHidden`;
+			directionInputHidden.type = 'hidden';
+			directionInputHidden.value = param.param_direction ? "Больше - лучше" : "Меньше - лучше";
+
+			let directionDropdownDiv = document.createElement('div');
+			directionDropdownDiv.className = 'dropdown';
+
+			let directionButton = document.createElement('button');
+			directionButton.className = 'btn btn-secondary dropdown-toggle';
+			directionButton.type = 'button';
+			directionButton.id = `direction${index + 1}Dropdown`;
+			directionButton.dataset.bsToggle = "dropdown";
+			directionButton.setAttribute("aria-expanded", "false");
+			directionButton.innerText = param.param_direction ? "Больше - лучше" : "Меньше - лучше";
+
+			let directionUL = document.createElement('ul');
+			directionUL.className = 'dropdown-menu';
+			directionUL.setAttribute("aria-labelledby", `direction${index + 1}Dropdown`);
+
+			let option1 = document.createElement('li');
+			let option1Link = document.createElement('a');
+			option1Link.className = 'dropdown-item';
+			option1Link.href = '#';
+			option1Link.innerText = "Больше - лучше";
+			option1.appendChild(option1Link);
+
+			let option2 = document.createElement('li');
+			let option2Link = document.createElement('a');
+			option2Link.className = 'dropdown-item';
+			option2Link.href = '#';
+			option2Link.innerText = "Меньше - лучше";
+			option2.appendChild(option2Link);
+
+			directionUL.appendChild(option1);
+			directionUL.appendChild(option2);
+
+			directionDropdownDiv.appendChild(directionButton);
+			directionDropdownDiv.appendChild(directionUL);
+
+			directionDiv.appendChild(directionLabel);
+			directionDiv.appendChild(directionInputHidden);
+			directionDiv.appendChild(directionDropdownDiv);
+			newFieldsContainer.appendChild(directionDiv);
+
+			let sliceDiv = document.createElement('div');
+			sliceDiv.className = 'col-md-3 form-group mb-3';
+
+			let sliceLabel = document.createElement('label');
+			sliceLabel.className = 'form-label';
+			sliceLabel.innerText = 'Срез ' + (index + 1);
+
+			let sliceInput = document.createElement('input');
+			sliceInput.id = `slice_param${index + 1}_criteria`;
+			sliceInput.name = `slice_param${index + 1}_criteria`;
+			sliceInput.className = 'form-control';
+			sliceInput.type = 'range';
+			sliceInput.value = param.param_slice;
+			sliceInput.min = param.slice_range[0];
+			sliceInput.max = param.slice_range[1];
+			sliceInput.step = 0.1;
+			sliceInput.required = true;
+			sliceInput.oninput = `slice${index + 1}Output.value = this.value`
+
+			let sliceOutput = document.createElement('output');
+			sliceOutput.id = `slice${index + 1}_criteria`
+			sliceOutput.value = param.param_slice;
+
+			sliceDiv.appendChild(sliceLabel);
+			sliceDiv.appendChild(sliceInput);
+			sliceDiv.appendChild(sliceOutput);
+			newFieldsContainer.appendChild(sliceDiv);
+
+			paramsRow.appendChild(newFieldsContainer);
+		});
+
+		const myModal = new bootstrap.Modal(document.getElementById('criteriaModal'));
+		myModal.show();
+	}
 
 	labDropdownItems.forEach(item => {
 		item.addEventListener('click', event => {
